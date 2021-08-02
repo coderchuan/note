@@ -1,0 +1,4077 @@
+﻿*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+*                              *标题*QT                                     *
+*****************************************************************************
+*****************************************************************************
+#和##运算符：
+在宏定义中，运算符#的作用是把#后面的标识符(变量名)转换为字面字符,单目运算；
+在宏定义中，运算符##的作用是把##左右两边的字面字符转换为一个标识符(变量名),双目运算；
+#include <iostream>
+#define abc(a,b)    a##b               //宏定义abc把字面字符a,b转换为变量名ab
+#define ab(a)       #a                 //宏定义ab把变量名a转换为字面字符a；
+
+int main()
+{
+    int kg=8;
+    int sk=9;
+    std::cout<<abc(k,g)<<std::endl;    //abc(k,g)把字面字符k,g转换为变量名kg
+    std::cout<<ab(sk)<<std::endl;      //ab(sk)把变量名sk转换为字面字符sk；
+}
+
+输出：
+8
+sk
+*****************************************************************************
+Qt绘图：
+绘图有两种情况：
+1、继承的Qt部件，需要在头文件和源文件中重载void paintEvent(QPaintEvent *event)函数：
+void paintEvent(QPaintEvent *event)函数用法：
+void paintEvent(QPaintEvent *)
+{
+    QPainter paint(this);
+    p.drawRect(20,20,100,50);                     //绘制一个矩形
+}
+**************
+2、使用Qt自带的部件，需要在此部件的父对象中重载bool eventFilter(QObject *watched, QEvent *event)，此外，此部件(子部件)需要开启事件过滤器：
+(1)在父对象中重载bool eventFilter(QObject *watched, QEvent *event);
+(2)子部件开启事件过滤器child.installEventFilter(this),参数为父对象的地址(示例为this)。
+bool eventFilter(QObject *watched, QEvent *event)函数用法：
+bool ParameterSettingPage::eventFilter(QObject *watched, QEvent *event)
+{
+    if(event->type()==QEvent::Paint)              //判断事件类型为绘图事件
+    {
+        if(watched==&child)                       //判断事件的对象为需要绘图的字部件
+        {
+            QPainter p(&child);                   //开始绘图
+            p.drawRect(20,20,100,50);             
+            return true;                          //绘图完成后必须返回
+        }
+    }
+}
+*****************************************************************************
+Qt Pro文件的使用：
+************
+库文件的一般配置：
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets    //Qt版本大于4时添加widgets模块
+QT+=core gui                                       //添加主要模块
+TARGET="项目名"                                    //配置生成的文件的名称
+TEMPLATE=app                                       //配置项目类型
+SOURCES+=                                          //源文件的路径和文件名，每个源文件之间应另起一行，并且在上一行中应使用\作为最后一个字符
+HEADERS+=                                          //头文件的路径和文件名，每个头文件之间应另起一行，并且在上一行中应使用\作为最后一个字符
+LIBS+=                                             //库文件的配置，-L路径 -l库文件名(库文件名应去头去尾)
+
+以下可选
+DEFINES+=                                          //添加宏配置
+unix{                                              //类unix平台
+}
+win32{                                             //windows平台
+}
+
+************
+添加库：
+
+第三方库：
+LIBS+=-L路径 -l库文件名      //路径和库文件名可以使用""包括起来，特别是路径或文件名中有特殊字符的时，库文件名不用带后缀。特别地：库文件名应该去头去尾(去除前缀lib和后缀名)
+INCLUDEPATH+=路径            //添加包含路径
+
+系统库：
+LIBS+=-l库文件名             //库文件名不用带后缀名，库文件名可以使用""包括起来，特别是库文件名中有特殊字符的时，库文件名不用带后缀。
+************
+$$PWD                        //表示pro或pri文件的当前目录
+************
+CONFIG+=c++11                //每个配置项目之间应该使用空格隔开，应根据需要选择使用的项目
+可配置项目：c++14 release debug_and_release debug等
+*****************************************************************************
+下载QT：
+http://download.qt.io/archive/
+@Qt相关资料：安装Qt后的Qt助手中有全部的Qt资料，英文版
+@C++相关资料：https://zh.cppreference.com/w或https://zh.cppreference.com/w/%E9%A6%96%E9%A1%B5或https://docs.microsoft.com/zh-cn/cpp/cpp/cpp-language-reference?view=vs-2017
+
+在Linux系统中如果使用Qt开发时出现了openGL相关的信赖问题，如下：
+ERROR:GL/gl.h:No such file or directory
+则应安装以下三个openGL库：
+libgl1-mesa-dev
+libglu1-mesa-dev
+freeglut3-dev 
+*****************************************************************************
+std::bind(函数绑定) 头文件 #include <functional>
+作用：对原函数更行参数方面的改造(调整参数顺序、进行参数绑定等)，返回改造好的函数
+
+用法：std::bind(&函数名,参数值列表);
+函数名：对于一个类或结构体，函数名必须要用名称空间符来指出具体是哪一个函数名
+参数：直接依次列出函数的参数值(即使函数有默认值也要必须列出)。对于类中的函数，第一个参数应该指明对象的地址，从第二个参数开始依次列出函数的参数值(即使函数有默认值也要必须列出)；
+注意：执行std::bind返回的函数时，实际是执行的原来的函数，只不过std::bind将参数做了绑定与顺序的调整
+参数类型：参数有三种类型，它们分别是：常量、引用、常量引用。如果直接在参数列表中写入参数，则参数是绑定时的常量；如果使用std::ref()包裹参数则是引用参数；如果使用std::cref()包裹参数则是常量引用参数
+
+std::placeholders(占位符) 头文件 #include <functional>
+用法：std::placeholders::_1，其中的数字表明参数的第次，如_1表示第一个参数
+在std::bind中绑定函数时，函数的参数可以根据占位符来改变参数的顺序
+注意：参数的第次的大小表明std::bind返回的函数的参数的最少数量，而参数的最大数量为原绑定的函数的参数的数量。调用std::bind返回的函数时，没有使用占位符的参数，即使传入了参数也无效
+
+需要绑定重载函数时，直接绑定将会出错，这时就需要将特定的重载函数进行类型转换(statci_cast)以绑定需要的函数
+用法：std::bind(static_cast<原函数返回类型 (*)(原函数参数类型列表)>(&函数名),参数值列表);
+原函数返回类型:需要绑定的函数的返回类型
+*:使用*表示需要绑定的函数名，若函数是类中的函数，则应使用名称空间符在*前指明，如在FUN类中有void func()函数的重载，则应该写为FUN::*
+原函数参数类型列表:需要绑定的函数的参数类型列表依次列出
+函数名：对于一个类或结构体，函数名必须要用名称空间来指出具体是哪一个函数名
+参数：  直接依次列出函数的参数值(即使函数有默认值也要必须列出)。对于类中的函数，第一个参数应该指明对象的地址，从第二个参数开始依次列出函数的参数值(即使函数有默认值也要必须列出)；
+
+示例：
+#include <functional>
+#include <iostream>
+
+void test(int a1,int a2,int a3,int a4,int a5,int a6)
+{
+    std::cout<<a1<<" "<<a2<<" "<<a3<<" "<<a4<<" "<<a5<<" "<<a6<<std::endl;
+}
+void test()
+{
+    std::cout<<"test"<<std::endl;
+}
+
+class TT
+{
+public:
+    void test_tt(int a,int b){std::cout<<"TT class "<<a<<" "<<b<<" "<<std::endl;}
+    void test_t(int i)  {std::cout<<"I am int"<<std::endl;}
+    void test_t(char c) {std::cout<<"I am char"<<std::endl;}
+};
+
+int main()
+{
+
+    TT t;
+    auto c=std::bind(static_cast<void (TT::*)(int)>(&TT::test_t),&t,100);                                     //通过类型转换绑定类TT中的重载函数void test_t(int)，转换类型时使用名称空间符"TT::*"指明了位置，使用名称空间符"&TT::test_t"指明了函数名,第1个参数&t指明了对象地址,没有使用占位符,同时表明返回的函数最少有0个参数，最多有1个参数
+    c();
+
+    auto b=std::bind(&TT::test_tt,&t,5,std::placeholders::_1);                                                //绑定类中的函数，使用名称空间符"::"指明了位置，并且第1个参数指明了对象地址。除了对象地址这个参数外，第2个参数使用了占位符_1表明原函数的第2个参数使用绑定后的函数的第1个参数，同时表明返回的函数最少有1个数，最多有2个参数
+    b(99,100);
+
+    auto a=std::bind(static_cast<void (*)(int,int,int,int,int,int)>(&test),1,2,3,std::placeholders::_2,5,6);  //通过类型转换绑定重载函数void test(int,int,int,int,int,int),第4个参数使用了占位符_2,表明原函数第4个参数使用绑定后返回的函数的第2个参数,同时表明返回的函数最少有2个参数，最多有6个参数
+    a(11,12);
+
+    return 0;
+}
+
+*****************************************************************************
+通信：
+同步通信：指阻塞形式的通信，发送数据或接收数据时阻塞而不能进行其他操作。阻塞接收与发送结合循环语句，即可实现同步通信。
+异步通信：指事件形式的通信，在接收数据和发送数据时不影响程序的其他操作。信号与槽结合事件循环，即可实现异步通信。
+
+写通信类程序时，应重新写一个类或结构体，至少包括构造函数和消息处理函数。
+*******************************
+*******************************
+串口通信：
+
+串口数据帧的组成：起始位、数据位、校验位、终止位。如下：
+@起始位，不可设置值，占用1位，值为0；
+@数据位，可以设置值，占用5、6、7、8位，值取决于发送的数据；
+@校验位，可以设置值，占用0、1位，值取决于校验方式；
+@结束位，不可设置值，占用1位，值为1。
+
+串口通信的参数：
+端口编号：即设备插在计算机上的USB端口编号
+波特率值：常用的波特率有1200、2400、4800、9600、19200、38400、57600、115200
+数据位数：常用的数据位数有5、6、7、8位
+校验方式：常用的校验方式有：无校验(校验位为0位)、奇校验(校验位加上数据位，高位个数为奇数个)、偶校验(校验位加上数据位，高位个数为偶数个)、高校验(校验位始终为1)、低校验(校验位始终为0)
+停止时间：常用的停止位占用的时间有：1倍数据位时间、1.5倍数据位时间、2倍数据位时间
+流控方式：常用的流控方式有无流控、硬件流控(通过硬件电位RTS/CTS来控制是否传输数据)、软件流控(通过数据帧中的字符标志XON/XOFF控制是否传输数据)
+
+缓冲区：一块计算机自动分配的指定大小的内存区域，由内部指针控制成首尾相连的形式，概念上相当于一个环形的链。当这块内存区域中的数据被使用之后指针就向后移动到未使用的数据的位置；并且有一个变量来记录未使用的数据的大小，当有新数据写入到缓冲区时，这个记录未使用数据大小的变量也会更新。
+发送缓冲区：一块大小随写入数据的大小变化的缓冲区。
+接收缓冲区：一块通过void setReadBufferSize(qint64 size);函数设置大小的缓冲区。接收缓冲区的数据被读取后会自动清除已经读取的部分，当缓冲区没有来得及读取而存满时，会出现无法接收数据的情况。
+
+数据的发送与接收：
+数据的发送：在一个单独的子线程中进行，数据发送前从发送缓冲区读取数据的一个字节，并在数据的两端自动加上起始位、校验位与终止位。通过bool waitForBytesWritten(int msecs = 30000)函数来促使线程开始发送数据，也可以通过事件循环(.exec)来自动发送数据
+数据的接收：在一个单独的子线程中进行，接收到的数据将会自动将起始位、校验位与终止位去除，根据数据位数截取每个字节的有效位数，然后存入接收缓冲区。通过bool waitForReadyRead(int msecs = 30000)函数促使线程开始接收数据，也可以通过事件循环(.exec)来自动接收数据
+
+QSerialPort:
+bool setBaudRate(qint32 baudRate, QSerialPort::Directions directions = AllDirections);  //设置对应方向的比特率，不同的方向可以有不同的比特率
+qint32 baudRate(QSerialPort::Directions directions = AllDirections) const;              //返回对应方向的比特率，不同的方向可以有不同的比特率
+bool setDataBits(QSerialPort::DataBits dataBits);                                       //设置数据位长度
+QSerialPort::DataBits dataBits() const;                                                 //返回数据位长度
+bool setParity(QSerialPort::Parity parity);                                             //设置校验方式
+QSerialPort::Parity parity() const;                                                     //返回校验方式
+bool setStopBits(QSerialPort::StopBits stopBits);                                       //设置停止位占用时间
+QSerialPort::StopBits stopBits() const;                                                 //返回停止位占用时间
+bool setFlowControl(QSerialPort::FlowControl flowControl);                              //设置流控方式
+QSerialPort::FlowControl flowControl() const;                                           //返回流控方式
+
+void setPort(const QSerialPortInfo &serialPortInfo);                                    //设置端口
+void setPortName(const QString &name);                                                  //设置端口名
+QString portName() const;                                                               //返回端口名
+
+bool open(QIODevice::OpenMode mode);                                                    //连接到串口
+void close();                                                                           //关闭串口的连接
+
+bool putChar(char c);                                                                   //写入一个字符到“发送缓冲区”
+qint64 write(const char *data, qint64 maxSize);                                         //把指定大小的数据写入“发送缓冲区”，返回写入数据的大小
+qint64 write(const char *data);                                                         //把将要发送的数据写入“发送缓冲区”，返回写入数据的大小
+bool waitForBytesWritten(int msecs = 30000);                                            //阻塞发送函数。开始计时并等待正在发送“发送缓冲区”的数据发送完成，若在设定的时间msecs内发送完成并且没有出错，则返回true，反之。参数为-1时永不超时
+
+bool waitForReadyRead(int msecs = 30000);                                               //阻塞接收函数。开始计时并等待“接收缓冲区”接收数据，若在设定的时间内接收完毕并且没有出现错误时就返回true，反之。参数为-1时永不超时
+qint64 read(char *data, qint64 maxSize);                                                //从“接收缓冲区”读取指定大小的数据，返回读取的数据的大小
+QByteArray read(qint64 maxSize);                                                        //从“接收缓冲区”读取指定大小的数据，返回读取的数据
+QByteArray readAll();                                                                   //从“接收缓冲区”读取所有数据，返回读取的数据
+qint64 readLineData(char *data, qint64 maxSize);                                        //从“接收缓冲区”读取一行数据(以\r\n结尾的字符串)，但是不超过指定的大小
+QByteArray readLine(qint64 maxSize = 0);                                                //从“接收缓冲区”读取一行数据(以\r\n结尾的字符串)，但是不超过指定的大小。若为指定的大小0，则默认最大的大小为缓冲区的大小
+bool getChar(char *c);                                                                  //从“接收缓冲区”读取一个字符
+
+void setReadBufferSize(qint64 size);                                                    //设置“接收缓冲区”的大小
+qint64 readBufferSize() const;                                                          //返回“接收缓冲区”数据大小
+bool clear(QSerialPort::Directions directions = AllDirections);                         //清除指定方向的缓冲区
+
+bool canReadLine() const;                                                               //判断“接收缓冲区”是否可以读取一行数据(以\r\n结尾的字符串)，如果可以返回true，反之
+qint64 bytesToWrite() const;                                                            //返回“发送缓冲区”等待发送的数据的大小
+qint64 bytesAvailable() const;                                                          //返回“接收缓冲区”还未读取的数据的大小
+bool atEnd() const;                                                                     //返回“接收缓冲区”是否还有数据可以读取，如果没有可以读取的数据返回true，反之
+bool isSequential();                                                                    //判断是否是串口设备，如果是则返回true，反之
+
+bool flush();                                                                           //刷新缓冲数据
+bool setBreakEnabled(bool set = true);                                                  //在持续时间内发送数据1位0
+void clearError();                                                                      //清除错误状态
+QSerialPort::SerialPortError error() const;                                             //返回错误状态
+bool setBreakEnabled(bool set = true);                                                  //破坏传输线
+bool isBreakEnabled() const;                                                            //返回当前传输线的状态，停止传输返回true，正在传输返回false
+bool setDataTerminalReady(bool set);                                                    //设置DTR状态，即设置数据终端是否就绪
+bool isDataTerminalReady();                                                             //返回DTR的状态，高位返回true，低位返回false，返回数据终端是否就绪
+bool setRequestToSend(bool set);                                                        //设置RTS状态，即设置请求发送的状态
+bool isRequestToSend();                                                                 //返回RTS状态，即返回请求发送的状态
+QSerialPort::PinoutSignals pinoutSignals();                                             //返回行信号的状态
+QSerialPort::Handle handle() const;                                                     //返回本机串口句柄
+********
+信号：
+void bytesWritten(qint64 bytes);                                                        //数据发送完成
+void readyRead();                                                                       //数据接收完成
+
+void baudRateChanged(qint32 baudRate, QSerialPort::Directions directions);              //比特率改变
+void dataBitsChanged(QSerialPort::DataBits dataBits);                                   //数据位数改变
+void parityChanged(QSerialPort::Parity parity);                                         //校验方式改变
+void stopBitsChanged(QSerialPort::StopBits stopBits);                                   //停止位改变
+void flowControlChanged(QSerialPort::FlowControl flow);                                 //流控方式改变
+
+void errorOccurred(QSerialPort::SerialPortError error);                                 //出现错误
+void breakEnabledChanged(bool set);                                                     //传输线状态改变
+
+void dataTerminalReadyChanged(bool set);                                                //DTR的高低位改变
+槽：
+qint64 readData(char *data, qint64 maxSize) override;                                   //必须重新实现的槽函数。读取数据
+qint64 readLineData(char *data, qint64 maxSize) override;                               //必须重新实现的槽函数。读取一行数据
+qint64 writeData(const char *data, qint64 maxSize) override;                            //必须重新实现的槽函数。写入数据
+*******************************
+串口异步通信(事件循环)示例：
+
+#include <QSerialPort>
+#include <time.h>
+#include <QApplication>
+#include <QDebug>
+
+struct SocketMessage:public QObject
+{
+    QSerialPort serial;
+    char rec[50];
+    char sen[50];
+    time_t t;
+    SocketMessage();
+    void slotRec();
+    void slotSen();
+};
+
+int main(int argc,char* argv[])
+{
+    QApplication a(argc,argv);
+    SocketMessage serialPort_;
+    return a.exec();
+}
+
+SocketMessage::SocketMessage()
+{
+    serial.setBaudRate(9600);
+    serial.setDataBits(QSerialPort::Data8);
+    serial.setParity(QSerialPort::EvenParity);
+    serial.setStopBits(QSerialPort::TwoStop);
+    serial.setPortName("\\\\.\\COM2");                                  //连接到端口2(Windows)
+    serial.open(QIODevice::ReadWrite);
+    QObject::connect(&serial,&QSerialPort::bytesWritten,this,&slotSen);
+    QObject::connect(&serial,&QSerialPort::readyRead,this,&slotRec);
+}
+
+void SocketMessage::slotRec()
+{
+    strcpy(rec,serial.readAll().constData());
+    qDebug()<<rec;
+    t=time(NULL);
+    strftime(sen,50,"%X",localtime(&t));                                //把当前的系统时间写入sen中
+    strcat(sen,"\n");
+    serial.write(sen);
+}
+
+void SocketMessage::slotSen()
+{
+    qDebug()<<"Data send finish";
+}
+
+
+*****************************************************************************
+QTextBrowser:(显示本地文档)
+int backwardHistoryCount() const              //返回可以返回的次数(前进和返回依靠的是隐藏的QStringList对象记录的从首页进入一个次页链接的文件路径，次页再进入次次面，依次增加的文件路径则记录入QStringList中，可后退次数就是当前的路径的QStringList序号与第一个序号之间的差值，可前进次数则是当前QStringList序号与(QStringList::size()-1)之间的差值)
+int forwardHistoryCount() const               //返回可以前进的次数
+void clearHistory()                           //清除历史列表，清除后不可前进与后退
+QString historyTitle(int i) const             //返回历史标题，参数i表示序号，大于0，表示当前页后第i页的标题，小于0表示当前页前第-i页的标题，等于0表示当前页的标题
+QUrl historyUrl(int i) const                  //返回历史路径，参数i表示序号，大于0，表示当前页后第i页的路径，小于0表示当前页前第-i页的路径，等于0表示当前页的路径
+bool isBackwardAvailable() const              //返回是否可以后退，与可后退次数相关
+bool isForwardAvailable() const               //返回是否可以前进，与可前进次数相关
+void setOpenExternalLinks(bool open)          //设置是否可以打开超链接(通过浏览器)
+void setOpenLinks(bool open)                  //设置是否可以打开链接
+bool openExternalLinks() const                //返回是否可以打开超链接(通过浏览器)(openLinks也必须设置打开才可使用此功能)
+bool openLinks() const                        //返回是否可以打开链接
+void setSearchPaths(const QStringList &paths) //设置本地文档的根路径(可以设置QStringList多个)
+QStringList searchPaths() const               //返回本地文档的根路径(返回QStringList列表)
+QUrl source() const                           //返回主页文件名
+槽函数：
+void setSource(const QUrl &name)              //设置主页文件
+void backward()                               //返回
+void forward()                                //前进
+void home()                                   //主页
+void reload()                                 //重新加载当前页
+信号函数：
+void anchorClicked(const QUrl &link)          //当链接被点击信号
+void backwardAvailable(bool available)        //当可以返回时的信号(状态改变)
+void forwardAvailable(bool available)         //当可以前进时的信号(状态改变)
+void highlighted(const QUrl &link)            //鼠标停留在链接上和鼠标离开链接时的信号(此信号为重载信号)
+void highlighted(const QString &link)         //鼠标停留在链接上和鼠标离开链接时的信号(此信号为重载信号)
+void historyChanged()                         //历史记录改变时的信号
+void sourceChanged(const QUrl &src)           //当主页改变时的信号
+*****************************************************************************
+按钮：
+当一个按钮被点击时，有以下的信号被按顺序发送：
+@pressed();
+@toggled();                 //该信号仅在按钮具有checkable属性时才发送。
+@released();
+@clicked();
+***********************
+QPushButton与QToolButton、QCommandLinkButton
+
+QPushButton:
+focus：     具有焦点，使用键盘上的空格可以按下具有focus的QPushButton
+以下两个属性只在QDialog对话框中有效：
+autoDefault:具有边框，使用键盘上的回车可以按下具有focus同时具有autoDefaul属性的QPushButton
+default：   具有边框，没有autoDefault属性或者有autoDefault属性但是没有focus的按钮，使用键盘上的回车可以按下具有default属性的QpushButton。
+
+QToolButton：
+与QPushbutton的区别在于QToolButton可以改变按钮上的文字与图片的方位、可以改变弹出菜单的样式、可以作为QToolBar的菜单选项。。但是QToolButton没有default与autoDefault属性。
+
+QCommandLinkButton：
+与QPushButton的区别在于QCommandLinkButton在按钮上有一个箭头，并且可以通过void setDescription(QString)函数设置按钮上的提示文本。
+************************
+QRadioButton与QCheckBox
+
+QRadioButton:
+只有一个QRadioButton时，可以单击以选中或不选中QRadiaButton。
+当有多个QRadioButton时，只要单击了QRadioButton，就必定有一个QRadioButton被选中。
+
+想要多个QRadioButton时，仍然具有单击以选中或不选中QRadiaButton的属性，可以将每个QRadioButton的pressed()信号关联到以下槽函数：
+void slotRadioButton_pressed()
+{
+    QRadioButton * btn= qobject_cast<QRadioButton*>(QObject::sender());
+    btn->setCheckable(!btn->isChecked());
+}
+
+QCheckBox：
+QCheckBox与QRadioButton的异同在于：
+@只有一个QCheckBox或只有一个QRadiobutton时，即可以选中，也可以不选中。此时它相当于一个开关。
+@一组QCheckBox按钮或一组QRadioButton按钮在QButtonGroup时它们的功能是完全一样的。通过void setExclusive(bool)函数可以设置在QButtonGroup中的按钮是多选功能(可以多个选择，也可以不选择)还是单选功能(只要选择了一个就必定有一项是被中的)。
+@一组QCheckBox按钮或一组QRadioButton按钮在其他容器(例如QGroupBox)中时，它们的默认功能不一样：QCheckBox默认为多选功能(可以多个选择，也可以不选择)、QRadioButton默认为单选功能(只要选择了一个就必定有一项是被中的)。
+@QChexkBox比QRadioButton多的功能是：通过函数setTristate(bool y = true)设置三态开关、通过setCheckState(Qt::CheckState state)设置当前的三态。
+*************************
+QDialogButtonBox：
+它相当于一个容器，可以容纳多个按钮。可以向其中添加按钮也可以删除按钮，可以通过setOrientation(Qt::Orientation orientation)设置按钮是横向分布还是纵向分布、通过setCenterButtons(bool center)设置按钮是否分布在中间。
+**************************************************************************************************************
+信号与槽的连接：(推荐使用方法二)
+方法一：
+信号使用宏:SIGNAL(),括号中写入参数为信号函数的原型，但是不能指定变量名。
+槽使用宏  :SLOT()  ,括号中写入参数为槽函数的原型，但是不能指定变量名。
+例：
+有一个信号函数为void highlighted(QString const& link);此信号为QTextBrowser中的信号
+有一个槽函数为 void test(QString const& link);       ;此槽函数为自定义类Widget中的槽函数
+连接此信号与槽的写法应为：
+connect(发送信号的对象地址,SIGNAL(highlighted(QString const&)),接收信号的对象地址,SLOT(test(QString const&)));
+此方法不管信号与槽是否有重载都可以方便地使用。
+***********************************
+方法二：
+直接使用信号与槽的地址：
+例：
+有一个信号函数为void highlighted(QString const& link);此信号为QTextBrowser中的信号
+有一个槽函数为 void test(QString const& link);       ;此槽函数为自定义类Widget中的槽函数
+连接此信号与槽的写法为：
+connect(发送信号的对象地址,QTextBrowser::highlighted,接收信号的对象地址,&Widget::test);
+
+如果信号和槽函数有重载，则就使用QOverload<>::of()，并在<>中指明信号或槽的参数、在()中指明函数地址
+例：
+有一个信号函数为void highlighted(QString const& link);此信号为QTextBrowser中的信号
+有一个信号函数为void highlighted(QUrl const& link);  ;此信号为QTextBrowser中的信号
+有一个槽函数为 void test(QString const& link);       ;此槽函数为自定义类Widget中的槽函数
+有一个槽函数为 void test(QUrl const& link);          ;此槽函数为自定义类Widget中的槽函数
+由于此种情况信号与槽有函数重载的情况，连接此信号与槽的写法为：
+connect(发送信号的对象地址,QOverload<QString const&>::of(&QTextBrowser::highlighted),接收信号的对象地址,QOverload<QString const&>::of(&Widget::test));
+connect(发送信号的对象地址,QOverload<QUrl const&>::of(&QTextBrowser::highlighted),接收信号的对象地址,QOverload<QUrl const&>::of(&Widget::test));
+***********************************************************************************************************
+堆排序：
+std::is_heap、make_heap、std::push_heap、std::pop_heap、std::sort_heap(最大堆、最小堆。仅适用于随机访问迭代器如std::vector与std::deque)
+********************************************
+********************************************
+判断一个序列是否为最大堆：
+bool is_heap( RandomIt first, RandomIt last );                 //使用比较函数operator<
+bool is_heap( RandomIt first, RandomIt last, Compare comp );   //使用比较函数comp
+
+构造最大堆：
+void make_heap( RandomIt first, RandomIt last );               //使用比较函数operator<
+void make_heap( RandomIt first, RandomIt last, Compare comp ); //使用比较函数comp
+
+序列添加元素到末尾后重新构造最大堆：(必须保证添加元素前的序列是一个最大堆)
+void push_heap( RandomIt first, RandomIt last );               //使用比较函数operator<
+void push_heap( RandomIt first, RandomIt last,Compare comp );  //使用比较函数comp
+
+将第一个元素与最后一个元素进行交换：(必须保证序列是一个最大堆)
+void pop_heap( RandomIt first, RandomIt last );                //使用比较函数operator<
+void pop_heap( RandomIt first, RandomIt last, Compare comp );  //使用比较函数comp
+
+使用堆原理进行排序(从小到大)：(必须保证序列是一个最大堆)
+void sort_heap( RandomIt first, RandomIt last );               //使用比较函数operator<
+sort_heap( RandomIt first, RandomIt last, Compare comp );      //使用比较函数comp
+
+例：
+#include <algorithm>
+#include <QDebug>
+
+struct idCard
+{
+    QString name;
+    bool operator<(idCard const& second)
+    {
+        return name.size()<second.name.size();
+    }
+    idCard(QString name_)
+    {
+        name=name_;
+    }
+};
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+
+    std::vector<idCard> serial;
+    serial.push_back(idCard("yangchuan"));
+    serial.push_back(idCard("maQ"));
+    serial.push_back(idCard("PanYaru"));
+    serial.push_back(idCard("SHU"));
+    serial.push_back(idCard("Computer"));
+    serial.push_back(idCard("Bongos"));
+    serial.push_back(idCard("QtCreator_my_work"));
+    serial.push_back(idCard("thisIsAComputerAndMyLove"));
+
+    qDebug()<<std::is_heap(serial.begin(),serial.end());
+
+    qDebug()<<endl;
+
+    std::make_heap(serial.begin(),serial.end());
+    for(auto p:serial)qDebug()<<p.name;
+
+    qDebug()<<endl;
+
+    serial.push_back(idCard("1017"));
+    std::push_heap(serial.begin(),serial.end());
+    for(auto p:serial)qDebug()<<p.name;
+
+    qDebug()<<endl;
+
+    std::pop_heap(serial.begin(),serial.end());
+    for(auto p:serial)qDebug()<<p.name;
+
+    qDebug()<<endl;
+
+    std::make_heap(serial.begin(),serial.end());
+    std::sort_heap(serial.begin(),serial.end());
+    for(auto p:serial)qDebug()<<p.name;
+
+
+    return a.exec();
+}
+
+*****************************************************************************
+创建窗口时设置窗口类型：
+有两个参数：
+第一个参数是用于该窗口是否有父对象，如果没有父对象则使用参数0表示，如果有父对象则使用父对象的地址作为参数；
+第二个参数是用于表示即将创建的窗口的状态和类型，常用的类型有：
+Qt::Widget                       //默认参数，表示一个部件窗口，如果有父对象，则即将创建的对象与父对象共用同一个窗口，没有父对象则重新创建一个窗口；
+Qt::Dialog                       //表示一个对话窗口。它不与父对象共用窗口
+Qt::SplashScreen                 //表示一个欢迎窗口(没有边框)。
+Qt::FramelessWindowHint          //表示一个没有边框的窗口。
+Qt::WindowStaysOnTopHint         //窗口保持在最顶层。
+Qt::CustomizeWindowHint          //关闭窗口菜单
+Qt::WindowTitleHint              //隐藏窗口菜单
+Qt::WindowSystemMenuHint         //隐藏系统窗口菜单
+Qt::WindowMinimizeButtonHint     //为窗口添加最小化按钮
+Qt::WindowMaximizeButtonHint     //为窗口添加最大化按钮
+Qt::WindowMinMaxButtonsHint      //为窗口添加最大化和最小化按钮
+Qt::WindowCloseButtonHint        //为窗口添加关闭按钮
+Qt::WindowContextHelpButtonHint  //为窗口添加帮助按钮
+以下的参数是没有实际应用过的：
+Qt::MacWindowToolBarButtonHint
+Qt::WindowFullscreenButtonHint
+Qt::BypassGraphicsProxyWidget
+Qt::WindowShadeButtonHint
+Qt::WindowStaysOnBottomHint
+Qt::WindowCancelButtonHint
+Qt::WindowTransparentForInput
+Qt::Window                       //是一个窗口，有窗口边框和标题
+Qt::Sheet                        //是一个窗口或部件Macintosh表单
+Qt::Drawer                       //是一个窗口或部件Macintosh抽屉
+Qt::Popup                        //是一个弹出式顶层窗口
+Qt::Tool                         //是一个工具窗口
+Qt::ToolTip                      //是一个提示窗口，没有标题栏和窗口边框
+Qt::Desktop                      //是一个桌面窗口或部件
+Qt::SubWindow                    //是一个子窗口
+例如：
+QWidget *w=new QWidget(0,Qt::WindowStaysOnTopHint);
+QLabel *label=new QLabel(w,0);
+亦可使用函数设置窗口类型：
+setWindowFlag();                 //有一个参数，参数如同以上的参数。
+
+给已经创建好的窗口设置状态的函数：
+setWindowState();
+有一个参数：
+Qt::WindowMinimized              //设置窗口状态为最小化
+Qt::WindowMaximized              //设置窗口状态为最大化
+Qt::WindowFullScreen             //设置窗口的状态为全屏窗口
+Qt::WindowActive                 //设置窗口状态为活动窗口
+Qt::WindowNoState                //设置窗口状态为正常状态(默认值)
+例如：
+QWidget *w=new QWidget(0,Qt::WindowStaysOnTopHint);
+w->setWindowState(Qt::WindowNoState);
+*****************************************************************************
+窗口几何布局：
+
+边框的函数：
+frameGeometry();                 //返回边框的相对于父窗口的位置、边框的大小，返回类型为QRect(x,y,width,height)
+frameGeometry().x();             //返回类型为int
+frameGeometry().y();             //返回类型为int
+frameGeometry().width();         //返回类型为int
+frameGeometry().height();        //返回类型为int
+frameGeometry().size();          //返回类型为QSize(width,height)
+pos();                           //返回边框的相对于父窗口的位置，返回类型为QPoint(x,y)
+move(int,int);                   //移动边框的相对于父窗口的位置
+
+窗口的函数：
+geometry();                      //返回窗口相对于父窗口的位置,窗口的大小
+geometry().x();                  //返回类型为int
+geometry().y();                  //返回类型为int
+geometry().width();              //返回类型为int
+geometry().height();             //返回类型为int
+geometry().size()                //返回类型为QSize(width,height)
+rect();                          //返回窗口宽度值和高度值(与size()不同的是,其中返回的四个参数中,前两个始终是0,后面两个是它的宽度与高度值,这是为了与QRect类型数据匹配)
+resize(int,int);                 //重新设置窗口的宽度值和高度值
+
+其他函数：
+show();                          //显示窗口
+*****************************************************************************
+模态
+
+模态窗口：处理完当前窗口前不允许处理其他窗口(阻塞)
+
+消息循环机制:exec(),处理完全当前窗体后才能接着往下执行;
+new:动态分配C++的指针内存空间,使用方式例:int *a=new int;
+
+
+
+模态窗口方式一：
+QDialog newwindows;
+newwindows.exec();                                     //处理完当前窗体后才能接着往下执行代码;
+模态窗口方式二：
+QDialog* newwindows=new QDialog;
+newwindows->setModal(true);                            //设置窗口为模态,可以继续执行代码而不必等待处理完当前窗口
+newwindows->show();
+模态窗口方式三：
+QDialog* newwindows=new QDialog;
+newwindows->setWindowModality(Qt::ApplicationModal);   //设置窗口为模态,可以继续执行代码而不必等待处理完当前窗口
+newwindows->show();
+
+
+
+设置窗口的模态的两个函数：
+setWindowModality();             //有一个参数
+Qt::NonModal                     //不阻塞任何窗口
+Qt::WindowModal                  //阻塞当前窗口的父窗口、子窗口
+Qt::ApplicationModal             //阻塞应用程序的所有窗口
+
+setModal();                      //有一个参数，true表示阻塞应用程序的所有窗口，与setWindowModality(Qt::ApplicationModal)作用相同；false表示不阻塞任何窗口，与setWindowModality(Qt::NonModal)作用相同
+
+
+
+例：
+#include <QApplication>
+#include <QWidget>
+#include <QDialog>
+int main(int argc,char* argv[])
+{
+    QApplication a(argc,argv);
+    QDialog* newwindows=new QDialog;
+    newwindows->exec();                                         //设置窗口为模态方式一
+    newwindows->setWindowModality(Qt::ApplicationModal);        //设置窗口为模态方式二
+    newwindows->setModal(true);                                 //设置窗口为模态方式三
+    newwindows->show();                                         //与设置窗口为模态方式二、三同时使用
+    QWidget *Widget=new QWidget;
+    Widget->show();
+    return a.exec();
+}
+
+*****************************************************************************
+信号与槽：
+
+信号与槽的有效关联分三个步骤：
+1、在类的public slots中声明槽函数;
+2、在类的实现文件中写下槽函数的实现语句;
+3、在类的实现文件中的构造函数中写下关联语句(按照信号与槽自动关联的命名规则命名的函数可以省略此步骤);
+
+例如：
+前提：在UI界面中有一个名为pushButton的按钮。
+1、在UI界面类中的类定义的public slots中声明槽函数：
+public slots:
+    void example();
+2、在UI界面类中的类实现中写入void example()函数的实现语句：
+void Widget::example()
+{
+    QDialog* dia=new QDialog;
+    dia->show();
+}
+3、在UI界面类中的类实现中的构造函数中写下关联语句(按照信号与槽自动关联的命名规则命名的函数可以省略此步骤)：
+connect(ui->pushButton,&QPushButton::clicked,this,&Widget::example);
+
+信号与槽自动关联的命名规则：
+由on、发射信号的对象名、发射的信号名组成，例如：on_pushButton_clicked();
+
+关联函数：
+connect()有四个参数，分别是发射信号的对象、发射的信号、接收信号的对象、要执行的槽函数名，例如：
+connect(ui->pushButton,&QPushButton::clicked,this,&Widget::example);
+
+*****************************************************************************
+八个标准对话框：
+
+一、颜色对话框：QColorDialog
+1、函数调用
+QColor color=QColorDialog::getColor(Qt::red,this,QObject::tr("颜色对话框"),QColorDialog::ShowAlphaChannel);
+if(color.isValid())
+{
+    qDebug()<<color;
+}
+第一个参数：设置初始颜色;
+第二个参数：设置父对象;
+第三个参数：设置标题;
+第四个参数：设置是否有Alpha通道，可以省略;
+2、对象调用
+QColorDialog dialog(this);                        //设置父对象
+dialog.setCurrentColor(Qt::red);                  //设置默认颜色
+dialog.setWindowTitle(QObject::tr("标题"));       //设置标题
+dialog.setOption(QColorDialog::ShowAlphaChannel); //设置是否有Alpha通道，可以省略
+if(dialog.exec()==QDialog::Accepted)              //以模态窗口显示
+{
+   QColor color=dialog.currentColor();            //把选定的颜存储在color中
+   qDebug()<<color;
+}
+****************************************
+二、文件对话框：QFileDialog
+选择文件
+1、函数调用
+单个文件：
+QString fileName=QFileDialog::getOpenFileName(this,QObject::tr("文件对话框"),"D:\\example.mp2",QObject::tr("音频文件（*.avi *.mp3 *.m4a);图形文件(*.jeg *.png)"));
+if(!fileName.isEmpty())
+{
+    qDebug()<<fileName;
+}
+多个文件：
+QStringList fileNames=QFileDialog::getOpenFileNames(this,QObject::tr("文件对话框"),"D:\\example.mp2",QObject::tr("音频文件（*.avi *.mp3 *.m4a);;图形文件(*.jeg *.png)"));
+if(!fileNames.isEmpty())
+{
+    qDebug()<<fileNames;
+}
+第一个参数：设置父对象;
+第二个参数：设置标题;
+第三个参数：设置默认路径和默认文件名;
+第四个参数：设置文件过滤器，形式为“*.后缀名”，同类型的文件多个后缀名则用空格隔开，不同类型的文件的后缀名用两个分号";;"隔开;
+2、对象调用
+单个文件：
+QFileDialog dialog(this);                         //设置父对象
+dialog.setWindowTitle(QObject::tr("文件对话框")); //设置标题
+dialog.setDirectory("D:");                        //设置默认路径
+dialog.selectFile("example.mp4");                 //设置默认的文件名
+dialog.setNameFilter(QObject::tr("音频文件（*.avi *.mp3 *.m4a);;图形文件(*.jeg *.png)"));
+                                                  //设置过滤器
+dialog.setAcceptMode(QFileDialog::AcceptOpen);    //设置文件对话框类型为打开模式
+dialog.setFileMode(QFileDialog::ExistingFile);    //设置对话框模式为单个文件模式
+if(dialog.exec()==QDialog::Accepted)              //以模态窗口显示
+{
+    QStringList fileName=dialog.selectedFiles();  //把选定的文件路径存储在fileName中
+    qDebug()<<fileName;
+}
+多个文件：
+QFileDialog dialog(this);                         //设置父对象
+dialog.setWindowTitle(QObject::tr("文件对话框")); //设置标题
+dialog.setDirectory("D:");                        //设置默认路径
+dialog.selectFile("example.mp4");                 //设置默认的文件名
+dialog.setNameFilter(QObject::tr("音频文件（*.avi *.mp3 *.m4a);;图形文件(*.jeg *.png)"));
+                                                  //设置过滤器
+dialog.setAcceptMode(QFileDialog::AcceptOpen);    //设置文件对话框类型为打开模式
+dialog.setFileMode(QFileDialog::ExistingFiles);   //设置对话框模式为多个文件模式
+if(dialog.exec()==QDialog::Accepted)              //以模态窗口显示
+{
+    QStringList fileNames=dialog.selectedFiles(); //把选定的文件路径存储在fileNames中
+    qDebug()<<fileNames;
+}
+
+保存文件
+1、函数调用
+QString fileName=QFileDialog::getSaveFileName(this,QObject::tr("文件对话框"),"D:\\example.mp2",QObject::tr("音频文件（*.avi *.mp3 *.m4a);;图形文件(*.jeg *.png)"));
+if(!fileName.isEmpty())
+{
+    qDebug()<<fileName;
+}
+第一个参数：设置父对象;
+第二个参数：设置标题;
+第三个参数：设置默认路径和默认文件名;
+第四个参数：设置文件过滤器，形式为“*.后缀名”，同类型的文件多个后缀名则用空格隔开，不同类型的文件的后缀名用两个分号";;"隔开;
+2、对象调用
+QFileDialog dialog(this);                         //设置父对象
+dialog.setWindowTitle(QObject::tr("文件对话框")); //设置标题
+dialog.setDirectory("D:");                        //设置默认路径
+dialog.selectFile("example.mp4");                 //设置默认的文件名
+dialog.setNameFilter(QObject::tr("音频文件（*.avi *.mp3 *.m4a);;图形文件(*.jeg *.png)"));
+                                                  //设置过滤器
+dialog.setAcceptMode(QFileDialog::AcceptSave);    //设置文件对话框类型为保存模式
+dialog.setFileMode(QFileDialog::AnyFile);         //设置对话框模式为任意文件模式
+if(dialog.exec()==QDialog::Accepted)              //以模态窗口显示
+{
+    QStringList fileName=dialog.selectedFiles();  //把选定的文件路径存储在fileName中
+    qDebug()<<fileName;
+}
+****************************************
+选择文件夹
+1、函数调用
+QString fileName=QFileDialog::getExistingDirectory(this,QObject::tr("文件对话框"),"D:\\video");
+if(!fileName.isEmpty())
+{
+    qDebug()<<fileName;
+}
+第一个参数：设置父对象;
+第二个参数：设置标题;
+第三个参数：设置默认路径;
+2、对象调用
+QFileDialog dialog(this);                         //设置父对象
+dialog.setWindowTitle(QObject::tr("文件对话框")); //设置标题
+dialog.setDirectory("D:\\");                      //设置默认路径
+dialog.setAcceptMode(QFileDialog::AcceptOpen);    //设置文件对话框类型为保存模式
+dialog.setFileMode(QFileDialog::Directory);       //设置对话框模式为任意文件模式
+if(dialog.exec()==QDialog::Accepted)              //以模态窗口显示
+{
+    QStringList fileName=dialog.selectedFiles();  //把选定的文件路径存储在fileName中
+    qDebug()<<fileName;
+}
+****************************************
+三、字体对话框：QFontDialog
+1、函数调用
+bool ok;
+QFont font=QFontDialog::getFont(&ok,QFont("楷体",12),this,QObject::tr("字体对话框"));
+if(ok)
+{
+    qDebug()<<font;
+}
+第一个参数：设置字体改变标志，参数为bool*型;
+第二个参数：设置默认字体;
+第三个参数：设置父对象;
+第四个参数：设置标题;
+2、对象调用
+QFontDialog dialog(this);                         //设置父对象
+dialog.setCurrentFont(QFont("楷体",12));          //设置默认字体
+dialog.setWindowTitle(QObject::tr("字体对话框")); //设置标题
+if(dialog.exec()==QDialog::Accepted)              //以模态窗口显示
+{
+    QFont font=dialog.currentFont();              //把选定的字体存储在font中
+    qDebug()<<font;
+}
+****************************************
+四、输入对话框：QInputDialog
+字符串输入
+1、函数调用
+bool ok;
+QString str=QInputDialog::getText(this,QObject::tr("输入字符串对话框"),QObject::tr("请输入用户名："),QLineEdit::Normal,QObject::tr("admin"),&ok);
+if(ok)
+{
+    qDebug()<<str;
+}
+第一个参数：设置父对象;
+第二个参数：设置标题;
+第三个参数：设置提示信息;
+第四个参数：设置输入的模式;正常模式QLineEdit::Normal、隐藏模式QLineEdit::NoEcho、密码模式QLineEdit::Password、密码显示模式QLineEdit::PasswordEchoOnEdit。
+第五个参数：设置默认内容;
+第六个参数：设置输入确认标志，参数为bool*型;
+2、对象调用
+QInputDialog dialog(this);                             //设置父对象
+dialog.setWindowTitle(QObject::tr("输入字符串对话框"));//设置标题
+dialog.setLabelText(QObject::tr("请入用户名："));      //设置提示信息
+dialog.setInputMode(QInputDialog::TextInput);          //设置输入模式
+dialog.setTextEchoMode(QLineEdit::Normal);             //设置输入显示方式
+dialog.setTextValue(QObject::tr("设置方法"));          //设置默认文本
+if(dialog.exec()==QDialog::Accepted)                   //以模态窗口显示
+{
+    QString str=dialog.textValue();                    //把输入的信息保存在str中
+    qDebug()<<str;
+}
+
+整数输入
+1、函数调用
+bool ok;
+int interDia=QInputDialog::getInt(this,QObject::tr("整数输入对话框"),QObject::tr("请输入整数："),32,-65,65,1,&ok);
+if(ok)
+{
+    qDebug()<<interDia;
+}
+第一个参数：设置父对象;
+第二个参数：设置标题;
+第三个参数：设置提示信息;
+第四个参数：设置默认值;
+第五个参数：设置最小值;
+第六个参数：设置最大值;
+第七个参数：设置步长;
+第八个参数：设置输入确认标志，参数为bool*型;
+2、对象调用
+QInputDialog dialog(this);                           //设置父对象
+dialog.setWindowTitle(QObject::tr("整数输入对话框"));//设置标题
+dialog.setLabelText(QObject::tr("请输入整数："));    //设置提示信息
+dialog.setInputMode(QInputDialog::IntInput);         //设置输入模式
+dialog.setIntValue(32);                              //设置默认值
+dialog.setIntRange(-65,65);                          //设置整数输入范围
+dialog.setIntStep(1);                                //设置步长
+if(dialog.exec()==QDialog::Accepted)                 //以模态窗口显示
+{
+    int interDia=dialog.intValue();                  //把输入值保存在interDia中
+        qDebug()<<interDia;
+}
+
+浮点输入
+1、函数调用
+bool ok;
+double dou=QInputDialog::getDouble(this,QObject::tr("浮点输入对话框"),QObject::tr("请输入浮点数："),3.25,-100,100,3,&ok);
+if(ok)
+{
+    qDebug()<<dou;
+}
+第一个参数：设置父对象;
+第二个参数：设置标题;
+第三个参数：设置提示信息;
+第四个参数：设置默认值;
+第五个参数：设置最小值;
+第六个参数：设置最大值;
+第七个参数：设置小数位数;
+第八个参数：设置输入确认标志，参数为bool*型;
+2、对象调用
+QInputDialog dialog(this);                           //设置父对象
+dialog.setWindowTitle(QObject::tr("整数输入对话框"));//设置标题
+dialog.setLabelText(QObject::tr("请输入整数："));    //设置提示信息
+dialog.setInputMode(QInputDialog::DoubleInput);      //设置输入模式
+dialog.setDoubleValue(3.25);                         //设置默认值
+dialog.setDoubleRange(-100,100);                     //设置浮点输入范围
+dialog.setDoubleDecimals(3);                         //设置小数位数
+if(dialog.exec()==QDialog::Accepted)                 //以模态窗口显示
+{
+    double dou=dialog.doubleValue();                 //把输入值保存在dou中
+    qDebug()<<dou;
+}
+
+项目输入
+1、函数调用
+bool ok;
+QString str=QInputDialog::getItem(this,QObject::tr("条目输入对话框"),QObject::tr("请选择一个条目："),QStringList({"上海","四川","新疆"}),0,false,&ok);
+if(ok)
+{
+    qDebug()<<str;
+}
+第一个参数：设置父对象;
+第二个参数：设置标题;
+第三个参数：设置提示信息;
+第四个参数：设置项目内容;
+第五个参数：设置默认项目，0表示第一个项目;
+第六个参数：设置条目内容是否可以更改，ture;
+第七个参数：设置输入确认标志，参数为bool*型;
+2、对象调用
+QInputDialog dialog(this);                           //设置父对象
+dialog.setWindowTitle(QObject::tr("项目输入对话框"));//设置标题
+dialog.setLabelText("请选择一个条目");               //设置提示信息
+dialog.setInputMode(QInputDialog::TextInput);        //设置输入模式
+dialog.setComboBoxItems({"上海","四川","新疆"});     //设置默认项目内容
+dialog.setTextValue("四川");                         //设置默认项目
+dialog.setComboBoxEditable(false);                   //设置项目内容是否可以修改,false表示不可以修改,true表示可以修改
+if(dialog.exec()==QDialog::Accepted)                 //以模态窗口显示
+{
+    QString str=dialog.textValue();                  //把输入的项目值保存在str中
+    qDebug()<<str;
+}
+****************************************
+五、消息对话框：QMessageBox
+1、函数调用
+共有6个类型的警示消息对话框：
+QMessageBox::question             问题对话框   返回值为对应的按钮值
+QMessageBox::information          提示对话框   返回值为对应的按钮值
+QMessageBox::warning              警告对话框   返回值为对应的按钮值
+QMessageBox::critical             灾难性错误   返回值为对应的按钮值
+QMessageBox::about                关于对话框   没有返回值，只有前三个参数
+QMessageBox::aboutQt              Qt版本信息   没有返回值，只有前两个参数
+
+int ret=QMessageBox::question(this,QObject::tr("问题对话框"),QObject::tr("你了解Qt吗？"),QMessageBox::Yes,QMessageBox::No);
+if(ret==QMessageBox::Yes)
+{
+    qDebug()<<QObject::tr("YES");
+}
+第一个参数：设置父对象;
+第二个参数：设置标题;
+第三个参数：设置提示文本;
+第多个参数：设置标准按钮，可省略;
+
+2、对象调用
+共有5个类型的警示消息对话框，“Qt版本信息对话框”无法使用对象调用的方式创建。
+QMessageBox dialog(this);                         //设置父对象
+dialog.setWindowTitle(QObject::tr("问题对话框")); //设置标题
+dialog.setText(QObject::tr("你了解Qt吗？"));      //设置显示文本
+dialog.setIcon(QMessageBox::Information);         //设置对话框类型，“关于对话框”没有图标，应设置为：QMessageBox::NoIcon
+dialog.addButton(QMessageBox::Yes);               //设置标准按钮，可省略
+dialog.addButton(QMessageBox::No);
+if(dialog.exec()==QMessageBox::Yes)               //以模态窗口显示
+{
+    qDebug()<<QObject::tr("YES");
+}
+****************************************
+六、进度对话框：QProgressDialog
+进度对话框只能使用对象调用：
+QProgressDialog dialog(this);                             //设置父对象
+dialog.setWindowTitle(QObject::tr("进度对话框"));         //设置标题
+dialog.setLabelText(QObject::tr("正在复制文件......"));   //设置提示文本
+dialog.setRange(0,50000);                                 //设置进度范围
+dialog.setModal(true);                                    //设置模态窗口
+dialog.show();                                            //显示窗口
+for(int i=0;i<=50000;i++)                                 //模拟文件复制过程
+{
+    dialog.setValue(i);                                   //文件复制过程中重新设置value值
+    if(dialog.wasCanceled())break;                        //文件复制过程中如果单击了取消按钮则结束文件的复制
+    QCoreApplication::processEvents();                    //文件复制过程中防止程序进入假死状态
+}
+****************************************
+七、向导对话框：QWizard
+向导对话框只能使用对象调用：
+QWizard dialog(this);                                  //设置父对象
+dialog.setWindowTitle(QObject::tr("向导对话框"));      //设置标题
+QWizardPage page0;                                     //新建页0
+QWizardPage page1;                                     //新建页1
+QWizardPage page2;                                     //新建页2
+QWizardPage page3;                                     //新建页3
+page0.setTitle(QObject::tr("开始"));                   //页0标题
+page1.setTitle(QObject::tr("介绍"));                   //页1标题
+page2.setTitle(QObject::tr("选择用户信息"));           //页2标题
+page3.setTitle(QObject::tr("完成"));                   //页3标题
+dialog.addPage(&page0);                                //设置向导页0
+dialog.addPage(&page1);                                //设置向导页1
+dialog.addPage(&page2);                                //设置向导页2
+dialog.addPage(&page3);                                //设置向导页3
+if(dialog.exec()==QDialog::Accepted)                   //以模态窗口显示
+{
+    qDebug()<<QObject::tr("Finished");
+}
+****************************************
+八、错误消息对话框：QErrorMessage
+错误消息对话框只能使用对象调用，并且为使对话框能够保持显示和对话框中的复选框有效，必须在私有成员中声明QErrorMessage指针：
+QErrorMessage* dialog;                                   //在私有成员中声明一个QErrorMessage指针对象
+
+dialog=new QErrorMessage(this);                          //在构造函数中定义私有成员中声明的指针对象，设置父对象
+
+delete dialog;                                           //在析构函数中释放为dialog分配的内存
+
+dialog->setWindowTitle(QObject::tr("错误消息对话框"));   //设置标题
+dialog->setModal(true);                                  //设置为模态
+dialog->showMessage(QObject::tr("错误"));                //设置并显示错误消息
+*****************************************************************************
+模型(列表模型、树型模型(文件系统模型)、表格模型)与视图(列表视图、树型视图、表格视图)：
+模型：
+1、QFileSystemModel model
+model.setRootPath(QString path);                    //作用只是发送一个文件根目录已经改变的信号(&QFileSystemModel::rootPathChanged)，传递的参数是path;
+
+视图：
+1、QTreeView view
+view.setModel(QFileSystemModel*);                    //为视图设置一个模型，参数为模型的地址
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+******************************************************************************
+使用Qt的内置图标：
+说明:Qt的内置图标在QStyle中定义，但是，QStyle是一个抽象类，无法直接使用，下面将会介绍如何使用Qt的内置图标。
+
+头文件包含：
+#include <QIcon>
+#include <QStyle>
+#include <QApplication>
+
+则可以不必定义而直接使用已经存在的对象)；
+QIcon icon=QApplication::style()->standardIcon(QStyle::SP_TrashIcon);//利用style属性获取Qt内置图标，并赋值给QIcon对象。参数是Qt的枚举类型，可以在Qt帮助文档中查询QStyle::StandardPixmap关键字来获得所有的图标枚举值。
+
+图标枚举的详细介绍：QStyle::StandardPixmap，下面是一些常用的图标：
+QStyle::SP_ComputerIcon          //我的电脑图标
+QStyle::SP_DesktopIcon           //桌面图标
+QStyle::SP_DirHomeIcon           //HOME文件夹图标
+QStyle::SP_TrashIcon             //垃圾桶图标
+QStyle::SP_FileIcon              //文件夹图标
+QStyle::SP_ArrowUp               //向上箭头
+QStyle::SP_ArrowDown             //向下箭头
+QStyle::SP_ArrowLeft             //向左箭头
+QStyle::SP_ArrowRight            //向右箭头
+QStyle::SP_DirIcon               //文件夹图标
+QStyle::SP_DriveCDIcon           //CD图标
+QStyle::SP_DriveDVDIcon          //DVD图标
+QStyle::SP_DriveNetIcon          //网络图标
+
+
+
+注：“QStyle* style=getIcon.style();”该语句是获得的getIcon按钮的style属性的地址，因此绝对不可以使用delete来释放style的内存，否则getIcon按钮将会出现不可预知的错误。
+*************************************
+使用Qt获得操作系统的系统目录：
+
+头文件包含:
+#include <QDesktopServices>
+
+获取操作系统的系统路径：
+QString path;                                                            //定义一个QString类型的字符串来存储路径
+path=QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);  //获取指定的路径，参数是Qt的枚举类型，可以在Qt的帮助文档中查询QStandardPaths::StandardLocation关键字来获得所有的路径枚举值。
+
+获取操作系统的系统路径所有别名目录：
+QStringList paths;                                                       //定义一个QStringList类型来存储路径列表
+paths=QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);//获取指定路径的所有别名目录（实际上是同一个目录的别名）。
+
+获取操作操作系统的指定路径的名称：
+QString pathName;                                                        //定义一个QString类型来存储路径名称
+pathName=QStandardPaths::displayName(QStandardPaths::DesktopLocation);   //获取指定路径的名称。
+
+路径枚举的详细介绍：QStandardPaths::StandardLocation
+QStandardPaths::DesktopLocation         //桌面路径
+QStandardPaths::DocumentsLocation       //文档路径
+QStandardPaths::MusicLocation           //音乐路径
+QStandardPaths::MoviesLocation          //视频路径
+QStandardPaths::PicturesLocation        //图片路径
+QStandardPaths::DownloadLocation        //下载路径
+
+QStandardPaths::TempLocation            //临时路径
+QStandardPaths::HomeLocation            //HOME路径
+**************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+******************************************************************************
+常用数学函数：#include <math.h>或#include <cmath>。（涉及角度的参数的返回结果均为弧度制）
+数学常量：
+常量表达式     常量名      值
+M_E            E           2.71828182845904523536
+M_LOG2E        log2(e)     1.44269504088896340736
+M_LOG10E       log10(e)    0.434294481903251827651
+M_LN2          ln(2)       0.693147180559945309417
+M_LN10         ln(10)      2.30258509299404568402
+M_PI           pi          3.14159265358979323846
+M_PI_2         pi/2        1.57079632679489661923
+M_PI_4         pi/4        0.785398163397448309616
+M_1_PI         1/pi        0.318309886183790671538
+M_2_PI         2/pi        0.636619772367581343076
+M_2_SQRTPI     2/sqrt(pi)  1.12837916709551257390
+M_SQRT2        sqrt(2)     1.41421356237309504880
+M_SQRT1_2      1/sqrt(2)   0.707106781186547524401
+******************************
+三角函数：
+double sin(double);                     //正弦函数。参数为double，表示角度
+double cos(double);                     //余弦函数。参数为double，表示角度
+double tan(double);                     //正切函数。参数为double，表示角度
+*****************************
+反三角函数：
+double asin(double);                    //反正弦函数
+double acos(double);                    //反余弦函数
+double atan(double);                    //反正切函数。有一个参数，参数值为y/x，返回值为(x,y)与x轴的夹角，取值为(-M_PI/2,M_PI/2)
+double atan2(double,double);            //反正切函数。有两个参数，参数值为x,y，返回值为(x,y)与x轴的夹角，取值为(-M_PI,M_PI)
+*****************************
+双曲三角函数：
+double sinh(double);                    //双曲正弦
+double cosh(double);                    //双曲余弦
+double tanh(double);                    //双曲正切
+*****************************
+double frexp(double value,int *exp);    //将value值拆分成小数部分f和(以2为底的)指数部分exp，并返回小数部分f，即f*pow(2,(*exp))。其中f取值在0.5~1.0范围或者0
+double modf(double value,double *iptr); //将value值拆分成小数部分，和整数部分，返回它的小数部分，整数部分通过iptr指针传回。
+double ldexp(double x,int exp);         //返回值为x*pow(2,exp)
+double log(double x);                   //返回值为以e为底x的对数       
+double log10(double x);                 //返回值为以10为底x的对数
+double pow(double x,double y);          //返回值为x的y次幂
+float powf(float x,float y);            //返回值为x的y次幂
+double exp(double x);                   //返回值为e的x次幂
+double sqrt(double x);                  //返回值为x的0.5次幂
+*****************************
+求绝对值：
+int abs(int);                           //求整型的绝对值
+double fabs(double);                    //求小数的绝对值
+double cabs(struct complex znum);       //求复数的绝对值
+*****************************
+取整：
+int round(float);                       //四舍五入取整，只有一个参数，参数类型为小数类型，返回值为四舍五入的整数。如round(4.35)返回值为4。
+int ceil(float);                        //向上取整，只有一个参数，参数类型为小数类型，返回值为向上取整的整数。如ceil(4.35)返回值为5。
+int floor(float);                       //向下取整，只有一个参数，参数类型为小数类型，返回值为向下取整的整数。如floor(4.35)返回值为4。
+int trunc(float);                       //截尾取整，只有一个参数，参数类型为小数类型，返回值为截去小数的整数。如trunc(4.35)返回值为4。
+*****************************
+取余：
+运算符 a%b                              //返回整数a除以整数b的余数
+double fmod(double a,double b);         //返回小数a除以小数b的余数
+double modf(double value,double * iptr);//拆分value的整数部分和小数部分，返回小数部分，整数部分通过iptr指针传回
+*****************************
+其他：
+double hypot(double x,double y);        //已知直角三角形两个直角边长度，求斜边长度
+double poly(double x,int degree,double coeffs[]);//计算多项式
+int matherr(struct exception *e);       //数学错误计算处理程序
+*******************************************************************************
+C++的一些函数的用法：
+1、std::advance(iterator,n);       //定义于头文件 <iterator>，这个函数用于在容器中设置当前的迭代器的偏移。两个参数iterator是一个迭代器；n是一个整数，可以为负数，负数表向前偏移正数表身后偏移，0为不偏移。
+2、std::min(com1,com2);            //定义于头文件 <algorithm>，返回com1与com2中的较小者。使用的是operator<函数来比较。
+3、using                           //对命名空间的 using 指令及对命名空间成员的 using 声明，如@using namespace std @using std::cout；类型别名，using int32_t=int。
+4、
+*******************************************************************************
+C++继承(公有继承、保护继承、私有继承)
+
+C++类的成员属性有四种：
+@公有成员                                                          //成员和对象都可以访问
+@保护成员                                                          //仅成员可以访问
+@私有成员                                                          //仅成员可以访问
+@隐藏成员(被继承类的私有成员)                                      //不可访问，但是可以通过被继承的类的成员函数来访问
+*****************************************
+继承后的成员属性情况：
+@公有继承：被继承的公有成员仍然为公有成员，被继承的保护成员仍然为保护成员，被继承的“私有成员”和“隐藏成员”皆为“隐藏成员”。
+@保护继承：被继承的公有成员和保护成员皆为保护成员，被继承的“私有成员”和“隐藏成员”皆为“隐藏成员”。
+@私有成员：被继承的公有成员和保护成员皆为私有成员，被继承的“私有成员”和“隐藏成员”皆为“隐藏成员”。
+*****************************************************************************
+Qt使用库(第三方库、子工程、子模块)的三种方法：
+1、动态库法(使用编译工具编译好库后在工程文件中包含动态库)
+2、子模块法(直接在工程文件中包含库的源代码(.cpp和.h或.pri))
+3、子工程法
+************************************
+子工程：
+在工程文件中管理子工程，在SUBDIRS=后依次添加子工程和主工程和pro文件的目录，目录之间使用\换行隔开。在主程序的工程文件中包含子工程将要生成的动态库
+例：设有三个子工程，一个主工程，它们的名称分别为pro1、pro2、pro3、main，则子工程项目文件应如下：
+    TEMPLATE=subdirs
+    CONFIG+=ordered
+    SUBDIRS=pro1\
+            pro2\
+            pro3\
+            main
+*********************************
+子模块：
+即在子模块中添加pri文件用于在工程文件中直接方便地包含子模块的头文件和源文件
+例：设有三个子模块，它们的名称分别为pri1、pri2、pri3，工程文件的名称为main.pro，则在main.pro中应至少包含以下内容：
+   include($$PWD/pri1.pri)
+   include($$PWD/pri2.pri)
+   include($$PWD/pri3.pri)
+******************************************************************************
+内联函数与普通函数：
+内联函数与普通函数的差别在于：
+@ 在编译一个程序时，凡是使用了内联函数的地方都会用内联函数的实现语句来替换。而普通函数则是调用而不是替换。
+@ 内联函数不能使用循环语句、不能使用switch语句、不能使用递归调用。
+
+内联函数是一个声明（这个声明包含了内联函数的实现语句），它应该使用如下语句书写：
+例：
+inline int max(int a,int b)
+{
+return a>b?a:b;
+}
+
+类和结构体的区别：
+类和结构体的唯一区别是它们之间的默认权限不一样，表现在以下方面：
+@ 继承时，类默认继承private，结构体默认继承public；
+@ 在代码块中如果不进行显示指明成员属于哪一个权限内，则类默认在private中，结构体默认在public中。
+******************************************************************************
+C/C++的程序的存储区划分：
+1.栈          //由编译器分配释放内存(在程序中声明一个动态变量时分配的内存，如int a=8;在变量作用范围结束时释放内存)
+2.堆          //由程序员分配释放内存(使用new和molloc等动态分配内存的操作符或函数时分配，由程序员或操作系统释放内存)
+3.静态区      //由编译器分配释放内存(为静态变量static和全局变量extern分配内存，在程序结束时释放内存)
+4.常量区      //由编译器分配释放内存(为常量const分配内存。如const char* str="Pan Yaru";int const a=8;变量作用范围结束时释放内存)
+5.代码区      //由操作系统分配的内存(存放由代码转换的CPU指令，程序结束时释放)
+
+备注：
+@只要声明或定义中使用了new 存储分配在“堆”。如int * a=new int(5);int const * a=new int(5);
+@只要声明或定义中使用了const并且没有使用new，存储分配在“常量区”。如extern const int a;static const int a=8;const int a=8;
+@使用无修饰符定义的变量，并且没有使用new或const，存储分配在“栈”。如int a=5;
+@extern或static声明的变量，并且没有使用new或const，存储分配在“静态区”。如static int a=5;
+**************************************************************************
+修饰符
+************
+变量和常量修饰符及作用范围：
+@extern
+ 特性：声明修饰符。全局声明
+ 存储：静态区。
+ 使用：先声明后在源文件中定义。
+ 范围：整个工程(定义后，只要包含声明它的头文件即可直接使用该全局变量)。
+ 例：
+ #include <iostream>
+ extern int example;           //使用extern声明一个全局变量
+ int example=8;                //定义已经声明的全局变量
+
+@static
+ 特性：局部定义静态变量。
+ 存储：静态区。
+ 使用：声明时赋值。
+ 范围：代码块或文件(在代码块中定义时，作用范围为该代码块，在文件中定义时，作用范围为本文件)。再次进入代码块时，由于静态区的内存在程序结束时释放并且static变量只在第一次声明时有效，它的值仍然保留上次进入代码块时的值。
+ 例：
+ #include <iostream>
+ static int example=8;         //声明static变量
+
+@const
+ 特性：定义/声明局部常量。当表达式不是常量表达式时，为定义；当表达式是一个常量表达式时，为声明
+ 存储：常量区。
+ 使用：在类型标识符前使用。
+ 范围：跟随结合使用的变量符修饰符。
+ 例：
+ @extern const int a;           //extern修饰符，声明全局常量
+ @static const int a=8;         //static修饰符，声明局部静态常量
+ @const int a=8;                //无修饰符，声明局部常量
+
+@constexpr
+ 特性：声明局部常量。表达式必须上是一个常量表达式。
+ 存储：常量区。
+ 使用：在类型标识符前使用，并且表达式也必须是一个常量
+ 范围：跟随结合使用的变量符修饰符。
+ 例：
+ constexpr int a=8;            //表达式"8"是一个常量，并且a也将成为一个const
+ constexpr int b=a=2;          //表达式a+2是一个常量，并且b也将成为一个const 
+ constexpr int * c=&a;         //表达式c是一个常量，并且c也将成为一个const
+ extern constexpr int d=20     //表达式d是全局常量，并且d也将成为一个const
+
+@无修饰符
+ 特性：定义全局变量。
+ 存储：栈。
+ 使用：直接定义。
+ 范围：代码块或文件(在代码块中定义时，作用范围为该代码块，在文件中定义时，作用范围为本文件)。
+ 例：
+ #include <iostream>
+ int main(void)
+ {
+     int example=8;
+     return 0;
+ }
+
+******************
+对象修饰符
+@*、*const
+ 特性：指针(地址)、常量指针(地址)
+ 存储：栈。(指针类型本身的地址在栈上，栈上的地址上存储的数据为一个地址。存储的地址的位置根据赋值给指针的值而确定，如果使用的是new全新分配的内存，则存储的地址值为堆上的地址)
+ 使用：结合变量常量修饰符使用。
+ 范围：跟随结合使用的变量符修饰符。
+ 例：
+ extern int * a;
+ static int * a=new int;
+ int * a=new int;
+ extern int * const a;
+ static int * const a=new int(5);
+ int * const a=new int(5);
+
+@&
+ 特性：引用
+ 存储：与被引用的量相同
+ 使用：定义一个引用同时指定引用的对象(引用类型没有指针，因为它在没有引用别的变量时，它自己就是不存在的)
+ 范围：与被引用的量相同
+ 例：
+ int a=5;                     //定义一个整型a
+ int & b=a;                   //定义一个整型引用b，引用了a，因此b现在是a的一个别名，所有对b的操作就如同对a进行操作。 
+ 例：
+ int * c=new int(5);          //定义一个整型指针c
+ int * & d=c;                 //定义一个整型指针引用d，引用了c，因此d现在是c的一个别名，所有对d的操作就如果对c进行操作。
+
+*****************************************************************************
+声明和定义：
+声明：使得用户自定义的变量名等标识符被程序所知，不分配内存
+定义：创建用户自定义标识符的实体，如创建一个变量，分配内存
+*******************
+头文件的使用：
+@声明全局量、类、结构体、函数；
+@定义/声明局部量。
+*******************
+源文件的使用：
+@定义头文件中声明的全局量、类、结构体、函数；
+@声明、定义其他变量。
+***************************************************************************
+常量与变量使用示例：
+例：
+extern：
+例如：
+test.h
+#ifndef __test_h__
+#define __test_h__
+extern int a;         //声明一个int类型的全局变量a；
+#endif
+
+test.c
+#include"test.h"
+int a=5;              //定义已经声明的全局变量a；
+
+main.c
+#include<stdio.h>
+#include"test.h"
+void print(void);
+int main(void)
+{
+print();
+return 0;
+}
+void print(void)
+{
+printf("%d",a);       //打印外部全局a的值，结果为5；
+}
+
+静态变量：
+#include<stdio.h>
+static int a=5;        //声明一个静态变量，由于是在源文件中声明的，因此在该文件中都可以使用这个静态变量；
+void print(void);      //声明print函数；
+int main(void)
+{
+printf("第一次调用\n");
+print();
+printf("\n第二次调用\n");
+print();
+return 0;
+}
+void print(void)       //定义print函数
+{
+static int b=5;        //定义一个静态变量，由于是在print函数内定义的，因此只能在print函数中使用这个静态变量；
+printf("输出静态变量（在main外部） ：%d\n",a);     //打印静态变量a的值,第一次调用结果为5,函数中有a++语句，a的值变为6，程序没有结束，静态变量a仍然存在，因此第二次调用的结果为6；
+printf("输出静态变量（在print内部）：%d\n",b);     //打印静态变量b的值,第一次调用结果为5,函数中有b++语句，b的值变为6，print函数结束后，静态变量仍存在，第二次调用时的定义不生效，因此第二次调用结果为6；
+a++;                   //变量a+1；
+b++;                   //变量b+1；
+}
+
+动态变量：
+例如：
+#include<stdio.h>
+int a=5;               //定义一个动态变量，由于是在main函数外定义的，因此在该文件中都可以使用这个动态变量；
+void print(void);      //声明print函数；
+int main(void)
+{
+printf("第一次调用\n");
+print();
+printf("\n第二次调用\n");
+print();
+return 0;
+}
+void print(void)       //定义print函数
+{
+int b=5;               //定义一个动态变量，由于是在print函数内定义的，因此只能在print函数中使用这个动态变量；
+printf("输出动态变量（在main外部） ：%d\n",a);     //打印动态变量a的值,第一次调用结果为5,函数中有a++语句，a的值变为6，程序没有结束，动态变量a仍然存在，因此第二次调用的结果为6；
+printf("输出动态变量（在print内部）：%d\n",b);     //打印动态变量b的值,第一次调用结果为5,函数中有b++语句，b的值变为6，print函数结束后，动态变量b消失，第二次调用时重新定义动态变量，所以第二次调用结果仍为5；
+a++;                   //变量a+1;
+b++;                   //变量b+1;
+}
+
+常量：
+const char* p;        //*p是const,p可变：const 后面紧跟的是char，所以*p是一个char字符，不可变
+const (char*) p;      //p是const,*p可变：const 后面紧跟的是（char *）这个整体，所以p是char*类型，不可变。
+char* const p;        //p是const,*p可变:const 后面紧跟的是p,所以p不可变
+const char* const p;  //p和*p都是const：第一个const后面紧跟的是char,所以char类型的字符*p不可变；第二个const后面紧跟的是p,所以p不可变。
+char const* p;        //*p是const,p可变：const后面紧跟的是*,但是单独的*不能表明修饰的内容，所以将*p看成一个整体，所以const修饰的是*p,*p不可变。
+(char*) const p;      //p是const,*p可变：const紧跟的是p,所以p不可变。
+char* const p;        //p是const,*p可变：const紧跟的是p,所以p不可变。
+char const* const p;  //p和*p都是const：第一个const紧跟的是*,不能表明修饰的内容，将后面整体的（* const p）看成一个整体，那就说明*p不可变，第二个const后面紧跟的是p,所以p不可变。
+
+*******************************************************************************
+给Andriod应用程序添加图标并设置应用名称:
+一个Qt项目应该有两个目录，工程目录与构建目录:
+例如工程目录的名称为:Myprojects
+那么构建目录就应该为:build-Myprojects-Android_for.....
+1、在工程目录中创建一个android_sources文件夹
+2、在构建目录中找到:android-build文件夹，并找到AndroidManifest.xml文件，将其复制到工程目录的android_sources文件夹
+3、把一个以英文字母命名的png格式的图标也放在工程目录的android_sources文件夹
+4、打开Qt项目，在项目中添加已有文件，将工程目录的android_sources文件夹下的AndroidManifest.xml文件添加到Qt工程中
+5、添加好后，在Qt项目中双击AndroidManifest.xml文件，在Application中修改Application namet和Activity name为应用名称，点击Aopplication icon的第一个小方框，选择工程目录的android_sources文件夹下的英文字母命名的png格式的图标
+6、在Qt的工程文件中添加语句:ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android_sources
+7、重新编译、运行程序即可
+*****************************************************************************
+在Qt中加载资源文件：
+资源文件可以被打包在安装包中，在应用程序中使用这些资源
+首先在Qt中添加Qt Resources File
+再添加一个前缀(存放资源的一个二级文件夹)，再添加资源文件
+在C++代码中要使用这些资源文件时，路径使用":/前缀/文件名"。注意区分大小写。
+*****************************************************************************
+
+Qt实现窗口自动适应（边框全屏）
+#include "widget.h"
+#include <QApplication>
+#include <QScreen>
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    Widget w;
+    w.resize(20,20);
+    w.move(-200,-200);
+    w.show();
+    w.hide();
+    QSize size0=QSize(w.frameGeometry().size().width()-w.geometry().size().width(),w.frameGeometry().size().height()-w.geometry().size().height());
+    QSize size1=qApp->primaryScreen()->availableSize()-size0;
+    w.resize(size1);
+    w.move(0,0);
+    w.show();
+    return a.exec();
+}
+
+
+*****************************************************************************
+屏幕初始特性：
+qApp->primaryScreen();//屏幕属性
+qApp->primaryScreen()->size();//屏幕大小
+qApp->primaryScreen()->availableSize();//屏幕可用大小(除去任务栏与状态栏后的大小)
+qApp->primaryScreen()->logicalDotsPerInch();//屏幕DPI
+
+将屏幕初始特性保存到QScreen：
+QScreen *scr=qApp->primaryScreen();
+
+从pointSize(点阵大小)到pixelSize(像素大小)的计算公式： 
+pixelSize = DPI * pointSize/72
+*****************************************************************************
+头文件路径包含：
+INCLUDEPATH += C:\Programs\Qt\NDK\android-ndk-r14b-windows-x86\android-ndk-r14b\sources\cxx-stl\stlport\stlport    //路径根据需要自行更改
+*****************************************************************************
+int main(int argc,char** argv);
+
+argc是命令行总的参数个数  
+**argv是argc个参数，其中第0个参数是程序的全名，以后的参数是命令行后面跟的用户输入的参数
+*****************************************************************************
+固定大小(600*200)的窗口：
+this->setMinimumSize(600,200);
+this->setMaximumSize(600,200);
+*****************************************************************************
+内核格式化：(可以用string对象将其初始化)
+对象有：
+istringstream;//从内核中读取
+ostringstream;//写入到内核
+stringstream;//兼有对内核的读取与写入功能
+可以从该对象中读取或写入到其他对象中;
+ostringstream oustr;
+istringstream instr;
+下例：
+#include<fstream>
+#include<iostream>
+#include<sstream>
+#include<string>
+using namespace std;
+int main(void)
+{
+string test="This is a test !";
+string out;
+stringstream instr(test);//定义一个从内核读取的对象并用string对象对该对象进行初始化
+while(instr>>out)cout<<out<<' ';//从内核中逐个读取单词并输出到屏幕上
+ostringstream oustr;//定义一个写入内核的对象,该对象也可以用string对象对其进行初始化,但是此处并没有这样做
+cout<<endl;
+oustr<<"My "<<"name "<<"is "<<'t'<<"est !"<<endl;//对内核进行写入
+cout<<oustr.str();//str()方法也适用于内核读取对象,用于返回内核中的流.此处是将内核中的流进行输出
+}
+*****************************************************************************
+cout的方法：
+write()//输出字符串中的指定的个数，不会因为超出字符串长度而停止输出;
+下例：
+#include <iostream>
+using namespace std;
+int main( void )
+{
+char *c="Pan Yaru";
+cout.write(c,3)<<endl;
+cout.write(c,8)<<endl;
+cout.write(c,20)<<endl;
+return 0;
+}
+输出结果如下：
+Pan
+Pan Yaru
+Pan Yaru    basic_st//已超出字符串长度;
+*****************************************************************************
+菜单控件触发事件是triggered;
+按钮的触发事件主要为click;
+*****************************************************************************
+vector类//容器类，详见《C++ primer plus》第五版744页
+迭代器：
+vector<char>::iterator pd//声明一个vector迭代器pd(类似指针,可以用其遍历vector元素);
+vector<char>::reverse_iterator pd//声明一个vector迭代器pd(与上一个迭代器相同，但是这个迭代器对其使用+将会有减的效果，对其使用-将会有加的效果，++与--也是如此);
+可与copy配合使用的迭代器：
+back_insert_itorator<vector<char>> pd(test)//声明一个后插入迭代器，只能用于在vector对象之后插入元素,test是要被插入的vector<char>对象;
+insert_iterator<vector<char>> pd(test,test.begin())//声明一个任意位置迭代器，用于在vector对象的任意位置插入元素，test是要被插入的vector<char>对象，test.begin()是要插入的位置;
+iostream_iterator<char,char> pd(cout," ")//声明一个输出迭代器，用于输出vector<cahr>对象的每个元素到屏幕;<char,char>表示要输出的对象为vector<char>间隔的类型为char，(cout," ")中" "表示间隔的符号;
+例外的迭代器：
+front_insert_iterator<queue<char>> pd(test)//声明一个前插入迭代器，不能用于vector容器中，但是可以用于queue容器中;
+注意：可与copy配合使用的迭代器可以事先声明有名称的迭代器，再在copy第三个参数中使用名称，也可以在copy中声明一个没有名称的迭代器.
+示例：
+copy(test1.rbegin(),test1.rend(),back_insert_iterator<vector<char> >(test));//在vector对象test末尾插入对象test1的区间[test1.rbegin(),test1.rend())(左闭右开);
+copy(test1.rbegin(),test1.rend(),insert_iterator<vector<char> >(test,test.begin()));//在vector对象test指定位置插入对象test1的区间[test1.rbegin(),test1.rend())(左闭右开);
+copy(test1.rbegin(),test1.rend(),ostream_iterator<char,char>(cout," "));//复制vector对象test1到输出流中.
+方法：
+size()//显示有多少个vector对象元素;
+begin()//vector对象的首个元素，rbegin()与end()所表示的位置类似，但是如果要倒序输出的话必须使用rbegin()作为第一个参数而不能使用end()作为第一个参数;
+end()//vector对象的最后一个元素的下一个位置，rend()与begin()所表示的位置类似，如果要倒序输出的话必须使用rend()作为第二个参数,而不能使用begin()作为第二个参数;
+push_back()//在最后一个元素后添加一个元素;
+erase()//擦除指定区间的元素(前闭后开);
+insert()//在指定位置之前插入一个vector对象的指定区间;
+下例:
+#include<iostream>
+#include<vector>
+using namespace std;
+int main(void)
+{
+	vector<char>test(6);//创建一个有6个元素的vector<char>对象;
+	for(int i=0;i<6;i++)test[i]=i+65;//对每个元素进行赋值,65表示大写字母A,以此类推;
+	test.push_back(65+20);//在末尾添加一个元素U,现在有7个元素;
+	test.erase(test.begin(),test.begin()+2);//擦除从test.begin()开始的两个元素,现在有5个元素;
+	cout<<test.size()<<endl;//显示元素数目;
+	for(vector<char>::iterator pd=test.begin();pd!=test.end();pd++)cout<<*pd<<endl;
+	test.insert(test.end(),test.begin(),test.end());//把从test.begin()至test.end()插入到vector对象test的末尾;
+	for(vector<char>::iterator pd=test.begin();pd!=test.end();pd++)cout<<*pd<<endl;
+	return 0;
+}
+
+函数：
+for_each()//三个参数，第一个是vector对象的开始的位置，第二个参数是vector对象的结束位置，第三个参数是自定义函数，用于实现不显式地调用迭代器变量进行元素显示;
+random_shuffle()//两个参数，第一个是vector对象的开始的位置，第二个参数是vector对象的结束位置，用于对该区间(左闭右开)的内容进行随机排序;
+sort()//有两个版本，第一个版本只有两个参数，第一个是vector对象的开始的位置，第二个参数是vector对象的结束位置，用于对vector对象进行升序排序;第二个版本有三个参数,除了前两个参数之外，第三个参数是自定义函数，用于实现自定义排序;
+copy()//三个参数，第一个是vector对象的开始的位置，第二个参数是vector对象的结束位置，第三个参数是将要复制到的一个vector对象的开始的位置.注意，该函数可以用于数组.
+下例：
+#include<iostream>
+#include<vector>
+using namespace std;
+bool than(const char& a,const char& b)//自定义比较函数;
+{
+	if(a<b)return false;
+	else return true;
+};
+void show(const char&a)//自定义显示函数;
+{
+	cout<<a;
+};
+int main(void)
+{
+	vector<char>test(6);//创建一个有6个元素的vector<char>对象;
+	for(int i=0;i<6;i++)test[i]=i+65;//对每个元素进行赋值,65表示大写字母A,以此类推;
+	for_each(test.begin(),test.end(),show);cout<<endl;//用for_each进行自定义显示vector对象的元素
+	random_shuffle(test.begin(),test.end());//对区间[test.begin(),test.end())(左闭右开)进行随机排列
+	for_each(test.begin(),test.end(),show);cout<<endl;//显示随机排列后的vector对象元素
+	sort(test.begin(),test.end());//第一个版本的sort(两个参数)对随机排列后的vector对象元素进行升序排序
+	for_each(test.begin(),test.end(),show);cout<<endl;//显示升序排序后的vector对象元素
+	sort(test.begin(),test.end(),than);//第二个版本的sort(三个参数)用自定义排序函数对vector对象元素进行排序
+	for_each(test.begin(),test.end(),show);cout<<endl;//显示自定义排序后的vector对象元素
+	return 0;
+}
+
+特别说明(说明的重点是自定义函数的参数问题，transform只是作为一个说明对象的举例,但这也只是一个个例，具体参见《C++ primer plus》第五版中文版关于容器的附录中函数的具体介绍)：
+transform()函数，中有四个参数，第四个为自定义函数(以前面的参数作为其参数)，如下：
+transform(test.begin(),test.end(),test1.begin(),plus<double>());/test.begin()和test.end()作为plus<double>()的第一个参数，test1.begin()作为plus<double>()的第二个参数.
+二元函数转换为一元函数：
+bind1st()函数可以将二元函数(内置算术操作符的函数如plus<double>())转换为一元函数,自定义函数无法做出如此转换;
+*****************************************************************************
+智能指针：auto_ptr<typename T>;
+智能分配一个指针,结束时会自动释放,但是需要注意的是,它只会使用delete,而不会使用delete [];
+#include<iostream>
+#include<memory>
+using namespace std;
+int main(void)
+{
+	double *a=new double(9.8);//普通指针a
+	auto_ptr<double> b(new double) ;//智能指针b
+	b= auto_ptr<double>(a);//将普通指针a的地址赋值给智能指针b
+	cout<<*a<<endl<<*b<<endl;
+return 0;
+}
+
+*****************************************************************************
+RTTI元素：
+1.dynamic_cast
+说明:可以指出是否可以安全地将对象的地址赋值给特定的类型的指针;
+使用方法:
+例如：dynamic_cast<Type *>(pt);//将指针pt转换为Type类型的指针,如果成功其值为对象的地址;如果失败,其值为0,即空指针;
+
+2.typeid
+在头文件include<typeinfo>中;
+说明:判断两个对象是不是同一个类型(可以接受两种类型的参数，即类(型)名、对象或结果为对象的表达式);
+使用方法：
+例如：typeid(double)==typeid(int);//判断double与int类型是不是同一个类型,如果是同一个类型，其值为ture，否则，其值为flase.很显然double与int不是同一个类型.
+*****************************************************************************
+#include<cstring>中的字符串处理函数只能用于字符串数组，而不能用于指针指向的常量字符串;
+例如可以这么做:
+#include<iostream>
+#include<cstring>
+int main(void)
+{
+	using namespace std;
+	char na[15]="Yang";
+	char me[10]=" Chuan";
+	strcat(na,me);
+	cout<<na<<endl;
+	return 0;
+}
+但是不能这么做:
+#include<iostream>
+#include<cstring>
+int main(void)
+{
+	using namespace std;
+	char *na="Yang";//把常量"Yang"的地址赋值给指针na,因为"Yang"是常量,所以指向这个常量的指针*na是不能被修改的,除非重新为其指定一个地址.
+	char *me=" Chuan";//同上.
+	strcat(na,me);//不可用的.因为na这个指针指向的常量无法被修改,因此不能通过这个函数来修改*na的值,如果非要这么做，那么将会出现错误.
+	cout<<na<<endl;
+	return 0;
+}
+
+*****************************************************************************
+自定义类应该包含以下的函数:
+默认构造函数;
+自定义构造函数(如果提供了默认值的话,那么可以省略默认构造函数);
+复制构造函数;
+赋值操作符;
+析构函数;
+*****************************************************************************
+类中的全局作用域
+静态变量;
+结构;
+类;
+枚举;
+
+*****************************************************************************
+类会自动提供以下成员函数(如果没有自定义的话)
+默认构造函数;
+复制构造函数;
+赋值操作符;
+默认析构函数;
+地址操作符;
+*****************************************************************************
+类中的静态类变量(所有对象使用共同的一个静态变量,而不是每创建一个对象就创建一个静态变量)与类中的常量初始化:
+在类中无法对变量和常量进行初始化,但是可以使用枚举设置一个常量,并且可以对常量在构造函数中使用初始化成员列表进行初始化，
+类中的静态变量必须在主函数前进行初始化,类中的常量初始化必须使用构造函数:
+形式如下:
+#include<iostream>
+class test
+{
+	private:
+		enum {SIZE=10};//枚举常量
+		static int m_a;
+		const int m_b;
+	public:
+		void show(void);
+		test(int a=10,int b=5);//构造函数
+};
+int test::m_a=50;//初始化静态成员变量
+int main(void)
+{
+	test first;
+	first.show();
+	test second(20,30);
+	second.show();
+	return 0;
+}
+void test::show(void)
+{
+	std::cout<<m_a<<std::endl<<m_b<<std::endl;
+	return ;
+}
+test::test(int a,int b):m_b(b)//把const常量m_b初始化为b,此外还可以对非静态变量进行初始化,若要对多个对象进行初始化,则用","隔开,如test::test(int a,int b):m_b(b),other(25)
+{
+	m_a++;
+}
+
+
+*****************************************************************************
+类函数(包括)：
+
+构造函数;
+默认构造函数;
+复制构造函数;
+析构函数;
+友元函数;
+转换函数;
+操作符重载函数;
+赋值操作符(函数);
+地址操作符(函数);
+静态函数;
+*****************************************************************************
+对象和类的一个例子：
+#include<iostream>
+class test
+{
+	int m_a;
+	double m_b;
+public:
+	test(int a=0,double b=0);//构造函数
+	~test(void);//析构函数
+	operator int(void);//转换函数
+	operator double(void);//转换函数
+	friend std::ostream& operator<<(std::ostream &os,const test &c);//友元函数与操作符重载
+};
+int main(void)
+{
+	test x(8,6.5);
+	std::cout<<x<<std::endl;
+	return 0;
+}
+test::test(int a,double b)
+{
+	m_a=a;
+	m_b=b;
+}
+test::~test(void)
+{
+}
+test::operator int(void)
+{
+	return m_a;
+}
+test::operator double(void)
+{
+	return m_b;
+}
+std::ostream& operator<<(std::ostream &os,const test &c)
+{
+	os<<c.m_a<<std::endl;
+	os<<c.m_b<<std::endl;
+	return os;
+}
+
+*****************************************************************************
+类转换函数:
+必须是类方法;
+不能指定返回类型,必须返回转换后的值但是;
+没有参数;
+其声明在public:中,形式为operator typeName()例:
+operator double();
+
+*****************************************************************************
+友元函数与类成员函数:
+友元函数不是类的成员函数，但是却必须在类的public:中声明,在定义友元函数时不必使用空间名称符号::来指出属于哪个类，如果这么做了那么就会出错，友元函数可以拥有访问所属类private:数据的权利。
+声明如下例:
+friend void(std::ostream &os,int a);
+在友元函数中所有参数都必须在声明和定义的特征标中表示出来.
+
+友元函数单目操作符重载:前置操作符重载，友元函数没有第二个参数;后置操作符重载，友元函数的第二个参数类型为(int a),增加这个参数只是为了与前置自增运算符重载函数有所区别，此外没有任何作用.
+类成员函数单目操作符重载:前置操作符重载，成员函数的第一个参数类型为void;后置操作符重载，成员函数的第一个参数类型为(int a),增加这个参数只是为了与前置自增运算符重载函数有所区别，此外没有任何作用.
+
+友元函数双目操作符重载:参数都必须在特征标中指明，并且其中一个必须是调用对象.
+成员函数双目操作符重载:有一个参数是调用对象它被自动隐藏，不必指出，其他参数必须在特征标中指明.
+
+因此对于重载同一个操作符来说，成员函数与友元函数的参数个数是相同的，只不过成员函数重载操作符时调用对象本身这个参数被隐藏了，通过this指针隐式传递.
+*****************************************************************************
+this指针:
+#include<iostream>
+#include<string>
+class Stock
+{
+std::string name;
+double price;
+public:
+Stock(std::string a="No name",double b=0.00);
+~Stock(void);
+void show(void);
+void showMax(void);
+const Stock &topprice(const Stock &S)const;//一种函数声明，返回一个常量引用Stock类，函数名是topprice,参数是一个常量引用Stock类，括号后面的const表明该函数存在一个Stock类中，并且引用此函数的Stock类不会被修改，即调用对象不会被修改;
+};
+int main(void)
+{
+Stock one,two;
+one=Stock("Frist",18.5);
+one.show();
+two=Stock("Second",14.78);
+two.show();
+std::cout<<" \b最高价的股票价格是";
+one.topprice(two);
+return 0;
+}
+Stock::Stock(std::string a,double b)
+{
+	name=a;
+	price=b;
+}
+Stock::~Stock(void)
+{
+	
+}
+void Stock::show(void)
+{
+	std::cout<<name<<std::endl;
+	std::cout<<price<<std::endl<<std::endl;
+	return ;
+}
+const Stock &Stock::topprice(const Stock &S)const
+{
+	if(S.price>price){std::cout<<S.price<<std::endl;return S;}
+	else {std::cout<<(*this).price<<std::endl;return *this;}//*this,this指针，表示引用此函数的Stock类.具体的说，this指针指向调用对象.
+}
+*****************************************************************************
+结构和类：
+结构体与类相似，不同之处是struct结构体可以直接使用成员引用符"."来访问其成员，而class类分为private:部分和public:部分，使用成员引用符"."只能访问其public:部分.
+结构体在为其定义时初始化，例如：
+#include<iostream>
+#include<string>
+struct name
+{
+std::string m_name;
+std::string m_sex;
+};
+int main(void)
+{
+name xiaohong={"xiaohong","man"};
+std::cout<<xiaohong.m_name<<std::endl;
+std::cout<<xiaohong.m_sex<<std::endl;
+return 0;
+}
+类如果只包含public:部分并且没有构造函数与析构函数(则与结构体一样，没有区别，但是public:不可省略),则以可在为其定义时初始化public:部分(如同结构体一样的初始化),例如:
+#include<iostream>
+#include<string>
+class name
+{
+public:
+std::string m_name;
+std::string m_sex;
+};
+int main(void)
+{
+name xiaohong={"xiaohong","man"};
+std::cout<<xiaohong.m_name<<std::endl;
+std::cout<<xiaohong.m_sex<<std::endl;
+return 0;
+}
+
+构造函数：(构造函数用于对private:进行初始化，不可以添加返回类型，并且函数名称必须与类同名;)
+若构造函数中只有一个参数时,那么它将有三种初始化类对象的方式,例如有这样一个构造函数,test(int a);
+那么下面三种初始化的方式都是正确的:
+test one=test(5);
+test two(5);
+test three=5;//实际上是这样的test three=(test)5;只不过(test)被隐藏了.
+但是如果构造函数有两个以上的参数,那么第三种初始化的方式将是错误的,例如有这样一个构造函数,test(int a,int b);
+那么它只有两种初始化的方式:
+test one=test(5,6);
+test two(5,6);
+如果在构造函数前加入关键字explicit,那么就不允许使用第三种方式来进行初始化,例如有这样一个构造函数,explicit test(int a);
+那么下面两种初始化的方式都是正确的;
+test one=test(5);
+test two(5);
+每三种初始化的方式因为关键字explicit而不能使用了,但是可以使用显式的强制类型转换,test three=(test)5;
+
+若类中包含private:部分，则应按如下方法初始化(需要注意的是，当存在了private:部分后，使用构造函数只能初始化其private:部分):
+#include<iostream>
+#include<string>
+class name
+{
+private:
+	int boyfriend_num;
+	double size;
+public:
+name(int a=0,double b=0);//构造函数用于对private:进行初始化，不可以添加返回类型，并且函数名称必须与类同名;
+void show(void);
+};
+int main(void)
+{
+	name xiaohong;//创建类，并用于对该类进行初始化的格式另一种格式如下，两种格式只能使用其中一种;
+	//name xiaohong=name(5,12.1);//创建类，并用于对该类进行初始化的格式另一种格式如上，两种格式只能使用其中一种，该种格式还可以对已经创建的类进行private:部分赋值例如:xiaohong=name(20,1.1);
+	xiaohong.show();
+	return 0;
+}
+name::name(int a,double b)
+{
+	boyfriend_num=a;
+	size=b;
+}
+void name::show(void)
+{
+	std::cout<<boyfriend_num<<std::endl;
+	std::cout<<size<<std::endl;
+	return ;
+}
+
+析构函数:(构析函数用于当创建的类消失时自动调用的函数，不可以添加返回类型，并且函数名称必须与类同名，并前加~符号如:~name)
+
+当创建的类消失时自动调用的函数，如下例子：
+#include<iostream>
+#include<string>
+class name
+{
+private:
+	std::string m_c; 
+	int boyfriend_num;
+	double size;
+public:
+	name(std::string c="Yang",int a=0,double b=0);//构造函数用于对private:进行初始化，不可以添加返回类型，并且函数名称必须与类同名;构造函数的声明;
+	~name(void);//析构函数的声明;
+	void show(void);
+};
+int main(void)
+{
+	name xiaohong=name("Yang",8,12.4);
+	name xiaoming("Ming",5,14);
+	xiaohong.show();
+	xiaoming.show();
+	return 0;
+}
+name::name(std::string c,int a,double b)//构造函数的定义;
+{
+	m_c=c;
+	boyfriend_num=a;
+	size=b;
+}
+name::~name(void)//析构函数的定义
+{
+	static int i=0;
+	using std::cout;
+	using std::endl;
+	cout<<"My name is Yangchuan"<<i<<endl;
+	i++;
+}
+void name::show(void)
+{
+	std::cout<<m_c<<std::endl;
+	std::cout<<boyfriend_num<<std::endl;
+	std::cout<<size<<std::endl<<std::endl;
+	return ;
+}
+
+*****************************************************************************
+什么时候使用空间名称符"::",什么时候使用成员引用符"."
+1、使用空间名称namespace定义的量，当使用这些量时应当使用空间名称符"::";
+2、使用结构体、类声明后，对其声明的函数进行定义时应当使用空间名称符"::";
+3、使用结构体、类声明后,定义了一个结构体或类时,引用其成员时应当使用成员引用符"."。
+*****************************************************************************
+用cout显示变量地址:
+例如:
+char name[40]="Shanghai University";
+cout<<(void *)name<<endl;
+*****************************************************************************
+volatile变量，让编译器不要对变量进行优化到寄存器中;
+mutable变量，在结构体中用该变量定义的成员，即使在函数中使用了常量定义了该变量，其值仍然可以修改;
+*****************************************************************************
+
+操作符重载：(对已有的操作符进行再次定义，具体参见C++primer plus第五版341页)
+双目操作符重载：使用在类的public:中定义一个operator+双目操作符(参数)的函数，如int operator+(int );
+例:
+#include<iostream>
+#include<string>
+class add
+{
+	int m_a;
+public:
+	add(int a=0);
+	int operator+(int a);
+	void show(void);
+};
+int main(void)
+{
+	add one(5);
+	one=one+20;
+	one.show();
+	return 0;
+}
+add::add(int a)
+{
+	m_a=a;
+}
+int add::operator+(int a)
+{
+	int test;
+	test=m_a+a;
+	return test;
+}
+void add::show(void)
+{
+	std::cout<<m_a<<std::endl;
+}
+
+单目操作符重载:前置操作符重载，参数类型为void,后置操作符重载，参数类型为(int a),增加这个参数只是为了与前置自增运算符重载函数有所区别，此外没有任何作用.
+如：在自增(自减)运算符重载函数中，增加一个int型形参，就是后置自增(自减)运算符函数.如：
+operator++(void);表示前置操作符重载;
+operator++(int a);表示后置操作符重载;
+可以看到，重载后置自增运算符时，多了一个int型的参数，增加这个参数只是为了与前置自增运算符重载函数有所区别，此外没有任何作用.
+例:
+#include<iostream>
+#include<string>
+class add
+{
+	int m_a;
+public:
+	add(int a=0);
+	void operator++(int a);//后置操作符重载声明;
+	void operator++(void);//前置操作符重载声明;
+	void show(void);
+};
+int main(void)
+{
+	add one(5);
+	one++;
+	++one;
+	one.show();
+	return 0;
+}
+add::add(int a)
+{
+	m_a=a;
+}
+void add::operator++(int a)//后置操作符重载定义;
+{
+	m_a=m_a+1;
+	return ;
+}
+void add::operator++(void)//前置操作符重载定义;
+{
+	m_a=m_a+1;
+	return ;
+}
+void add::show(void)
+{
+	std::cout<<m_a<<std::endl;
+	return ;
+}
+
+
+*****************************************************************************
+自定义头文件应该包含的内容：(函数声明、常量、预处理器、结构体、using namespace std;、枚举、共用体、内联函数、名称空间等，不可声明静态变量，文件后缀保存为.h,并且引用该闲头文件时使用""而不是<>,引用了该自定义的头文件后,所有文件都将自动包含头文件中所包含的内容)
+如果自定义的头文件的文件名是hear.h,那么头文件应该使用以下格式:
+#ifndef HEAR_H
+#define HEAR_H
+......
+#endif
+*****************************************************************************
+特殊关键字
+typedef//别名
+typedef char othero;//用othero代替char类型
+
+例如：
+typedef char othero;
+othero name[20];//char数组，长度为20;
+
+再例如：
+typedef othero char*;
+othero name,classa;//定义了 char *name与char *classa,区别于#define;
+
+#define//预处理器、宏替换(简单机械替换)
+例如：
+#define othero char;
+othero name[20];//char数组，长度为20;
+
+再例如：
+#define othero char*;
+othero name,classa;//定义了 char *name与char classa,区别于typedef;
+
+const//常量定义;
+例如：
+const int age=18;//则age代表常量18;
+
+再例如:
+void test(const int &a);//该函数无法修改a的值，因为a是被当做常量而引用的参数;
+
+再例如：
+int a=18;
+const int *age=&a;//*age的值不可修改，因为*age被定义为常量;
+
+函数模板//any可以代表任意数据类型
+template<typename any>viod test(any &a,any &b)
+{
+any temp;
+temp=a;
+a=b;
+b=temp;
+return ;
+}
+具体化//对于int类型不使用模板，则应使用下列函数
+例1：template<>void test<int>(int &a,int &b)
+例2：template void test<int>(int &a,int &b)
+例3：template<>void test(int &a,int &b)
+{
+int temp;
+temp=a;
+a=b;
+b=temp;
+return ;
+}
+*****************************************************************************
+函数重载:(简单说就是函数名相同)
+1.函数重载的是特征标,即括号中和形参例如两个重载函数int test(int a);与int test(float a);可以重载;
+2.函数的类型不可重载,例如float test(int a);与int test(int a);不可重载;
+3.函数重载不区分"引用"与"常量和变量",例如int test(const int a);与int test(int a);不可重载,int test(int &a);与int test(int a);不可重载;
+*****************************************************************************
+clock();使用头文件#include<ctime>
+其数据类型为clock_t;
+例如:
+clock_t timeofdelay;
+timeofdelay=clock()+5*CLOCKS_PER_SEC;//CLOCKS_PER_SEC表示系统中1秒的单位数值,是一个常量,即n秒在系统中为n*CLOCKS_PER_SEC个单位;
+*****************************************************************************
+结构体的位字段:
+例:
+#include<iostream>
+#include<climits>
+struct b//结构体b占用8bits,低4位被a占用,3位留空,1位被c占用;
+{
+	unsigned char a:4;//占用4位
+	unsigned char :3;//3位不使用
+	unsigned char c:1;//占用1位
+};
+int main(void)
+{
+	b che={88,1};//88的二进制数为:00111000B,其低4位赋值给a,留空的不进行操作,1的二进制数为:00000001B,把低1位赋值给c;
+	printf("%d\n",che.a);
+	printf("%d\n",che.c);
+}
+*****************************************************************************
+共用体:
+#include<iostream>
+union b//共用体,与结构体定义方式相同,关键字为union,与结构体不同的是共用体一次只能使用其中一个成员;
+{
+	int a;
+	char c[20];
+};
+int main(void)
+{
+	b name;
+	name.a=8;//如果这条语句生效,则下一条语句将不能使用,否则此条语句失效;
+	//strcpy(name.c,"vbjfj");
+	printf("%d\n",name.a);
+	puts(name.c);
+return 0;
+}
+*****************************************************************************
+枚举:
+#include<iostream>
+enum b{che=8};//枚举,b的范围由枚举成员决定,范围是[2^最小值,2^最大值],如果没有对che进行赋值,那么成员将默认从0开始,成员可以作为符号常量使用;
+int main(void)
+{
+b band;
+band=b(50);//将50强制转换为枚举类型并赋值给band;
+printf("%d\n",band);
+return 0;
+}
+*****************************************************************************
+输出格式设置(格式控制):详见《C++ primer plus》第五版671页:
+
+标准输出格式设置：
+cout.fill(c);                                        //程序运行期间有效。设置填充字符char c 
+cout.precision(n);                                   //程序运行期间有效。显示n位有效数字，小数点后末尾的0不显示，并且如果有效位刚好是整数部分，那么小数点也将不会显示
+cout.width(n);                                       //当次输出有效。    设置输出宽度为n
+cout.setf(ios_base::showpoint);                      //程序运行期间有效。补齐有效位数和显示小数点。如3.25的4位有效数字显示为3.250，32.2的两位有效位数显示为32.
+cout.unsetf(ios_base::showpoint);                    //程序运行期间有效。取消补齐有效位数和显示小数点
+cout.setf(ios_base::boolalpha);                      //程序运行期间有效。设置bool类型数据显示为true和false，而不是0和1
+cout.unsetf(ios_base::boolalpha);                    //程序运行期间有效。取消bool类型数据显示为true和false
+cout.setf(ios_base::showbase);                       //程序运行期间有效。设置显示基数前缀
+cout.unsetf(ios_base::showbase);                     //程序运行期间有效。取消显示基数前缀
+cout.setf(ios_base::uppercase);                      //程序运行期间有效。设置16进制显示为大写字母
+cout.unsetf(ios_base::uppercase);                    //程序运行期间有效。取消16进制显示为大写字母
+cout.setf(ios_base::showpos);                        //程序运行期间有效。设置正数前面加上"+"符号
+cout.unsetf(ios_base::showpos);                      //程序运行期间有效。取消正数前面加上"+"符号
+cout.setf(ios_base::dec,ios_base::basefield);        //程序运行期间有效。使用十进制输出   
+cout.setf(ios_base::hex,ios_base::basefield);        //程序运行期间有效。使用十六进制输出 
+cout.setf(ios_base::oct,ios_base::basefield);        //程序运行期间有效。使用八进制输出  
+cout.setf(ios_base::left,ios_base::adjustfield);     //程序运行期间有效。使用左对齐
+cout.setf(ios_base::right,ios_base::adjustfield);    //程序运行期间有效。使用右对齐
+cout.setf(ios_base::internal,ios_base::adjustfield); //程序运行期间有效。符号左对齐，数值右对齐
+cout.setf(ios_base::fixed,ios_base::floatfield);     //程序运行期间有效。使用定点小数
+cout.setf(ios_base::scientific,ios_base::floatfield);//程序运行期间有效。使用科学记数法
+
+其他输出格式设置：头文件#include<iomanip>
+cout<<setfill(c);                                    //程序运行期间有效。设置填充字符char c 
+cout<<setprecision(n);                               //程序运行期间有效。显示n位有效数字，小数点后末尾的0不显示，并且如果有效位刚好是整数部分，那么小数点也将不会显示 
+cout<<setw(n);                                       //当次输出有效。    设置输出宽度为n 
+cout<<dec;                                           //程序运行期间有效。使用十进制输出  
+cout<<hex;                                           //程序运行期间有效。使用十六进制输出 
+cout<<oct;                                           //程序运行期间有效。使用八进制输出 
+cout<<left                                           //当次有效。左对齐，填充在右
+cout<<right                                          //当次有效。右对齐，填充在左
+cout<<internal                                       //当次有效。符号与字符分开，填充居中
+cout<<scientific                                     //用科学记数法生成浮点类型，或若与 fixed 组合则用十六进制记法
+cout<<fixed                                          //用定点记法生成浮点类型，或若与 scientific 组合则用十六进制记法
+cout<<boolalpha                                      //以字母数字格式插入并释出 bool 类型
+cout<<showbase                                       //生成为整数输出指示数字基底的前缀，货币 I/O 中要求现金指示器
+cout<<showpoint                                      //无条件为浮点数输出生成小数点字符
+cout<<showpos                                        //为非负数值输出生成'+'字符
+cout<<skipws                                         //在具体输入操作前跳过前导空白符
+cout<<unitbuf                                        //在每次输出操作后冲入输出
+cout<<uppercase                                      //在具体输出的输出操作中以大写等价替换小写字符
+*****************************************************************************
+memset的用法:将指定大小的指针的内存初始化为某个字符;
+#include<string.h>
+int main(void)
+{
+int a[20];
+memset(a,0,sizeof(a));
+printf("%d",a[15]);
+return 0;
+}
+**********************************************************************
+memcpy的用法:将指定大小的内存从一个指针复制到另一个指针,与strcpy不同的是,strcpy会遇到'\0'而停止复制,memset会将指定的大小内存复制完成才停止;
+#include<string.h>
+int main(void)
+{
+char a[20]="abcde",b[20];
+memcpy(b,a,sizeof(a));
+puts(b);
+return 0;
+}
+**********************************************************************
+动态分配内存函数示例:
+#include<stdlib.h>
+char **name=NULL;//初始化十分重要
+name=(char**)malloc(number_of_name*sizeof(char*));//分配一维指针的空间
+for(counter_of_name=0;counter_of_name<number_of_name;counter_of_name++)
+name[counter_of_name]=(char *)malloc(21*sizeof(char));//分配二维指针的空间
+for(counter_of_name=0;counter_of_name<number_of_name;counter_of_name++)
+{
+free(name[counter_of_name]);
+free(name[counter_of_name])=NULL;
+}//二维指针的释放,使其指向空指针十分重要
+free(name);
+name=NULL;//一维指针的释放,使其指向空指针十分重要
+//calloc与malloc使用方法相同,不同点是1.参数,malloc(size*n),而calloc(n,size);2.calloc会将分配后的内存置零;
+//malloc加上memset,可以达到与calloc相同的效果;
+//free是内存释放函数；
+**********************************************************************
+格式控制
+scanf()printf()sscanf()sprintf()fprintf()fscanf()
+例如:
+#include<stdio.h>
+int main(void)
+{
+	char a[20]="2.5 3 2abc",b[20];
+	int c;
+	float d;
+	sscanf(a,"%f%d%*2s%s",&d,&c,b);//%*2s,表示跳过2个字符
+	printf("%-6.2f %d %s",d,c,b);//%-6.2f,表示占位为6,左对齐,小数位为2位
+return 0;
+}
+printf("%f", f);   //输出  单精度浮点型  float
+printf("%lf",d);   //输出  双精度浮点型  double
+**********************************************************************
+不用第三个临时变量交换两个变量的数值:
+#include<stdio.h>
+int main(void)
+{
+int a=4,b=1;
+a^=b^=a^=b;
+printf("%d %d",a,b);
+return 0;
+}
+*****************************************************************************
+QT编译好的程序的发布：
+1、在项目目录中找到编译好的程序，通常是在项目目录的Release或Debug目录，将其复制到一个新的目录中;
+2、双击程序运行之，将会提示缺少的dll文件，根据提示在QT安装目录的编译器目录的bin文件夹(如QT\5.9\mingw53_32\bin)中找到相应的dll文件并复制到步骤1的新目录中;
+3、将QT安装目录的编译器目录plugins中的platforms(如QT\5.9\mingw53_32\plugins\platforms)复制到步骤1新的文件夹中，并只保留qwindows.dll文件;
+4、如果项目使用了图片，那么还需要将QT安装目录的编译器目录的plugins文件夹中的imageformats文件夹(如QT\5.9\mingw53_32\plugins\imageformats)复制到步骤1的新目录中,并只保留相应的图片的.dll文件;
+5、如果使用了其他模块，那么就要将plugins目录中的相应的文件夹复制过来，并保留相应的.dll文件.
+
+技巧：
+使用命令行工具自动提取所需的文件，例如已经编译好的程序在D:\mypro中，其名字为test.exe,那么在QT for Desktop中使用如下命令即可自动提取所需文件(可能会有多余的文件，尽量少使用):
+windeployqt D:\mypro
+*****************************************************************************
+对程序定制图标：
+1、把已经准备好的ico图标复制到工程目录中，并命名为"myico.ico"
+2、在QT中的工程文件中添加一句：
+	RC_ICONS=myico.ico
+	然后重新编译工程即可
+*****************************************************************************
+多语言支持：
+QObject::tr()函数可以实现多语言支持，将界面中要显示的字符都用该函数括起来，那么以后可以添加多语言支持，其函数参数是字符串类型;
+例如：
+QObject::tr("你好");
+*****************************************************************************
+使用命令行工具进行编译：
+1、用记事本将源文件放入非中文目录(例如D:\test中);
+2、在开始菜单中找到QT安装目录中的QT for Desktop的控制台应用程序;
+3、在应用程序中找到D:\test目录然后输入第一条命令:
+	(如果使用了ui界面文件,则加上命令(假设定义的ui头文件是test.ui，ui文件是ui_test.h)
+	uic - o ui_test.h test.h)
+	qmake -project
+4、在D:\test中找到.pro工程文件，用记事本的方式打开,并在末尾添加一句
+	QT+=widgets
+5、接着在QT for Desktop的控制台应用程序中输入第二条命令
+	qmake
+6、再输入第三条命令
+	mingw32-make
+
+*****************************************************************************
+关于工程文件：
+greaterThan(QT_MAJOR_VERSION,4) QT+=widgets//如果版本号大于4,则添加widgets类;
+RC_ICONS=myico.ico//为项目添加图标;
+*****************************************************************************
+关于QT项目中的头文件中的类：
+其中的名称空间中的类名与代码下方的类名相同，但是名称空间中的类是QT自动生成的，它的名称与ui界面文件生成的头文件中的类的名称有关：
+例如有这样一个ui界面文件
+myui.ui
+则在构建项目后构建目录中会有这样一个头文件
+ui_myui.h
+在这个头文件中会有一个这样的类: Ui_myui
+于是前面提到的QT自动生成的类的名称则是
+myui
+它在头文件中的形式是这样的:
+namespace Ui
+{
+class myui;
+}
+可以这样理解，它的名称与ui相关的头文件中的类名相关(即与ui相关的头文件中的类的Ui_后面的那部分名称相同)，或者与界面文件的文件名(不带后缀名)相同(确保界面文件的名称没有修改过)，在自定义头文件时要特别注意这一点，不然则会出现无法编译通过的错误;
+
+*****************************************************************************
+QWidget的构造函数有两个参数，第一个参数用于指定父窗口(0,表示是一个独立窗口，没有父级关系;若是一个QWidget类型的对象地址,则是一个以该对象为父级对象的部件);第二个参数是用于对当前部件进行属性设置:
+示例：
+    QWidget *example=new QWidget;//没有指定任何参数，则使用默认参数(0,0),即相当于QWidget *example=new QWidget(0,0);
+    QWidget *example2=new QWidget(0);//没有指定第二个参数，第二个参数使用默认参数0，即相当于QWidget *example=new QWidget(0,0);
+    QWidget *widget=new QWidget(0,Qt::Dialog);//创建一个独立窗口，并且窗口属性设置为对话框类型
+    QLabel *label=new QLabel(0,Qt::SplashScreen);//创建一个独立窗口的标签，并且窗口属性设置为欢迎窗口类型
+    QWidget *widget2=new QWidget(0,Qt::Dialog|Qt::FramelessWindowHint);//创建一个独立窗口，属性设置为对话框类型并且隐藏边框
+    QLabel *label2=new QLabel(0,Qt::SplashScreen|Qt::WindowStaysOnTopHint);//创建一个独立窗口，属性设置为欢迎窗口并且保持在顶级窗口
+第二个参数常见用法：
+	窗口属性设置为对话框类型(没有最大化与最小化按钮)	Qt::Dialog
+	设置窗口属性为欢迎类型的窗口						Qt::SplashScreen
+	设置窗口属性为隐藏边框的对话框类型					Qt::Dialog|Qt::FramelessWindowHint
+	设置窗口属性为保持在顶级窗口的欢迎窗口类型			Qt::SplashScreen|Qt::WindowStaysOnTopHint
+*****************************************************************************	
+设置窗口状态：
+setWindowState()函数：
+示例：
+	QWidget *widget=new QWidget;
+	widget->setWindowState(Qt::WindowFullScreen);//创建一个全屏窗口
+其中的参数使用方法：
+	设置窗口属性为最大化								Qt::WindowMaximized
+	设置窗口属性为最小化								Qt::windowMinimized
+	设置窗口属性为全屏								Qt::WindowFullScreen
+	设置窗口属性为活动窗口								Qt::WindowActive
+	设置窗口属性为默认值								Qt::WindowNoState
+*****************************************************************************
+调试信息显示：
+两个函数可以将调试信息显示到调试信息处:(第一个函数的优先级更高些)
+第一个函数:
+#include<iostream>
+std::cerr<<"调试"<<std::endl;//使用方法完全与C++语言中的cout相同
+
+第二个函数(两个使用方法):
+#include<QDebug>【qDebug()函数输出后自动输出回车符，注意调用此函数时其首字母为小写,而头文件名中须大写;】
+方法1：qDebug("调试");//与C语言中的printf函数使用方法相同
+方法2：qDebug()<<"调试";//与C++语言中的cout函数使用方法相同并且每个输出后都带一个空格符号
+
+*****************************************************************************
+信号与槽的关联：
+Qt Creator快速入门第三版53页；
+
+模态与非模态的区别与设定：
+Qt Creator快速入门第三版50页；
+假设有一个QDialog dialog对象,共有一种设置模态的方式：
+1、dialog.exec();//设置窗口为模态并且显示出来，待关闭模态窗口后才会执行下面的代码
+2、dialog.setModal(true);//设置dialog为模态,并未显示出来,如果需要显示则应调用show()函数,并不会影响下面的代码的执行。其中(true)为模态(默认为Qt::ApplicationModal,即阻塞整个应用程序),(false)为非模态
+3、dialog.setWindowModality(Qt::WindowModal);//设置dialog为模态,并未显示出来,如果需要显示则应调用show()函数,并不会影响下面的代码的执行。其中(Qt::NonModal)为非模态,(Qt::WindowModal)仅把父窗口及父窗口的子窗口阻塞,(Qt::ApplicationModal)阻塞整个应用程序
+
+
+*****************************************************************************
+QString与std::string互转：
+示例：
+	std::string str("I am String");
+    QString temp;
+    QString qstr("I am QString");
+    temp=temp.fromStdString(str);//std::string转QString
+    str=qstr.toStdString();//QString转std::string
+    qstr=temp;
+    std::cerr<<str<<std::endl;
+    std::cerr<<qstr.toStdString()<<std::endl;
+*****************************************************************************
+C++文件读写/文件模式：
+#include<fstream>//文件读写的头文件
+ifstream fin;//定义一个读取文件的对象
+ofstream fou;//定义一个写入文件的对象
+fstream  f;//定义一个读写文件的对象
+关闭文件 os.fclose();
+打开文件 os.open("D:\\123.txt",ios_base::ate)//方法,有两个参数,第一个是字符串(表示文件路径),第二个是文件参数(指定文件打开方式),如下:
+1、ios_base::in;                                    //读取一个已经存在的文件,如果文件不存在,将会打开失败
+2、ios_base::out;                                   //打开文件,写入文件如果文件不存在,创建一个文件,如果文件存在,将其截断
+3、ios_base::ate;                                   //将文件指针移动到文件末尾,可以用seek()函数改动指针位置
+4、ios_base::app;                                   //将文件的指针初始位置设置在文件末尾,因此只能进行对文件的追加操作
+5、ios_base::trunc;                                 //将文件截断
+6、ios_base::binary;                                //以二进制方式打开文件
+以上参数除ios_base::in和ios_base::out外一般组合使用,而不单独使用,组合方式如下:
+1、ios_base::in                                     //读取一个已经存在的文件,如果文件不存在,将会打开失败
+2、ios_base::out                                    //打开文件,写入文件如果文件不存在,创建一个文件,如果文件存在,将其截断
+3、ios_base::in|ios_base::out                       //打开文件进行读写,如果文件不存在,将会打开失败
+4、ios_base::out|ios_base::app                      //打开文件,将文件的指针初始位置设置在文件末尾,因此只能进行对文件的追加操作
+5、ios_base::out|ios_base::in|ios_base::ate         //打开文件读写，如果文件不存在,将会打开失败,将文件指针移动到文件末尾,可以用seek()函数改动指针位置
+6、ios_base::out|ios_base::trunc                    //打开文件,写入文件如果文件不存在,创建一个文件,如果文件存在,将其截断,与第2条功能相同
+7、ios_base::out|ios_base::in|ios_base::trunc       //打开文件进行读写,并截断,如果文件不存在,则创建文件
+8、ios_base::binary                                 //可以与以上任何方式组合,表示可以以二进制形式进行读或写操作
+
+文件读写函数：
+文本字符读写与iostream的输入输出使用方法相同(cin与cout系统函数);
+数据块方式读取：os.read((char *)&p,int)//从文件中读取指定字节的数据
+数据块方式写入：os.write((char *))&p,int)//写入指定字节的数据到文件中
+
+文件指针：
+ifstream对象：
+seekg(30,ios_base::beg);//把指针移动到文件头后30字节处;
+seekg(-1,ios_base::cur);//把当前指针向前移动一个字节;
+seekg(-30,ios_base::end);//把指针移动到文件尾前30字节处;
+ofstream对象：
+seekp(30,ios_base::beg);//把指针移动到文件头后30字节处;
+seekp(-1,ios_base::cur);//把当前指针向前移动一个字节;
+seekp(-30,ios_base::end);//把指针移动到文件尾前30字节处;
+
+C语言文件读写模式：
+关闭文件： fclose(fp);
+打开文件： fp=fopen("D:\\\\1.txt","w+");//两个参数,第一个参数是字符串，表示文件地址，第二个参数是打开方式，如下：
+r       以只读方式打开文件，该文件必须存在，不存在则打开失败。
+w       打开只写文件，若文件存在则截断，若文件不存在则建立该文件。
+a       追加方式打开只写文件。若文件不存在，则建立该文件，如果文件存在，写入的数据会被加到文件尾。
+r+      以可读写方式打开文件，该文件必须存在，不存在则打开失败。
+w+      读写打开文件文件，若文件存在则截断，若文件不存在则建立该文件。
+a+      以读写追加方式打开文件。若文件不存在，则会建立该文件，如果文件存在，写入的数据会被加到文件尾后。
+rb      以只读方式打开一个二进制文件，该文件必须存在，不存在则打开失败。
+wb      只写打开或新建一个二进制文件。
+ab      以追加方式打开一个二进制文件。
+rb+     读写打开一个二进制文件，该文件必须存在，不存在则打开失败。
+wb+     读写打开或建立一个二进制文件。
+ab+     以读写追加方式打开一个二进制文件。
+
+C语言读写函数：
+字符方式：   fgetc()和fputc();
+字符串方式： fputs()和fgets();
+格式化方式： fprintf()和fscanf();
+数据块方式： fread()和fwrite();
+
+C语言文件指针：
+重定位指针到文件首：   rewind(FILE *fp);//参数是一个文件指针,使用此函数可以定位指针到打开文件时的位置
+文件指针移动：         fseek(fp,offset,from);//参数是(文件指针,偏移量L,从哪里开始偏移)，如fseek(fp,20L,SEEK_END)表示把指针fp移动到距离文件尾20字节处。
+返回当前指针位置：     ftell(fp);//参数是文件指针
+
+文件读写：计算机中的所有文件都是以二进制形式保存的，对文件进行读写就是把文件中的二进制代码复制到变量中，然后再把变量中的二进制代码写入到另一个文件中。
+以二进制和文本模式读写文件的区别：
+二进制：读入时把文件中的二进制代码原封不动地存储到变量中，输出时把变量中的二进制代码原封不动地输出。
+文本模式：读入时把文件中的二进制代码(如果遇到表示-1的二进制!fin.eof())将会判定为真，文件结束)转换(把源文件中回车换行符\n、\r、\r\n的二进制全部转换为\n的二进制)并存储到变量中，输出时再把变量中的二进制代码转换(把\n的二进制转换为当前系统对应的符号(Mac为\r、Linux为\n、Windows为\r\n)的二进制)。
+注意：文本模式除了两点外(判定文件结束方式、转换回车换行符)与二进制的读写完全相同。
+*****************************************************************************
+编码转换: (仅适用于C++11)
+UNICODE编码之间的转换：头文件#include<codecvt>
+std::codecvt_utf8<>         //utf8与指定的宽字符之间的转换。三个参数：第一个是宽字符类型(wchar_t、char16_t、char32_t),第二个参数是0x10ffff，第三个参数是小端指定std::little_endian
+std::codecvt_utf16<>        //utf16与指定的宽字符之间的转换。三个参数：第一个是宽字符类型(wchar_t、char16_t、char32_t),第二个参数是0x10ffff，第三个参数是小端指定std::little_endian
+std::codecvt_utf8_utf16<>   //utf8、utf16之间的转换与指定的宽字符之间的转换。三个参数：第一个是宽字符类型(wchar_t、char16_t、char32_t),第二个参数是0x10ffff，第三个参数是小端指定std::little_endian
+
+转换模板：头文件#include<iomanip>
+std::wstring_convert<>      //编码转换的模板，可以用来实际操作编码转换：
+下例：
+std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr;//定义一个用手utf8与utf16相互转换的模板类tr，使用如下函数可以完成相互转换：
+tr.from_bytes(c)            //返回char c对应的宽字符串编码;
+tr.from_bytes(cstr)         //返回const char* cstr对应的宽字符串;
+tr.from_bytes(str)          //返回string str对应的宽字符串;【常用】
+tr.from_bytes(cbeg,cend)    //返回char*区间[cbeg,cend)对应的宽字符串;
+tr.to_bytes(c)              //返回宽字符串c对应的char c对应的编码;
+tr.to_bytes(cstr)           //返回宽字符串对应的char*字符串;
+tr.to_bytes(str)            //返回宽字符串对应的string字符串;【常用】
+tr.tobytes(cbeg,cend)       //返回宽字符串对应的[cbeg,cend）对应的char*字符串
+
+编码转换详例：
+1、本地、UTF-8、UTF-16(大小端)、UTF-32(大小端)之间的编码进行任意转换;
+2、保存为codet.h文件，放在main.cpp同一目录下，并在main.cpp中包含此头文件#include"codet.h"
+3、参数说明：
+   第一个参数代表将要转换的字符串类(#include<string>、std::string,std::wstring,std::u16string,std::u32string)
+   第二个参数代表转换以后的字符串类(#include<string>、std::string,std::wstring,std::u16string,std::u32string)
+   第三个参数标志源字符串类使用的是大端还是小端，1为大端0为小端，若源字符串无大小端的区别如本地编码和UTF8编码，则此标志无效,默认为0
+   第四个参数标志转换后的字符串类使用大端还是小端，1为大端0为小端，若转换后的字符串无大小端的区别如本地编码和UTF8编码，则此标志无效,默认为0
+   第五个参数：'U'代表把本地编码字符转换为UNICODE编码(UTF-8、UTF-16、UTF-32)字符
+               'L'代表把UNICODE编码(UTF-8、UTF-16、UTF-32)字符转换为本地编码字符
+               只有本地编码与UNICODE编码相互转换时才有第五个参数
+4、调用示例：
+   trans(string,string);             //不转换，相当于把第一个参数复制到第二个参数
+   trans(string,wstring);            //把string的UTF-8编码转换成wstring的编码,string的UTF-8不区分大小端，wstring默认使用小端;
+   trans(string,u32string,0,1);      //把string的UTF-8编码转换成u32string的UTF-32编码,string的UTF-8不区分大小端，u32string默认使用大端;
+   trans(wstring,u16string);         //把wstring的编码转换成u16string的UTF-16编码，两者默认使用小端;
+   trans(wstring,u16string,0,1);     //把wstring的编码转换成u16string的UTF-16编码，wstring使用小端，u16string使用大端;
+   trans(u32string,u16string,1,1);   //把u32string的UTF-32编码转换成u16string的UTF-16编码，u32string使用大端，u16string使用大端;
+   trans(wstring,u16string,1);       //把wstring的编码转换成u16string的UTF-16编码，wstring使用大端，u16string默认使用小端;
+   trans(wstring,string);            //把wstring的编码转换成string的UTF-8编码，wstring默认使用小端;
+   trans(wstring,string,1);          //把wstring的编码转换成string的UTF-8编码，wstring使用大端;
+   trans(string,string,0,0,'U');     //把string的本地编码转换为string的UTF-8编码
+   trans(string,string,0,0,'L');     //把string的UTF-8编码转换为string的本地编码
+   trans(string,u16string,0,0,'U');  //把string的本地编码转换成u16string的UTF-16编码，u16string使用小端;
+   trans(string,u16string,0,1,'U');  //把string的本地编码转换成u16string的UTF-16编码，u16string使用大端;
+   trans(u16string,string,0,0,'L');  //把u16string的UTF-16编码转换成string的本地编码，u16string使用小端;
+   trans(u16string,string,1,0,'L');  //把u16string的UTF-16编码转换成string的本地编码，u16string使用大端;
+   
+详例：
+//codet.h头文件
+#ifndef CODET_H
+#define CODET_H
+#include<codecvt>
+#include<iomanip>
+#include<cstdlib>
+#include<cstring>
+#include<string>
+#include<locale>
+template<typename T>void lob(T &str)//转换大小端
+{
+    unsigned char size=sizeof(str[0]);if(size<2)return;
+    char32_t temp[8];
+    temp[0]=0x000000ff;
+    temp[1]=0x0000ff00;
+    temp[2]=0x00ff0000;
+    temp[3]=0xff000000;
+    temp[4]=0x00000000;
+    temp[5]=0x00000000;
+    temp[6]=0x00000000;
+    temp[7]=0x00000000;
+    for(unsigned int i=0;i<str.size();i++)
+    {   int movebit=0;
+        for(unsigned char j=0;j<size;j++)
+        {
+            temp[4+j]=temp[j]&str[i];
+            movebit=size*8-8-j*16;
+            if(movebit>0)temp[4+j]=temp[4+j]<<movebit;
+            else temp[4+j]=temp[4+j]>>-movebit;
+        }
+        str[i]=0;
+        str[i]=temp[4]|temp[5]|temp[6]|temp[7];
+    }
+}
+void trans(std::wstring &str0,std::wstring &str1,bool f1=0,bool f2=0)
+{
+    std::wstring temp=str0;
+    if(f1==f2){str1=temp;}
+    else if(f1==0&&f2==1){str1=temp;lob(str1);}
+    else if(f1==1&&f2==0){lob(temp);str1=temp;}
+}
+void trans(std::wstring &str0,std::u16string &str1,bool f1=0,bool f2=0)
+{
+    std::wstring temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::wstring &str0,std::u32string &str1,bool f1=0,bool f2=0)
+{
+    std::wstring temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u16string &str0,std::wstring &str1,bool f1=0,bool f2=0)
+{
+    std::u16string temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u16string &str0,std::u16string &str1,bool f1=0,bool f2=0)
+{
+    std::u16string temp=str0;
+    if(f1==f2){str1=temp;}
+    else if(f1==0&&f2==1){str1=temp;lob(str1);}
+    else if(f1==1&&f2==0){lob(temp);str1=temp;}
+}
+void trans(std::u16string &str0,std::u32string &str1,bool f1=0,bool f2=0)
+{
+    std::u16string temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u32string &str0,std::wstring &str1,bool f1=0,bool f2=0)
+{
+    std::u32string temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u32string &str0,std::u16string &str1,bool f1=0,bool f2=0)
+{
+    std::u32string temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u32string &str0,std::u32string &str1,bool f1=0,bool f2=0)
+{
+    std::u32string temp=str0;
+    if(f1==f2){str1=temp;}
+    else if(f1==0&&f2==1){str1=temp;lob(str1);}
+    else if(f1==1&&f2==0){lob(temp);str1=temp;}
+}
+void trans(std::string &str0,std::wstring &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr;
+    str1=tr.from_bytes(str0);
+    f1=f2;
+    if(f1)lob(str1);
+    }
+    else if(l=='U')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    wchar_t temp1[str0.size()+1];
+    mbstowcs(temp1,str0.c_str(),str0.size());
+    str1=temp1;
+    f1=f2;
+    if(f1)lob(str1);
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::string &str0,std::u16string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr;
+    str1=tr.from_bytes(str0);
+    f1=f2;
+    if(f1)lob(str1);
+    }
+    else if(l=='U')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    wchar_t temp1[str0.size()+1];
+    mbstowcs(temp1,str0.c_str(),str0.size());
+    std::wstring temp2=temp1;
+    trans(temp2,str1);
+    f1=f2;
+    if(f1)lob(str1);
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::string &str0,std::u32string &str1,bool f1=0,bool f2=0,char l='\0')
+{   if(l=='\0')
+    {
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr;
+    str1=tr.from_bytes(str0);
+    f1=f2;
+    if(f1)lob(str1);
+    }
+    else if(l=='U')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    wchar_t temp1[str0.size()+1];
+    mbstowcs(temp1,str0.c_str(),str0.size());
+    std::wstring temp2=temp1;
+    trans(temp2,str1);
+    f1=f2;
+    if(f1)lob(str1);
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::wstring &str0,std::string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::wstring temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr;
+    str1=tr.to_bytes(temp);
+    }
+    else if(l=='L')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    std::wstring temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    char temp1[4*temp.size()];
+    wcstombs(temp1,temp.c_str(),4*temp.size());
+    str1=temp1;
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+
+void trans(std::u16string &str0,std::string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::u16string temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr;
+    str1=tr.to_bytes(temp);
+    }
+    else if(l=='L')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    std::u16string temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring temp1;
+    trans(temp,temp1);
+    char temp2[4*temp1.size()];
+    wcstombs(temp2,temp1.c_str(),4*temp1.size());
+    str1=temp2;
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::u32string &str0,std::string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::u32string temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr;
+    str1=tr.to_bytes(temp);
+    }
+    else if(l=='L')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    std::u32string temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring temp1;
+    trans(temp,temp1);
+    char temp2[4*temp1.size()];
+    wcstombs(temp2,temp1.c_str(),4*temp1.size());
+    str1=temp2;
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::string &str0,std::string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+        std::string temp=str0;
+        str1=temp;
+        return;
+    }
+    else if(l=='U')
+    {
+        std::locale loc=std::locale();
+        setlocale(LC_ALL,"");
+        wchar_t temp1[str0.size()+1];
+        mbstowcs(temp1,str0.c_str(),str0.size());
+        std::wstring temp2=temp1;
+        trans(temp2,str1);
+        std::setlocale(LC_ALL,loc.name().c_str());
+    }
+    else if(l=='L')
+    {
+        f1=f2;
+        f2=f1;
+        std::locale loc=std::locale();
+        setlocale(LC_ALL,"");
+        std::wstring temp1;
+        trans(str0,temp1);
+        char temp3[temp1.size()*4];
+        wcstombs(temp3,temp1.c_str(),temp1.size()*4);
+        str1=temp3;
+        std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+#endif // CODET_H
+
+*****************************************************************************
+部件属性：
+objectName;//实例名称
+可以通过setObjectName(QString str)函数修改实例名称.一般将实例名称修改为与该对象的变量名称相同，用于调试时输出.
+示例：
+#include<QtWidgets>
+int main(int argc,char** argv)
+{
+    QApplication a(argc,argv);
+    QWidget w;
+    w.setObjectName(QString("w"));
+    qDebug()<<w.objectName();
+    w.show();
+    return a.exec();
+}
+
+enabled;//实例是否被激活
+可以通过函数setEnabled(bool b)函数来修改该实例是否被激活.
+示例：
+#include<QtWidgets>
+int main(int argc,char** argv)
+{
+    QApplication a(argc,argv);
+    QWidget w;
+    QPushButton *button=new QPushButton(&w);
+    button->setEnabled(false);
+    w.show();
+    int ret=a.exec();
+	delete button;
+	return ret;
+}
+
+geometry;//控件的位置信息,宽度、高度信息
+可以通过setGeomery函数来修改.
+注意：x(),y(),pos(),move(),frameGeometry()函数是框架相关函数,这类函数是关于位置信息的函数
+另外：width(),height(),size(),rect(),resize(),geometry()是窗口相关函数,这类函数是关于窗口大小的函数
+对于一个独立的窗口,框架相关函数与窗口相关函数是不同的，但是对于一个窗口中的部件，它的框架与窗口是同样的大小，并且是重合的，因此它的的框架函数与窗口函数可以对控件进行操作。
+示例：
+#include<QtWidgets>
+int main(int argc,char** argv)
+{
+    QApplication a(argc,argv);
+    QWidget w;
+    QLabel *label=new QLabel(&w);
+    label->setText("label");
+    label->setGeometry(20,20,200,50);
+    w.show();
+    int ret=a.exec();
+	delete label;
+	return ret;
+}
+另外还可以通过resize()函数重新设置窗口大小，通过move)()函数重新设置控件位置.
+
+sizePolicy;//布局策略
+部件设置该属性后中要在布局对象QLayout中才会生效：
+拉伸因数：把窗口拉伸后里面的控件同时也会拉伸，但是控件拉伸的大小由这个因数决定，只有在控件个数大于1时，这个因数才会凸显出效果
+拉伸策略：
+默认值有一个范围,它是由程序设定的。
+QSizePolicy::Fixed;//取一个默认的可用的大小并且在拉伸过程中固定不变
+QSizePolicy::Minimum;//取一个最小的默认值,可以放大,不能缩小
+QSizePolicy::Maximum;//取一个最大的默认值,可以缩小,不能放大
+QSizePolicy::Preferred;//取一个最合适的大小，可以放大和缩小
+QSizePolicy::Expanding;//取一个可用的大小，可以放大和缩小,在不影响部件可用的情况下，可以使用额外空间
+QSizePolicy::MinimumExpanding;//取一个最小的默认值，可以放大，可以使用额外空间
+QSizePolicy::Ignored;//忽略默认值,但是可能会使控件不可用
+通常只使用前三个拉伸策略(Fixed,Maximum,Minimum),第四个至第六个拉伸策略(Preferred,Expanding,MinimumExpanding)效果都差不多,第七个拉伸策略(Ignored)可能会使用控件不可用,因此不经常被使用
+示例：
+#include<QtWidgets>
+int main(int argc,char** argv)
+{
+    QApplication a(argc,argv);
+    QWidget w;
+    QHBoxLayout lay(&w);//定义一个水平布局对象，因为布局策略只能在布局对象中才能使用
+    QSizePolicy policy;//定义一个策略，里面包含了拉伸策略和拉伸因数
+    QPushButton button1("this is button1");//定义第一个按钮
+    QPushButton button2("this is button2");//定义第二个按钮
+    lay.addWidget(&button1);//把第一个按钮加入布局
+    lay.addWidget(&button2);//把第二个按钮加入布局
+    policy.setHorizontalPolicy(QSizePolicy::Minimum);//设置拉伸策略
+    policy.setHorizontalStretch(1);//设置拉伸因数
+    button1.setSizePolicy(policy);//把设置好的策略应用于button1中
+    policy.setHorizontalPolicy(QSizePolicy::Minimum);//设置拉伸策略
+    policy.setHorizontalStretch(1);//设置拉伸因数
+    button2.setSizePolicy(policy);//把设置好的策略应用于button2中
+    w.show();
+    return a.exec();
+}
+
+minimumSize;//窗口的最小大小
+maximumSize;//窗口的最大大小
+#include<QtWidgets>
+int main(int argc,char* argv[])
+{
+    QApplication a(argc,argv);
+    QWidget w;
+    w.setMinimumSize(500,500);//设置窗口最小大小
+    w.setMaximumSize(600,600);//设置窗口最大大小
+    QPushButton button(&w);
+    button.setText("This is a button");
+    button.resize(200,200);
+    w.show();
+    return a.exec();
+}
+
+sizeIncrement;//在调整窗口时，以设置好的步长来改变窗口大小。注意，此方法在Windows系统中没有效果;
+baseSize;//设置窗口的基本大小。注意，此方法在Windows系统中没有效果;
+示例：
+#include<QtWidgets>
+int main(int argc,char* argv[])
+{
+        QApplication a(argc,argv);
+        QWidget w;
+        w.setBaseSize(100,100);//设置窗口的基本大小为(100,100);
+        w.setSizeIncrement(30,30);//改变窗口大小时以(30,30)步长来改变窗口大小
+        w.show();
+        return a.exec();
+
+}
+
+palette;//设置部件颜色属性
+用法：
+1、设置活跃状态：
+void setColor(ColorGroup group, ColorRole role, const QColor &color);
+2、设置颜色:不同角色的颜色
+void setColor(ColorRole role, const QColor &color);
+示例：
+#include<QtWidgets>
+int main(int argc,char** argv)
+{
+    QApplication a(argc,argv);
+    QPalette palette;
+    palette.setColor(QPalette::Active,QPalette::Window,Qt::darkGray);//设置窗口(也可以换成其他部件)活跃(有焦点)状态时的颜色
+    palette.setColor(QPalette::Disabled,QPalette::Window,Qt::darkMagenta);//设置窗口(也可以换成其他部件)无效状态时的颜色
+    palette.setColor(QPalette::Inactive,QPalette::Window,Qt::darkRed);//设置窗口(也可以换成其他部件)不活跃(无焦点)状态时的颜色
+    palette.setColor(QPalette::Window,Qt::darkGray);//设置窗口的颜色,如果设置了窗口状态(Active、Disabled、Inactive)颜色,请不要使用这个函数，因为它会盖窗口状态的颜色设置
+    palette.setColor(QPalette::WindowText,Qt::white);//设置窗口的子对象的前景色，例如标签Lable，它只有文字而没有窗体，所以可以认为它是父窗口的前景色
+    palette.setColor(QPalette::Base,Qt::blue);//设置窗口的子对象的文本框的颜色，例如文本编辑栏LineEdit,它是在父窗口的窗口中挖出来一块区域,作为它的的底色,因此可以认为它的底色是父窗口的基础色
+    palette.setColor(QPalette::Text,Qt::green);//设置窗口的子对象的文本框的文本颜色
+    palette.setColor(QPalette::ButtonText,Qt::black);//设置按钮的文本颜色
+    palette.setColor(QPalette::Button,Qt::yellow);//设置按键的背景色
+    QWidget w;
+    w.resize(400,300);
+    w.setWindowTitle("我是一个主窗口");
+    w.setPalette(palette);
+    QLabel label(&w);
+    label.resize(90,40);
+    label.setText("我是一个标签");
+    label.setPalette(palette);
+    QLineEdit line(&w);
+    line.move(100,0);
+    line.resize(90,40);
+    line.setText("我是一个文本编辑栏");
+    line.setPalette(palette);
+    QPushButton button(&w);
+    button.move(200,0);
+    button.resize(90,40);
+    button.setText("我是一个按钮");
+    button.setAutoFillBackground(true);//开启按钮设置背景色的功能
+    button.setFlat(true);//使按钮未按下的状态为透明色,即显示为按钮的背景色，看起来像是一个平面
+    button.setPalette(palette);
+    w.show();
+    return a.exec();
+}
+
+font//设置字体的属性
+使用示例如下：
+#include<QtWidgets>
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    QWidget w;
+    w.resize(400,300);
+    QLabel label(&w);
+    label.move(100,100);
+    label.setText("我是一个标签");
+    QFont font;
+    font.setFamily("华文楷体");//设置字体
+    font.setPointSize(20);//设置点大小
+    font.setBold(1);//设置粗体
+    font.setItalic(1);//设置斜体
+    font.setOverline(1);//设置上划线
+    font.setUnderline(1);//设置下划线
+    font.setStrikeOut(1);//设置删除线
+    font.setKerning(1);//设置字距调整
+    font.setStyleStrategy(QFont::NoAntialias);//设置字体为不平滑(有锯齿),若不设置即为平滑字体
+    label.setFont(font);
+    w.show();
+    return a.exec();
+}
+
+cursor//设置鼠标的形状，形状的定义可以参考QT文档的QCursor类。
+#include<QtWidgets>
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    QWidget w;
+    w.resize(400,300);
+    w.setCursor(QCursor(Qt::CrossCursor));//设置主窗口的鼠标指针显示为十字架形
+    QPushButton button(&w);
+    button.resize(100,60);
+    button.move(150,120);
+    button.setCursor(QCursor(Qt::PointingHandCursor));//设置按钮的鼠标指针显示为手指形
+    w.show();
+    return a.exec();
+}
+
+mousetracking//开启鼠标移动追踪，开启后能够实时检测鼠标的移动的坐标，如果不开开启只有当鼠标按下后并且移动才能检测到鼠标的坐标
+tabletTracking//开启触控笔移动追踪，开启后能够实时检测触控笔(与平板电脑保持一定的距离范围内)的移动的坐标，如果不开开启只有当触控笔与屏幕接触后并且移动才能检测到触控笔的坐标，与mouseTracking的使用方法相同。
+//widget.h
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QPushButton>
+#include <QMouseEvent>//如果使用触控笔的话，须替换为<QTabletEvent>
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    QPushButton *button;//定义一个需要用到鼠标移动追踪的对象，这里是定义了一个按钮
+    Widget(QWidget *parent = 0);
+    ~Widget();
+    void mouseMoveEvent(QMouseEvent *event);//定义鼠标移动事件，实现鼠标的坐标实时更新，如果使用触控笔的话，须替换为void tabletEvent(QTabletEvent *event)
+};
+#endif // WIDGET_H
+//widget.cpp
+#include "widget.h"
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+{
+    button=new QPushButton(this);//构造函数为指针按钮分配内存
+}
+
+Widget::~Widget()
+{
+    delete button;//析构函数删除定义的指针按钮对象
+}
+void Widget::mouseMoveEvent(QMouseEvent *event)//使用触控笔的话，须替换为void Widget::tabletEvent(QTabletEvent *event)
+{
+    button->setText(QString("当前的坐标是（%1,%2)").arg(event->x()).arg(event->y()));//实时更新鼠标移动的坐标值
+}
+//main.cpp
+#include "widget.h"
+#include <QApplication>
+#include <QtWidgets>
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    Widget w;
+    w.setMouseTracking(1);//设置窗口的鼠标移动追踪，使用触控笔的话，须替换为w.setTabletTracking(1)
+    w.button->setMouseTracking(1);//设置按钮的鼠标移动追踪使用触控笔的话，须替换为w.button->setTabletTracking(1)
+    w.resize(400,300);
+    w.setCursor(QCursor(Qt::CrossCursor));//设置窗口的鼠标指针形状为十字形
+    w.button->setCursor(QCursor(Qt::PointingHandCursor));//设置按钮的鼠标指针形状为手指形
+    w.button->resize(200,40);
+    w.button->move(100,130);
+    w.show();
+    return a.exec();
+}
+
+focusPolicy//设置部件获得键盘操作(鼠标、Tab键、鼠标或Tab、无焦点)或鼠标滚轮焦点的方式
+焦点策略保存在Qt::FocusPolicy数据类型中，它是一个枚举数据类型，包括的常量有(Qt::TabFocus、Qt::ClickFocus、Qt::StrongFocus、Qt::WheelFocus、Qt::NoFocus)
+注意：
+Qt::StrongFocus//同时设置Qt::TabFocus、Qt::ClickFocus获得键盘焦点
+Qt::WheelFocus//使用鼠标滚轮作为操作方式，通常用于对文本进行翻页，例如浏览器。另，使用此方式时Qt::TabFocus、Qt::ClickFocus可以获得键盘焦点
+Qt::NoFocus//不设置任何焦点策略，不能通过键盘或鼠标滚轮获得焦点
+示例：
+#include <QtWidgets>
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    QWidget w;
+    w.resize(400,300);
+    QPushButton button(&w);
+    QPushButton button1(&w);
+    button.resize(100,40);
+    button1.resize(100,40);
+    button.move(50,130);
+    button1.move(250,130);
+    button.setText("确定");
+    button1.setText("取消");
+    Qt::FocusPolicy policy;//定义一个焦点策略数据类型
+    policy=Qt::TabFocus;//把Tab切换焦点的枚举常量赋值给policy
+    button.setFocusPolicy(policy);//设置button获得焦点的方式为policy设置好的方式
+    button1.setFocusPolicy(policy);//设置button1获得焦点的方式为policy设置好的方式
+    w.show();
+    return a.exec();
+}
+
+ContextMenuPolicy//部件菜单策略
+策略值有：
+Qt::NoContextMenu//部件本身没有菜单，使用父对象的菜单
+Qt::PreventContextMenu//部件本身没有菜单，并且不使用父对象的菜单
+Qt::DefaultContextMenu//默认的菜单，一般为(Qt::NoContextMenu),不同的部件的默认值可能不一样
+Qt::ActionsContextMenu//使用动作作为菜单
+Qt::CustomContextMenu//使用菜单数据类型作为菜单
+示例：
+//widget.h
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QtWidgets>
+class Widget : public QWidget
+{
+    Q_OBJECT
+private:
+    QMenu *menu;//定义一个菜单
+    QAction action;//定义一个动作
+    QAction action1;定义第二个动作
+public:
+    Widget(QWidget *parent = 0);
+    ~Widget();
+private slots:
+    void active1();//小屏槽函数
+    void active2();//大屏槽函数
+    void showMenu(const QPoint&);//显示菜单的槽函数
+};
+#endif // WIDGET_H
+//widget.cpp
+#include "widget.h"
+#include <QtWidgets>
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+{
+   menu=new QMenu(this);
+   action.setText("小屏");//设置动作一的名称
+   connect(&action,SIGNAL(triggered()),this,SLOT(active1()));//把小屏动作与动作一关联
+   menu->addAction(&action);把动作一添加到菜单
+   action1.setText("大屏");设置动作二的名称
+   connect(&action1,SIGNAL(triggered()),this,SLOT(active2()));//把大屏动作与动作二关联
+   menu->addAction(&action1);把动作二添加到菜单
+   addAction(&action);//把动作一添加到动作中
+   //setContextMenuPolicy(Qt::ActionsContextMenu);//使用Qt::ActionsContextMenu策略
+   setContextMenuPolicy(Qt::CustomContextMenu);//使用Qt::CustomContextMenu策略
+   connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(showMenu(const QPoint&)));//把右击动作与显示菜单关联，只有使用Qt::CustomContextMenu策略时，此语句才会生效。connect函数中第二个信号与第四个槽函数传递相同的参数，但是槽函数是否使用这些参数取决于槽函数的定义
+}
+
+Widget::~Widget()
+{
+delete menu;
+}
+void Widget::active1()
+{
+    resize(400,300);
+}
+void Widget::active2()
+{
+    resize(800,600);
+}
+void Widget::showMenu(const QPoint& point)
+{
+    menu->exec(mapToGlobal(point));
+}
+//main.cpp
+#include <QtWidgets>
+#include <widget.h>
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    Widget w;
+    w.resize(400,300);
+    QPushButton button(&w);
+    button.setContextMenuPolicy(Qt::PreventContextMenu);//button使用Qt::PreventContextMenu策略
+    QPushButton button1(&w);
+    button1.setContextMenuPolicy(Qt::NoContextMenu);//button1使用Qt::NoContextMenu策略
+    button.resize(100,40);
+    button1.resize(100,40);
+    button.move(50,130);
+    button1.move(250,130);
+    button.setText("确定");
+    button1.setText("取消");
+    Qt::FocusPolicy policy;//定义一个焦点策略数据类型
+    policy=Qt::TabFocus;//把Tab切换焦点的枚举常量赋值给policy
+    button.setFocusPolicy(policy);//设置button获得焦点的方式为policy设置好的方式
+    button1.setFocusPolicy(policy);//设置button1获得焦点的方式为policy设置好的方式
+    w.show();
+    return a.exec();
+}
+
+*****************************************************************************
+设置固定窗口大小：
+示例：
+方法1：
+QWidget w;
+w.setMinimumSize(300,400);
+w.setMaximumSize(300,400);
+方法二：
+QWidget w;
+w.setFixedSize(300,400);
+*****************************************************************************
+*****************************************************************************
+*******                   *标题*可以直接引用的C++子函数             *********
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+template <class any> void printHex(const any& a)//输出string、wstring、u16string、u32string的十六进制序列
+{
+    for(unsigned int i=0;i<a.size();i++)
+    {
+        unsigned char size=sizeof(a[0]);
+        cout.width(size*2+2);
+        cout<<hex;
+        cout.setf(ios_base::showbase);
+        cout.setf(ios_base::uppercase);
+        cout.setf(ios_base::internal,ios_base::adjustfield);
+        cout.fill('0');
+        if(size==1)cout<<(0xff&a[i])<<' ';
+        else if(size==2)cout<<(0xffff&a[i])<<' ';
+        else if(size==3)cout<<(0xffffff&a[i])<<' ';
+        else if(size==4)cout<<(0xffffffff&a[i])<<' ';
+    }
+    cout.unsetf(ios_base::showbase);
+    cout.unsetf(ios_base::uppercase);
+    cout.setf(ios_base::right,ios_base::adjustfield);
+    cout.fill(' ');
+    cout<<dec;
+    std::cout<<std::endl;
+}
+*****************************************************************************
+编码转换详例：(仅适用于C++11)
+1、本地、UTF-8、UTF-16(大小端)、UTF-32(大小端)之间的编码进行任意转换;
+2、保存为codet.h文件，放在main.cpp同一目录下，并在main.cpp中包含此头文件#include"codet.h"
+3、参数说明：
+   第一个参数代表将要转换的字符串类(#include<string>、std::string,std::wstring,std::u16string,std::u32string)
+   第二个参数代表转换以后的字符串类(#include<string>、std::string,std::wstring,std::u16string,std::u32string)
+   第三个参数标志源字符串类使用的是大端还是小端，1为大端0为小端，若源字符串无大小端的区别如本地编码和UTF8编码，则此标志无效,默认为0
+   第四个参数标志转换后的字符串类使用大端还是小端，1为大端0为小端，若转换后的字符串无大小端的区别如本地编码和UTF8编码，则此标志无效,默认为0
+   第五个参数：'U'代表把本地编码字符转换为UNICODE编码(UTF-8、UTF-16、UTF-32)字符
+               'L'代表把UNICODE编码(UTF-8、UTF-16、UTF-32)字符转换为本地编码字符
+               只有本地编码与UNICODE编码相互转换时才有第五个参数
+4、调用示例：
+   trans(string,string);             //不转换，相当于把第一个参数复制到第二个参数
+   trans(string,wstring);            //把string的UTF-8编码转换成wstring的编码,string的UTF-8不区分大小端，wstring默认使用小端;
+   trans(string,u32string,0,1);      //把string的UTF-8编码转换成u32string的UTF-32编码,string的UTF-8不区分大小端，u32string默认使用大端;
+   trans(wstring,u16string);         //把wstring的编码转换成u16string的UTF-16编码，两者默认使用小端;
+   trans(wstring,u16string,0,1);     //把wstring的编码转换成u16string的UTF-16编码，wstring使用小端，u16string使用大端;
+   trans(u32string,u16string,1,1);   //把u32string的UTF-32编码转换成u16string的UTF-16编码，u32string使用大端，u16string使用大端;
+   trans(wstring,u16string,1);       //把wstring的编码转换成u16string的UTF-16编码，wstring使用大端，u16string默认使用小端;
+   trans(wstring,string);            //把wstring的编码转换成string的UTF-8编码，wstring默认使用小端;
+   trans(wstring,string,1);          //把wstring的编码转换成string的UTF-8编码，wstring使用大端;
+   trans(string,string,0,0,'U');     //把string的本地编码转换为string的UTF-8编码
+   trans(string,string,0,0,'L');     //把string的UTF-8编码转换为string的本地编码
+   trans(string,u16string,0,0,'U');  //把string的本地编码转换成u16string的UTF-16编码，u16string使用小端;
+   trans(string,u16string,0,1,'U');  //把string的本地编码转换成u16string的UTF-16编码，u16string使用大端;
+   trans(u16string,string,0,0,'L');  //把u16string的UTF-16编码转换成string的本地编码，u16string使用小端;
+   trans(u16string,string,1,0,'L');  //把u16string的UTF-16编码转换成string的本地编码，u16string使用大端;
+   
+详例：
+//codet.h头文件
+#ifndef CODET_H
+#define CODET_H
+#include<codecvt>
+#include<iomanip>
+#include<cstdlib>
+#include<cstring>
+#include<string>
+#include<locale>
+template<typename T>void lob(T &str)//转换大小端
+{
+    unsigned char size=sizeof(str[0]);if(size<2)return;
+    char32_t temp[8];
+    temp[0]=0x000000ff;
+    temp[1]=0x0000ff00;
+    temp[2]=0x00ff0000;
+    temp[3]=0xff000000;
+    temp[4]=0x00000000;
+    temp[5]=0x00000000;
+    temp[6]=0x00000000;
+    temp[7]=0x00000000;
+    for(unsigned int i=0;i<str.size();i++)
+    {   int movebit=0;
+        for(unsigned char j=0;j<size;j++)
+        {
+            temp[4+j]=temp[j]&str[i];
+            movebit=size*8-8-j*16;
+            if(movebit>0)temp[4+j]=temp[4+j]<<movebit;
+            else temp[4+j]=temp[4+j]>>-movebit;
+        }
+        str[i]=0;
+        str[i]=temp[4]|temp[5]|temp[6]|temp[7];
+    }
+}
+void trans(std::wstring &str0,std::wstring &str1,bool f1=0,bool f2=0)
+{
+    std::wstring temp=str0;
+    if(f1==f2){str1=temp;}
+    else if(f1==0&&f2==1){str1=temp;lob(str1);}
+    else if(f1==1&&f2==0){lob(temp);str1=temp;}
+}
+void trans(std::wstring &str0,std::u16string &str1,bool f1=0,bool f2=0)
+{
+    std::wstring temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::wstring &str0,std::u32string &str1,bool f1=0,bool f2=0)
+{
+    std::wstring temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u16string &str0,std::wstring &str1,bool f1=0,bool f2=0)
+{
+    std::u16string temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u16string &str0,std::u16string &str1,bool f1=0,bool f2=0)
+{
+    std::u16string temp=str0;
+    if(f1==f2){str1=temp;}
+    else if(f1==0&&f2==1){str1=temp;lob(str1);}
+    else if(f1==1&&f2==0){lob(temp);str1=temp;}
+}
+void trans(std::u16string &str0,std::u32string &str1,bool f1=0,bool f2=0)
+{
+    std::u16string temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u32string &str0,std::wstring &str1,bool f1=0,bool f2=0)
+{
+    std::u32string temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u32string &str0,std::u16string &str1,bool f1=0,bool f2=0)
+{
+    std::u32string temp=str0;
+    if(f1)lob(temp);
+    std::string u8;
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr;
+    u8=tr.to_bytes(temp);
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr1;
+    str1=tr1.from_bytes(u8);
+    if(f2)lob(str1);
+}
+void trans(std::u32string &str0,std::u32string &str1,bool f1=0,bool f2=0)
+{
+    std::u32string temp=str0;
+    if(f1==f2){str1=temp;}
+    else if(f1==0&&f2==1){str1=temp;lob(str1);}
+    else if(f1==1&&f2==0){lob(temp);str1=temp;}
+}
+void trans(std::string &str0,std::wstring &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr;
+    str1=tr.from_bytes(str0);
+    f1=f2;
+    if(f1)lob(str1);
+    }
+    else if(l=='U')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    wchar_t temp1[str0.size()+1];
+    mbstowcs(temp1,str0.c_str(),str0.size());
+    str1=temp1;
+    f1=f2;
+    if(f1)lob(str1);
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::string &str0,std::u16string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr;
+    str1=tr.from_bytes(str0);
+    f1=f2;
+    if(f1)lob(str1);
+    }
+    else if(l=='U')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    wchar_t temp1[str0.size()+1];
+    mbstowcs(temp1,str0.c_str(),str0.size());
+    std::wstring temp2=temp1;
+    trans(temp2,str1);
+    f1=f2;
+    if(f1)lob(str1);
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::string &str0,std::u32string &str1,bool f1=0,bool f2=0,char l='\0')
+{   if(l=='\0')
+    {
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr;
+    str1=tr.from_bytes(str0);
+    f1=f2;
+    if(f1)lob(str1);
+    }
+    else if(l=='U')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    wchar_t temp1[str0.size()+1];
+    mbstowcs(temp1,str0.c_str(),str0.size());
+    std::wstring temp2=temp1;
+    trans(temp2,str1);
+    f1=f2;
+    if(f1)lob(str1);
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::wstring &str0,std::string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::wstring temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring_convert<std::codecvt_utf8<wchar_t,0x10ffff,std::little_endian>,wchar_t> tr;
+    str1=tr.to_bytes(temp);
+    }
+    else if(l=='L')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    std::wstring temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    char temp1[4*temp.size()];
+    wcstombs(temp1,temp.c_str(),4*temp.size());
+    str1=temp1;
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+
+void trans(std::u16string &str0,std::string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::u16string temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring_convert<std::codecvt_utf8<char16_t,0x10ffff,std::little_endian>,char16_t> tr;
+    str1=tr.to_bytes(temp);
+    }
+    else if(l=='L')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    std::u16string temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring temp1;
+    trans(temp,temp1);
+    char temp2[4*temp1.size()];
+    wcstombs(temp2,temp1.c_str(),4*temp1.size());
+    str1=temp2;
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::u32string &str0,std::string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+    std::u32string temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring_convert<std::codecvt_utf8<char32_t,0x10ffff,std::little_endian>,char32_t> tr;
+    str1=tr.to_bytes(temp);
+    }
+    else if(l=='L')
+    {
+    std::locale loc=std::locale();
+    setlocale(LC_ALL,"");
+    std::u32string temp=str0;
+    f2=f1;
+    if(f2)lob(temp);
+    std::wstring temp1;
+    trans(temp,temp1);
+    char temp2[4*temp1.size()];
+    wcstombs(temp2,temp1.c_str(),4*temp1.size());
+    str1=temp2;
+    std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+void trans(std::string &str0,std::string &str1,bool f1=0,bool f2=0,char l='\0')
+{
+    if(l=='\0')
+    {
+        std::string temp=str0;
+        str1=temp;
+        return;
+    }
+    else if(l=='U')
+    {
+        std::locale loc=std::locale();
+        setlocale(LC_ALL,"");
+        wchar_t temp1[str0.size()+1];
+        mbstowcs(temp1,str0.c_str(),str0.size());
+        std::wstring temp2=temp1;
+        trans(temp2,str1);
+        std::setlocale(LC_ALL,loc.name().c_str());
+    }
+    else if(l=='L')
+    {
+        f1=f2;
+        f2=f1;
+        std::locale loc=std::locale();
+        setlocale(LC_ALL,"");
+        std::wstring temp1;
+        trans(str0,temp1);
+        char temp3[temp1.size()*4];
+        wcstombs(temp3,temp1.c_str(),temp1.size()*4);
+        str1=temp3;
+        std::setlocale(LC_ALL,loc.name().c_str());
+    }
+}
+#endif // CODET_H
+
+*****************************************************************************
+转义字符的使用：
+************************
+'\'是转义符号，它可以把所要转义的符号直接存进变量中,一般后面的数字会被认为是八进制
+************************
+转义数字：
+char a='\10';     表示把八进制数字10存进变量a中。它表示一个ASCII符号
+char a='\xf';     表示把十六进制数字f存进变量a中,x表示十六进制前缀。它表示一个ASCII符号
+************************
+C++转义字符：
+\a   响铃(BEL)
+\b   退格(BS)
+\f   换页(FF)
+\n   换行(LF)
+\r   回车(CR)
+\t   水平制表(HT)
+\v   垂直制表(VT)
+\\   反斜杠
+\?   问号字符
+\'   单引号字符
+\"   双引号字符
+\0   空字符(NULL) 
+\ddd 1-3位八进制所代表的任意字符
+\xhh 1-2位十六进制所代表的任意字符
+*****************************************************************************
+double cheng(double a)//递归法阶乘计算
+{
+	if(!a)return 1.0;
+	return (a*cheng(a-1));
+}
+*****************************************************************************
+#include<time.h>//随机函数,在区间[min,max]中产生随机数
+int rand_my(int min,int max)
+{
+	int a;
+	clock();
+	srand((int)time(NULL)-1496438166+clock());
+	a=rand()%(max-min+1)+min;
+	return a;
+}
+*****************************************************************************
+#include<time.h>//定时,单位:毫秒,在/*for*/语句后的花括号中添加要执行的语句添加要执行的语句
+void time_stop(int i)
+{
+clock();
+for(;clock()<i;)
+{
+
+}
+}
+
+*****************************************************************************
+#include <stdio.h>
+void ZH_1_printf(char *a,int num)
+{//把汉字与英文混合的字符串单个连续输出,控制每行输出num左右个半角字符(一个中文字符相当于两个半角字符)
+	int j,flag;
+	char info[3];
+	for(j=0;a[j]!='\0';j++)
+				{
+					flag=0;
+					if(a[j]<0){info[0]=a[j];j++;info[1]=a[j];info[2]='\0';printf("%s",info);flag=1;}
+					else printf("%c",a[j]);
+					if((j!=1)&&((j+1)%num==0||((j+1)%num==1&&flag==1)))printf("\n");
+				}
+	printf("\n");
+}
+*****************************************************************************
+#include<stdlib.h>//二维动态数组指针的内存分配
+void* malloc_2(int **a,int row,int line)
+{
+	int i;
+	a=NULL;
+	a=(int **)malloc(sizeof(int *)*row);
+	for(i=0;i<row;i++)
+	{
+		a[i]=(int*)malloc(sizeof(int)*line);
+	}
+	return a;
+}
+*****************************************************************************
+#include<stdlib.h>//二维动态数组指针的内存释放
+void* free_2(int **a,int row,int line)
+{
+	int i;
+	for(i=0;i<row;i++){free(a[i]);a[i]=NULL;}
+	free(a);
+	a=NULL;
+	return a;
+}
+*****************************************************************************
+#include<stdlib.h>//二维动态字符指针的内存分配
+void* malloc_2(char **a,int row,int line)
+{
+	int i;
+	a=NULL;
+	a=(char **)malloc(sizeof(char *)*row);
+	for(i=0;i<row;i++)
+	{
+		a[i]=(char*)malloc(sizeof(char)*line);
+	}
+	return a;
+}
+*****************************************************************************
+#include<stdlib.h>//二维动态字符指针的内存释放
+void* free_2(char **a,int row,int line)
+{
+	int i;
+	for(i=0;i<row;i++){free(a[i]);a[i]=NULL;}
+	free(a);
+	a=NULL;
+	return a;
+}
+*****************************************************************************
+*                            *标题*GUID                                     *
+*****************************************************************************
+#include<stdlib.h>//字模字体点阵显示,需将HZK16与ASC16字模文件放入程序目录
+#include<conio.h>
+void Font(char *a)
+{
+	FILE *p;
+	char font[160];
+	int num=0,once,n,i=0,j,k,H,offset,flag,row,line,counter[15],temp,m,sum,sum_sum=0,stat,number_of_font=5;
+	for(i=0;a[i]!=0;i++){num++;if(a[i]<0)i++;}
+	system("mode con cols=168 lines=44");
+	once=num/number_of_font;
+	if(num%number_of_font)(once++);
+	i=0;
+	for(k=0;k<once;k++)
+		{
+			flag=0;
+			sum=0;
+			temp=((k+1)*number_of_font-num)<=0?number_of_font:num%number_of_font;
+			for(line=0;line<temp;line++)
+				{
+					stat=0;
+					if(a[i]<0)
+					{
+						H=a[i]+96;
+						offset=(H-1)*94;
+						H=a[i+1]+96;
+						offset=(offset+(H-1))*32;
+						if(NULL==(p=fopen("HZK16","rb"))){printf("缺少HZK16文件\n\n按任意键退出\n");font[0]=getch();exit(0);};
+						fseek(p,offset,SEEK_SET);
+						fread(font+flag,32,1,p);
+						fclose(p);
+						flag+=32;
+						counter[line]=2;
+						i+=2;
+						stat=1;
+						sum=sum+counter[line];
+					}
+					if(!stat)
+					{
+						offset=a[i]*16;
+						if(NULL==(p=fopen("ASC16","rb"))){printf("缺少ASC16文件\n\n按任意键退出\n");font[0]=getch();exit(0);};
+						fseek(p,offset,SEEK_SET);
+						fread(font+flag,16,1,p);
+						fclose(p);
+						flag+=16;
+						counter[line]=1;
+						i++;
+						sum=sum+counter[line];
+					}
+				}
+				for(row=0;row<16;row++)
+					{
+					for(j=0;j<(168-sum*16)/2;j++)printf(" ");
+					sum=0;
+					for(line=0;line<temp;line++)
+						{
+							for(j=0;j<counter[line];j++)for(n=0;n<8;n++)
+							{
+								if(counter[0]==2)m=row*counter[0]+sum*16+j-(2-counter[line])*row;
+								else m=row*counter[0]+sum*16+j+(counter[line]-1)*row;
+								if(font[m]&128)
+								{	
+									if(counter[line]==1)printf("%c%c",a[sum_sum+sum],a[sum_sum+sum]);
+									if(counter[line]==2)printf("%c%c",a[sum_sum+sum],a[sum_sum+sum+1]);
+								}
+								else printf("  ");
+								font[m]<<=1;
+							}
+							sum=sum+counter[line];
+						}
+					printf("\n");
+					}
+			sum_sum=sum_sum+sum;
+			printf("\n\n");
+		}
+}
+*****************************************************************************
+
+
+*****************************************************************************
+设置和查看代码页：
+查看当前代码页：
+chcp
+设置代码页：chcp 代码页  。如果要设置简体中文区域编码(936)为当前代码页，则应按下例：
+chcp 936
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+*                            *标题*Windows                                  *
+*****************************************************************************
+锁屏代码:
+#include<windows.h>
+int main(void)
+{
+system("rundll32.exe user32.dll,LockWorkStation");
+return 0;
+}
+*****************************************************************************
+程序暂停,单位:毫秒
+#include<Windows.h>
+Sleep(int i);
+例如:Sleep(5000);//程序暂停5秒
+*****************************************************************************
+c++在windows下cout不能输出中文的处理方法很简单，要做两步：
+1、在编译器中设置编码方式为"system"或"GB2312"或"GBK";
+2、在要输出中文的语句前加入" \b"即"空格\b",例如我要用cout输出"你好，中文"，则程序可以这样写，如下；
+#include<iostream>
+using namespace std;
+int main(void)
+{
+cout<<" \b你好，中文"<<endl;
+return 0;
+}
+这样就能在cout中输出中文了；
+*****************************************************************************
+#include<Windows.h>//暂时隐藏光标
+void hide(void)
+{
+HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+CONSOLE_CURSOR_INFO cci;
+GetConsoleCursorInfo(hOut,&cci);
+cci.bVisible = FALSE;
+SetConsoleCursorInfo(hOut,&cci);
+}
+
+
+#include<stdlib.h>//设置窗口大小,cols为宽,lines为行,单位为一个半角字符宽度
+void set_winsize(void)
+{
+	system("mode con cols=80 lines=20");
+}
+
+
+#include<stdlib.h>//设置窗口标题和背景色
+void set(void)
+{
+system("@echo off&title 名称&color F0");
+}
+/*
+0=黑色
+4=红色
+8=灰色
+C=淡红色
+1=蓝色
+5=紫色
+9=淡蓝色
+D=淡紫色
+2=绿色
+6=黄色
+A=淡绿色
+E=淡黄色
+3=湖蓝色
+7=白色
+B=淡浅绿色
+F=亮白色
+程序例子:
+color 12
+上面两个数字都是十六进制数字,前一个数字是背景颜色,后一个数字是文字颜色*/
+***************************************************************************
+模拟按键括号中四个参数,第一个是键值,第二个中的第一个参数也是键值,第三个是按键状态(0表示按下,2表示释放),第四个是0
+#include<Windows.h>
+keybd_event(91,MapVirtualKey(91,0),0,0);
+keybd_event(91,MapVirtualKey(91,0),2,0);
+键值对照:(https://msdn.microsoft.com/en-us/library/dd375731(v=vs.85).aspx)
+常数名称     十六值	  十值   对应按键
+VK_LBUTTON      01      1   鼠标的左键
+VK_RBUTTON      02      2   鼠标的右键
+VK-CANCEL       03      3   Ctrl+Break(通常不需要处理)
+VK_MBUTTON      04      4   鼠标的中键（三按键鼠标)
+VK_BACK         08      8   Backspace键
+VK_TAB          09      9   Tab键
+VK_CLEAR        0C      12  Clear键（Num Lock关闭时的数字键盘5）
+VK_RETURN       0D      13  Enter键
+VK_SHIFT        10      16  Shift键
+VK_CONTROL      11      17  Ctrl键
+VK_MENU         12      18  Alt键
+VK_PAUSE        13      19  Pause键
+VK_CAPITAL      14      20  Caps Lock键
+VK_ESCAPE       1B      27  Ese键
+VK_SPACE        20      32  Spacebar键
+VK_PRIOR        21      33  Page Up键
+VK_NEXT         22      34  Page Domw键
+VK_END          23      35  End键
+VK_HOME         24      36  Home键
+VK_LEFT         25      37  LEFT ARROW 键(←)
+VK_UP           26      38  UP ARROW键(↑)
+VK_RIGHT        27      39  RIGHT ARROW键(→)
+VK_DOWN         28      40  DOWN ARROW键(↓)
+VK_Select       29      41  Select键
+VK_PRINT        2A      42  
+VK_EXECUTE      2B      43  EXECUTE键
+VK_SNAPSHOT     2C      44  Print Screen键（抓屏）
+VK_Insert       2D      45  Ins键(Num Lock关闭时的数字键盘0)
+VK_Delete       2E      46  Del键(Num Lock关闭时的数字键盘.)
+VK_HELP         2F      47  Help键
+VK_0            30      48  0键
+VK_1            31      49  1键
+VK_2            32      50  2键
+VK_3            33      51  3键
+VK_4            34      52  4键
+VK_5            35      53  5键
+VK_6            36      54  6键
+VK_7            37      55  7键
+VK_8            38      56  8键
+VK_9            39      57  9键
+VK_A            41      65  A键
+VK_B            42      66  B键
+VK_C            43      67  C键
+VK_D            44      68  D键
+VK_E            45      69  E键
+VK_F            46      70  F键
+VK_G            47      71  G键
+VK_H            48      72  H键
+VK_I            49      73  I键
+VK_J            4A      74  J键
+VK_K            4B      75  K键
+VK_L            4C      76  L键
+VK_M            4D      77  M键
+VK_N            4E      78  N键
+VK_O            4F      79  O键
+VK_P            50      80  P键
+VK_Q            51      81  Q键
+VK_R            52      82  R键
+VK_S            53      83  S键
+VK_T            54      84  T键
+VK_U            55      85  U键
+VK_V            56      86  V键
+VK_W            57      87  W键
+VK_X            58      88  X键
+VK_Y            59      89  Y键
+VK_Z            5A      90  Z键
+VK_NUMPAD0      60      96  数字键0键
+VK_NUMPAD1      61      97  数字键1键
+VK_NUMPAD2      62      98  数字键2键
+VK_NUMPAD3      62      99  数字键3键
+VK_NUMPAD4      64      100 数字键4键
+VK_NUMPAD5      65      101 数字键5键
+VK_NUMPAD6      66      102 数字键6键
+VK_NUMPAD7      67      103 数字键7键
+VK_NUMPAD8      68      104 数字键8键
+VK_NUMPAD9      69      105 数字键9键
+VK_MULTIPLY     6A      106 数字键盘上的*键
+VK_ADD          6B      107 数字键盘上的+键
+VK_SEPARATOR    6C      108 Separator键
+VK_SUBTRACT     6D      109 数字键盘上的-键
+VK_DECIMAL      6E      110 数字键盘上的.键
+VK_DIVIDE       6F      111 数字键盘上的/键
+VK_F1           70      112 F1键
+VK_F2           71      113 F2键
+VK_F3           72      114 F3键
+VK_F4           73      115 F4键
+VK_F5           74      116 F5键
+VK_F6           75      117 F6键
+VK_F7           76      118 F7键
+VK_F8           77      119 F8键
+VK_F9           78      120 F9键
+VK_F10          79      121 F10键
+VK_F11          7A      122 F11键
+VK_F12          7B      123 F12键
+VK_NUMLOCK      90      144 Num Lock 键
+VK_SCROLL       91      145 Scroll Lock键
+上面没有提到的:（都在大键盘）			
+VK_LWIN                 91  左win键
+VK_RWIN                 92  右win键
+VK_APPS                 93  右Ctrl左边键,点击相当于点击鼠标右键,会弹出快捷菜单
+                        186 ;(分号)
+                        187 =键
+                        188 ,键(逗号)
+                        189 -键(减号)
+                        190 .键(句号)
+                        191 /键
+                        192 `键(Esc下面)
+                        219 [键
+                        220 键
+                        221 ]键
+                        222 ‘键(引号)
+*****************************************************************************
+输入字符：
+1 2 3 4 5 6 7 8 9 0
+系统 本地 磁盘 映像 文件 机械 固态 启动盘 硬盘 专业版 家庭版 工作 实验
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+a b c d e f g h i j k l m n o p q r s t u v w x y z
+: / \
+*****************************************************************************
+*                                 *标题*其他                                *
+*****************************************************************************
+NAS内网穿透：
+处于内网的计算机想要与外部的公网服务器通信必须借助NAS才能进行通信，其工作原理如下：
+计算机发送一个数据包，这个数据包的开头包含一个报头，它至少包括五项内容(目的IP,目的端口，本地IP,本地端口，传输协议)
+由于这台计算机处于内网，所以本地IP对于服务器来说是没有任何作用的，这时就体现了NAS的作用，路由器通过NAS协议，把计算机
+发送的这个报头的本地IP和本地端口进行了更改，改为了路由器的公网IP与路由器的端口，并且在路由器中记录下一条路由链表，它
+大概是这样工作的：
+假设计算机发送的这个报头是(56.24.38.54:8080,192.168.1.89:3665,http)
+经过路由器后这个报头变成了(56.24.38.54:8080,49.36.1.45:1256,http)，并由路由器发送出去,记录下这样一个链表(56.24.38.54:8080,49.36.1.45:1256,192.168.1.89:3665),它表示目的IP端口，路由IP端口，本地IP端口
+服务器收到请求后作出回应(49.36.1.45:1256,56.24.38.54:8080,http),发送给路由器
+路由器接收到回应根据链表修改收到的报头为(192.168.1.89:3665,56.24.38.54:8080,http)这样内网计算机就收到了来自公网服务器的回应，实现了内网穿透。
+链表的记录也是有要求的，忽略传输协议，为了防止丢包，不同的报头，同一个目的IP端口不能使用同一个路由端口
+例如下面这列链表记录是不正确的：
+56.24.38.54:8080,49.36.1.45:1256,192.168.1.89:3665
+56.24.38.54:8080,49.36.1.45:1256,192.168.1.89:3666//在上一条链表记录中，同一个目的IP端口已经使用了路由器的49.36.1.45:1256，因此不能再使用
+下面这列链表记录是正确的：
+56.24.38.54:8080,49.36.1.45:1256,192.168.1.89:3665
+56.24.38.54:8080,49.36.1.45:1255,192.168.1.89:3666
+下面这列链表记录也是正确的：
+56.24.38.54:8081,49.36.1.45:1256,192.168.1.89:3665
+56.24.38.54:8080,49.36.1.45:1256,192.168.1.89:3665
+*****************************************************************************
+IPV4
+网络地址：32位二进制数据
+注意：在一个子网中，一般首地址用于网络地址，尾地址用于广播地址，因此首尾地址不可作他用，所以子网中的主机的个数应该减去2
+*******************************
+分类：
+
+A类：标志位1位:0，网络位7位，主机位24位              地址范围：0.0.0.0-127.255.255.255     默认子网掩码 255.0.0.0/8
+无效地址：A类地址中保留用于作为无效IP的地址：0.0.0.0-0.255.255.255
+回环地址：A类地址中保留用于设备本地的地址：127.0.0.0-127.255.255.255
+内网地址：A类地址中保留用于局域网的地址：10.0.0.0-10.255.255.255
+**************
+B类：标志位2位:10，网络位14位，主机位16位            地址范围：128.0.0.0-191.255.255.255   默认子网掩码 255.255.0.0/16
+内网地址：B类地址中保留用于局域网的地址：172.16.0.0-172.31.255.255
+**************
+C类：标志位3位:110，网络位21位，主机位8位            地址范围：192.0.0.0-223.255.255.255   默认子网掩码 255.255.255.0/24
+内网地址：C类地址中保留用于局域网的地址：192.168.0.0-192.168.255.255
+**************
+D类：标志位4位:1110，剩余位保留用于多组广播          地址范围：224.0.0.0-239.255.255.255   
+E类：标志位5位:11110，剩余位保留用于将来的科学研究   地址范围：240.0.0.0-247.255.255.255
+*******************************
+子网划分：(一般是在局域网中进行)
+ABC类IP中主机位的二次幂即为该子网中的最多可以容纳的主机数。
+
+设要划分m个子网，则应向主机位借n位用于子网的网络地址，n应该满足 2^n>=m；
+子网掩码的计算：子网掩码中的最后(主机位-n)位设置为0，其余设置为1；
+子网的网络地址的递增梯度为256/m；
+每个子网的主机个数为256/m-2个；
+
+内网中判断两个IP是不是同一个子网的依据是IP与子网掩码的“按位与&”的值是不是相同的，如果相同则在同一个子网，不同则不在同一个子网，即不能相互通信。
+*****************************************************************************
+照片：
+小一寸：图像大小为22mm*33mm，留白边，实际尺寸为24mm*35mm，分辨率为：300像素/厘米
+一寸：  图像大小为25mm*35mm，留白边，实际尺寸为27mm*37mm，分辨率为：300像素/厘米
+小两寸：图像大小为33mm*48mm，留白边，实际尺寸为35mm*50mm，分辨率为：300像素/厘米
+二寸：  图像大小为35mm*52mm，留白边，实际尺寸为37mm*54mm，分辨率为：300像素/厘米
+*****************************************************************************
+圆周率密率与圆周率：
+圆周率≈355/113
+圆周率=4(1-1/3+1/5-1/7+1/9-1/11+1/13-1/15+1/17)
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************

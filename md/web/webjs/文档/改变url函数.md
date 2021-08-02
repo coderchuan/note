@@ -1,0 +1,11 @@
+## 改变url函数
+* history.replaceState(state,title,url)
+    * 功能：替换当前地址栏的URL为传入的变量`url`，不刷新页面 
+    * state:无用,传入`null`即可
+    * title:无用,传入`null`即可
+    * url:替换后将要显示的url。不能跨域
+* history.pushState(state,title,url)
+    * 功能：将当前地址栏的URL加入历史中，然后替换当前地址栏的URL为传入的变量`url`，不刷新页面 
+    * state:无用,传入`null`即可
+    * title:无用,传入`null`即可
+    * url:替换后将要显示的url。不能跨域

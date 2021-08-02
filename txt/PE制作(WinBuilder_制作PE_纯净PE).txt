@@ -1,0 +1,19 @@
+使用WinBuilder(1709)制作WindowsPE:
+1、下载Windows1079版本镜像，解压到D:\PE\IOS目录中，将D:\PE\IOS\sources\install.wim文件复制出来放在D:\PE目录下；
+2、使用Dism++挂载D:\PE\install.wim文件，可读写挂载到D:\PE\install目录下；
+3、将D:\PE\install\Windows\System32\Recovery(该目录是隐藏的，可以在地址栏中输入进入)目录下的WinRe.wim文件复制到D:\PE目录下；
+4、使用Dism++挂载D:\PE\WinRe.wim文件，可读写挂载到D:\PE\WinRe目录下；
+5、挂载完成后，关闭Dism++。解压WinBuilder(1709).7z到D:\PE\Builder目录下，以管理员身份运行WinBuilder.exe，在Win10PE Builder选项下点击Image configuration，在右侧Script中勾选WIN PE选项，在Extrated BootWim中选择WinRe挂载的目录，即D:\PE\WinRe，在Extracted InstallWim选项中选择install.wim挂载的目录，即D:\PE\install；在Source选项的Source directory目录下选择D:\PE\IOS，Target directory保持默认，ISO file写入D:\PE\PE.iso；
+6、在左侧的Win10PE Builder选项下展开各个选项，选项如下：
+   必选 Main Configuration
+   必选 Images configuration
+   必选 0-PreConfig
+   在1-Basic中，RamOS Special可选，其余必选
+   可选 2-Addons中 若需要输入法，选择IME(中前两项必选，可选第三项五笔输入法)
+   可选 3-NetWork  网络支持
+   可选 4-NetApps  网络程序
+   可选 5-Audio    音频支持
+   在6-Tweaks中，System Tweaks必选，其余可选，在System Tweaks中设置FBWF cache size的大小为128，
+   在9-CreateISO中，第二、三项必选，第一、四项可选
+7、点击在上角的大图标“Play”，等待其制作完成即可，生成的文件在D:\PE目录下，文件名为PE.ISO。
+8、再打开Dism++卸载install.wim与winre.wim。

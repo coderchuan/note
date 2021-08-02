@@ -1,0 +1,14 @@
+kiel4的汉化：
+将keil4中的汉化包解开，将“uv4.exe”和“Uv4CHS.dll”两个文件复制到keil4安装目录下的UV4目录下，替换相同文件就可以汉化keil4了。
+
+Keil的注册：
+1、以管理员身份运行Keil，在File目录下选择“License Management”，复制CID码；
+2、以管理员身份运行注册机，选择对应的Keil版本（MDK或者C51），粘贴CID码，点击“Generate”产生注册码，粘贴到Keil中即可激活Keil。
+
+添加STC51芯片：
+1、首先安装Keil C51；
+2、到www.stcmcu.com下载“STC-ISP软件”完整版，打开软件，在keil访真设置中点击“添加型号和头文件到Keil中”，然后弹出对应的Keil C51的安装目录选项，选择对应的C51安装目录就可以了。
+
+添加STM32芯片：
+1、首先安装Keil MDK软件；
+2、在安装目录下的UV4目录下找到“PackInstaller.exe”文件，运行该文件，可以找到对应的stm32芯片，点击后会弹出对应的网页，下载后双击即可安装对应的stm32芯片。或者打开网址http://www.keil.com/dd2/，找到对应的型号的芯片，下载芯片包，双击即可安装对应的stm32芯片。

@@ -1,0 +1,58 @@
+脚本命令：
+**********************************************************************************************
+删除Windows自带的"下载、文档、视频、音乐、图片、桌面、3D对象"等Shell文件夹：（保存为reg文本格式）
+以下的注册表脚本分别代表删除视频、文档、桌面、音乐、下载、图片、3D对象。
+Windows Registry Editor Version 5.00
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{d3162b92-9365-467a-956b-92703aca08af}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{088e3905-0323-4b02-9826-5d99428e115f}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{24ad3ad4-a569-4530-98e1-ab02f9417aa8}]
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}]
+
+以下的注册表脚本分别代表恢复视频、文档、桌面、音乐、下载、图片、3D对象。
+Windows Registry Editor Version 5.00
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}]
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{d3162b92-9365-467a-956b-92703aca08af}]
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}]
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}]
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{088e3905-0323-4b02-9826-5d99428e115f}]
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{24ad3ad4-a569-4530-98e1-ab02f9417aa8}]
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}]
+
+多个Shell文件夹指向了同一个文件夹的解决办法：
+1、运行"regedit.exe"打开注册表编辑器；
+2、使用查找功能查找"User Shell Folders"；
+3、查找到后，会在右侧页面显示一些由{花括号}括起来的比较长的十六进制的名称，大概有七项左右，这些名称后面的数据选项对应的就是我们人为指定的目录，目录相同的几组，将其删除，然后重新启动计算机。在资源管理器中它们就会恢复系统自身指定的目录位置，但是现在是英文显示。分别运行上文中介绍到的删除shell文件夹和恢复shell文件夹的注册表脚本，即可恢复中文显示。
+****************************************************************************************************
+右键获取最高权限：（保存为reg文本格式）
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\runas]
+@="获取TrustedInstaller权限"
+
+[HKEY_CLASSES_ROOT\*\shell\runas\command]
+@="cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F"
+"IsolatedCommand"="cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F"
+
+[HKEY_CLASSES_ROOT\Directory\shell\runas]
+@="获取TrustedInstaller权限"
+“NoWorkingDirectory"=""
+
+[HKEY_CLASSES_ROOT\Directory\shell\runas\command]
+@="cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t"
+"IsolatedCommand"="cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t"
+*******************************************************************************************************
+设置Windows的对BIOS时间的读取方式为UTC时区：（保存为cmd文本格式）
+Reg add HKLM\SYSTEM\CurrentControlSet\Control\TimeZoneInformation /v RealTimeIsUniversal /t REG_DWORD /d 1
+*********************************************************************************************************
+右键打开管理员cmd:
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\background\shell\runas]
+"ShowBasedOnVelocityId"=dword:00639bc8
+
+[HKEY_CLASSES_ROOT\Directory\background\shell\runas\command]
+@="cmd.exe /s /k pushd \"%V\""
+********************************************************************************************************

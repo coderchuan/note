@@ -1,0 +1,134 @@
+<style>
+.container{
+    width:100vw;
+    height:100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}.solider{
+    --solider_width:600px;
+    --solider_height:600px;
+    --solider_padding:15px;
+    width:var(--solider_width);
+    height:var(--solider_height);
+    border-radius: var(--solider_padding);
+    padding:var(--solider_padding);
+    border:1px solid #5787fb;
+
+    --option_height:20px;
+    --image_width:calc(var(--solider_width));
+    --image_height:calc(var(--solider_height) - var(--option_height));
+}.solider .image{
+    height:var(--image_height);
+    width:100%;
+    overflow: hidden;
+}.solider .image > div{
+    height:100%;
+    width: 65535px;
+
+    display: flex;
+    overflow: hidden;
+}.solider .image > div > div{
+    height:var(--image_height);
+    width:var(--image_width);
+    position: relative;
+}.solider .image >div> div > img {
+    width:100%;
+    max-height: 100%;
+}.solider .option{
+    height:var(--option_height);
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}.solider .option > div{
+    background: #ECECEC;
+    width: 20px;
+    height: 4px;
+    float: left;
+    margin-right: 8px;
+    cursor: pointer;
+}.solider .option > div.active{
+    background: #428cfd;
+}.clear_both{
+    clear:both;
+}
+</style>
+
+<div class='container'>
+    <div class='solider'>
+        <div class='image'>  
+            <div>
+                <div><img src='./report_img1.png'/></div> 
+                <div><img src='./report_img2.png'/></div> 
+            </div> 
+        </div> 
+        <div class='clear_both'></div> 
+        <div class="option"></div> 
+    </div> 
+</div> 
+
+<script src='./jquery_3.2.1.js'></script>
+<script>
+var app={
+    controller:{
+        click:function(){
+            $(".option>div").off("click");
+            $(".option>div").on("click",function(){
+                var objs=$(".option>div");
+                var old_active_index=app.model.get_active_index(objs);
+                objs.removeClass('active');
+                $(this).addClass("active");
+                var new_active_index=app.model.get_active_index(objs);
+
+                var solid_index=old_active_index-new_active_index;
+                var solid_width=(solid_index*$(".solider .image > div > div").width())+"px";
+
+                $(".solider .image > div > div").animate({left:"+="+solid_width},1000);
+                app.controller.time();
+            });
+        },
+        time:function(){
+            if((typeof(time_solids)==='object')){$.each(time_solids,function(k,v){clearTimeout(v);});} 
+            time_solids=Array();
+            time_temp=setTimeout(function(){
+                if((typeof(time_solid_direction)==='undefined'))time_solid_direction=1;
+                var child=$(".option>div");
+                var cur_index=app.model.get_active_index(child);
+                var max_index=child.length;
+                var min_index=1;
+                if((cur_index>=max_index&&time_solid_direction==1)||(cur_index<=min_index&&time_solid_direction==-1))time_solid_direction*=-1;
+                cur_index+=time_solid_direction;
+                $(".option>div:nth-child("+cur_index+")").click();
+            },5000);
+            time_solids.push(time_temp);
+        },
+        flush:function(){
+            $.each(app.controller,function(k,v){if(k!=='ready'&&k!=='flush')v()});
+        },
+        ready:function(){
+            $(document).ready(function(){
+                app.view.image();
+                app.controller.flush();
+                $(".option>div:first-child").click();
+            });
+        }(),
+    },
+    model:{
+        get_active_index:function(objs){
+            var val=1;
+            $.each(objs,function(k,v){if($(v).hasClass("active")){val=parseInt(k)+1;return false;};return true;});
+            return val;
+        },
+    },
+    view:{
+        image:function(){
+            var child=$(".solider .image > div > div");
+            var html_str="";
+            $.each(child,function(k,v){
+                html_str+="<div></div>";
+            });
+            $(".option").html(html_str);
+        },
+    }
+}
+</script>

@@ -1,0 +1,6 @@
+﻿使用环境为Chrome浏览器
+1、打开https://account.xiaomi.com/pass/register
+2、使用快捷键Ctrl+Shift+C,然后在网页中选择"立即注册"按钮,源代码查看窗口中已经定位到相应的位置
+3、在源代码定位的位置的下一行有内容为<div style="display:none" class="other_register_area">的行,找到后在此行右击选择"Edit as HTML"
+4、在编辑窗口中的<div style="display:none" class="other_register_area">,将style="display:none"删除,关闭源代码窗口,网页中已出现"用邮箱注册"的按钮
+5、点击"用邮箱注册"即可

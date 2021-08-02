@@ -1,0 +1,7 @@
+WinRAR官方网站：
+https://www.rarlab.com/download.htm
+
+破解方法：
+1、下载繁体中文版本的WinRAR
+2、正常安装WinRAR繁体中文版本
+3、rarrge.key放入安装目录替换原有文件

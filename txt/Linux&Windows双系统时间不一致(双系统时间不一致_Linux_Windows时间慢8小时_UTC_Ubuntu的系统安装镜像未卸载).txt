@@ -1,0 +1,22 @@
+﻿双系统时间不一致的原因：
+Linux、Mac、Android等类UNIX系统认为主板BIOS中的时间为世界标准时间(UTC+0)，而系统中的时间是经过换算得出的时间，例如在中国，中国的时区为东八区，设BIOS时间为00:00，则系统时间为00:00+8。即BIOS中的时间比系统中的时间慢8个小时，时间更新后也是如此。
+Windows认为主板BIOS的时间为本地时间，而系统中的时间就是BIOS中的时间，例如在中国，中国的时区为东八区，设BIOS时间为00:00，则系统时间为00:00。即BIOS中的时间与系统中的时间相同，时间更新后也是如此。
+
+Windows系统与UNIX类系统都会更新系统中的时间为正确的时间，但是对BIOS中的时间的定义却不相同，因此时间联网更新后在BIOS中写入的时间也是不相同的，并且系统在开机时都会读取BIOS时间然后换算出系统时间，所以安装了Windows与类UNIX系统的双系统用户会出现每次开机时出现的时间不一致的问题。
+
+解决办法有两个，任选其一：
+一：设置Winodws对BIOS时间的认知为UTC+0时间而不是本地时间：
+在Windows管理员命令行中执行以下操作：
+Reg add HKLM\SYSTEM\CurrentControlSet\Control\TimeZoneInformation /v RealTimeIsUniversal /t REG_DWORD /d 1
+重启系统即可。
+
+二：设置Ubuntu对BIOS时间的认知为本地时间而不是UTC+0时间：
+在Ubuntu管理员命令行中执行以下操作：
+timedatectl set-local-rtc 1 --adjust-system-clock
+重启系统即可。
+**************************************************************************
+Ubuntu的系统安装相关：
+1、使用Ubuntu镜像中的自带的系统引导时，使用UEFI安装Ubuntu时如果磁盘中没有EFI分区，则应在安装Ubuntu时首先划分EFI分区，否则可能安装失败。
+2、使用grub2定制引导(见:方法20180513(引导文件_BIOS_Windows7_Win7_UEFI_双启动_GRUB2_引导_U盘启动_VHDX_ubuntu).txt)时，如果安装完成后出现“welcome to emergency mode.After login”的提示，请使用按下Enter键进入root命令行模式，执行此命令删除fstab中的已经不存在的分区(一般情况下是EFI分区)：nano /etc/fstab,然后保存文件重启即可。
+
+Ubuntu安装时出现iso镜像未卸载:使用快捷键Ctrl+Alt+T调出命令行，输入：sudo umount -l /isodevice，重新安装即可正常。

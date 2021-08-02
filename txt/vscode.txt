@@ -1,0 +1,100 @@
+****************************************************************************************** 
+插件：
+***********************************************************
+Chinese (Simplified) Language Pack for Visual Studio Code
+*****************************
+功能        简体中文支持
+安装        VSCode插件商店 
+配置        ctrl+shift+p 弹出搜索框
+            搜索 Configure Display Language 并点击 Configure Display Language 项 
+            选择安装好的语言包即可
+***********************************************************
+PHP IntelliSense
+***************************** 
+功能        php智能提示和跳转 
+安装        VSCode插件商店 
+依赖        php环境 
+***********************************************************
+PHP Debug
+***************************** 
+功能        php调试 
+安装        VSCode插件商店 
+依赖        php环境 
+配置        输出phpinfo(),在输出结果中寻找以下三项:
+                PHP Version                         php版本信息。如:7.1.13
+                Architecture                        构架。如:x86、x64
+                Zend Extension Build                扩展构建编号。如:API320160303,NTS,VC14
+            打开https://xdebug.org/download网站,下载调试扩展： 
+                windows:
+                    1.下载.dll扩展:
+                        根据"PHP Version"从左往右数第二个小数点之前的信息寻找到对应版本的的下载选项;
+                        根据"Architecture"确定构架。x86 对应 32bit ; x64 对应 64bit;
+                        根据"Zend Extension Build"，确定扩展构建版本。
+                            "Zend Extension Build"项中含有"NTS"字符则选择不含"TS"字样的下载选项,含有"TS"字符则选择含有"TS"字样的下载选项;
+                            根据"Zend Extension Build"中的信息确定VC版本号。
+                    2.打开php环境路径/ext目录,把下载的.dll文件放入此文件夹内
+                    3.打开php环境路径/php.ini文件,对以下选项进行配置:
+                        zend_extension="php_xdebug-2.5.5-5.6-vc11-nts.dll"      ;扩展路径。如果放在php环境路径/ext目录下则只需填写文件名称,否则要填写绝对路径
+                        xdebug.remote_enable=1                                  ;开启远程调试。
+                        xdebug.remote_port="9001"                               ;调试端口号。nginx9000端口为默认端口,尽量不使用9000端口 
+                        xdebug.remote_host="127.0.0.1"                          ;程调试的ip地址，即你自己的本机ip 
+                        xdebug.remote_autostart=1                               ;调试自动启动。
+                        xdebug.remote_handler="dbgp"       
+                    4.打开vscode,点击调试->打开配置,将configurations项中的port值改成与第3步中的端口号相同即可 
+                    5.点击调试->启动调试,运行php脚本或在网页中打开php即可在vscode中进行调试
+***********************************************************
+Code Runner
+*****************************
+功能        代码运行器
+安装        VSCode插件商店 
+依赖        运行的语言的环境，例如:php环境 
+*********************************************************** 
+Remote-SSH
+*****************************
+功能        连接远程主机开发环境(使用SSH协议) 
+安装        VSCode插件商店 
+依赖        客户端SSH命令行 
+            服务器端curl或wget 
+配置        配置格式详见ssh.txt中的~/.ssh/config配置格式 
+***********************************************************
+Remote-WSL
+*****************************
+功能        连接WSL开发环境
+安装        VSCode插件商店
+依赖        WSL子系统
+***********************************************************
+git
+*****************************
+功能        版本控制
+安装        VSCode内置
+依赖        git命令行工具   
+            SSH命令行 
+配置        git配置(配置方式详见git.txt中关于git的介绍) 
+            ssh配置(配置格式详见ssh.txt中的~/.ssh/config配置格式) 
+备注        在vscode中使用git版本控制时,使用ssh协议时只能使用无密码的ssh-key访问。使用http(s)协议可以使用帐户名密码访问 
+****************************************************************************************** 
+配置:
+***********************************************************
+配置文件:
+*****************************
+setting.json:
+{
+    "editor.wordWrap": "on",                                        //启用换行功能(当一行显示不下时，自动换行)
+    "editor.largeFileOptimizations": false,                         //启用大文件支持(当文件超过一定的行数时，仍然支持语法高亮而不是关闭语法高亮) 
+    "editor.tabSize":6,                                             //tab键的宽度为6，需与"editor.detectIndentation":false结合使用
+    "editor.detectIndentation":false,                               //与"editor.tabSize"结合使用设置tab键的宽度
+    "git.path":gitPath,                                             //git环境路径 例如:"C:/program/cmder/vendor/git-for-windows/bin/git.exe" 
+    "remote.SSH.configFile":configFile,                             //Remote-SSH配置文件的路径,默认为"~/.ssh/config",可更改,例如:"C:/Users/yang/.ssh/config_for_vscode_remote_ssh"(配置格式详见linux.txt中的~/.ssh/config配置格式) 
+    "php.validate.executablePath":configFile,                       //"PHP IntelliSense"插件的php环境。如果不配置此项,则默认为系统环境变量。例如:"C:/program/phpstudy2018/PHPTutorial/php/php-7.2.1-nts/php.exe" 
+    "editor.fontFamily":fontName,                                   //显示字体。可以配置多种字体,每种字体应该使用单引号包裹,每种字体应使用英文逗号分隔,整体配置符串使用双引号包裹。Windows中字体名称使用文件夹"C:\Windows\Fonts"下的字体名 
+    "editor.fontSize":16                                            //字体大小。        
+}          
+******************************************************************************************
+使用:
+***********************************************************
+正则表达式(使用PCRE规范)，与PCRE有稍许不同，以下几点需要注意： 
+*****************************
+1、使用正则替换时，替换内容使用子组可用$N，N表示第N个子组；在正则表达式中使用子组仍然是\N，N表示第N个子组。
+2、\s和\S族字符中默认都没有\n符号 
+3、Unicode匹配模式无效 
+****************************************************************************************** 

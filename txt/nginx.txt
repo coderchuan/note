@@ -1,0 +1,300 @@
+*************************************************************************************
+安装
+***********************************************************
+1.sudo apt install nginx -y 
+2.sudo yum install nginx -y 
+*****************************************************************************************
+配置:
+***********************************************************
+说明:
+*****************************
+配置文件                nginx.conf,以下是配置文件位置:
+                            ubuntu      /etc/nginx/nginx.conf 
+                            windows     安装目录/conf/nginx.conf 
+配置项参数类型          标识符      
+                            示例    on 
+                            示例    off 
+                            示例    auto  
+                        整数    
+                            示例    404
+                            示例    9007 
+                        字符串  
+                            规则    字符串中不含空格等特殊字符时,无需使用双引号包裹 
+                                    字符串中含有空格等特殊字符时,需要使用双引号包裹
+                                    字符串代表正则表达式时,需要使用双引号包裹
+                                    使用双引号包裹的字符串中含有变量时,变量名(不含$)需要使用大括号({})包裹
+                            示例    /image 
+                                    "/program Files"
+                                    "${uri}/img"
+                        块语句      
+                            示例    { listen 9007; } 
+配置语句                每个配置语句使用分号(;)结尾,但是配置参数类型为"块语句"的配置项不用使用分号结尾,每条语句单独一行  
+注释                    #(井号),语句前 
+配置块                  每个配置块(除全局配置外)使用中括号包裹 
+文件夹                  文件夹应该以斜杠(/)结尾 
+内部重定向              通过在nginx内部进行处理,网址不会改变。
+外部重定向              将网址信息返回给浏览器,让浏览器通过网址重新发起请求,地址栏网址会改变。分为临时重定向(302)与永久重定向(301) 
+相对路径                路径可以使用绝对路径或相对路径(不推荐),以下是相对路径的默认父目录位置:
+                            ubuntu      /usr/share/nginx/ 和 配置文件当前目录
+                            windows     安装目录/ 和 配置文件当前目录
+mime.types文件          文件扩展名与文件类型映射表,mime.types路径如下:
+                            ubuntu      /etc/nginx/mime.types
+                            windows     安装目录/conf/mime.types 
+WEB_HOST[PORT][URI][PATH_INFO][QUERY] URL格式  
+                            WEB_HOST    主机地址,分为两部分:
+                                            PROTOCOL    网络协议,如(http://、https://)
+                                            HOST        主机域名或IP,如(www.baidu.com、192.168.32.25) 
+                            PORT        端口号,如(:8080) 
+                            URI         资源路径,以WEB_HOST为根目录的资源路径,如(/image/abc.png,/text/) 
+                            PATH_INFO   URI与QUERY之间的文本 
+                            QUERY       参数,如(?id=35&type=file) 
+                            示例        http://www.baidu.com:80/s.php/foo/bar.html?wd=123   
+set $VAR_NAME VALUE     设定变量    
+                            VAR_NAME    变量名,当要使用这个变量时,应该这样使用:$VAR_NAME    
+                            VALUE       变量值。 
+浏览器可识别常用状态码  取值与含义如下:
+                            200     正常 
+                            400     请求无效
+                            401     没有权限 
+                            403     禁止访问 
+                            404     资源不存在
+                            405     资源被禁止
+                            406     无法接受的请求 
+                            407     要求代理身份验证
+                            410     永远不可用
+                            412     先决条件失败
+                            414     URI太长
+                            500     内部服务器错误
+                            501     未实现 
+                            502     网关错误 
+内置变量                $document_root          web根路径(在配置了fastcgi的location中表示fastcgi服务器的可执行文件(例如php文件)所在的根路径),与root,alias有关 
+                        $fastcgi_path_info      传递给fastcgi服务器的PATH_INFO参数,与fastcgi_split_path_info有关 
+                        $fastcgi_script_name    执行的目标脚本,fastcgi服务器执行的脚本文件路径,与fastcgi_split_path_info有关
+                        $request_filename       访问的目标文件,与root,alias,try_files有关。 
+                                                    如果访问的目标是文件夹,此时如果该目标文件夹下有index中所定义的文件,则在$uri后追加index文件,然后发起内部重定向。
+                                                    内部重定向失败多次后发起外部重定向(301),外部重定向失败多次后停止该次请求。 
+                        $uri                    nginx服务器的$uri信息,初始值为URI(如果URI以/结束且index配置项中至少有一个文件有效,则$uri重新赋值为URI+该有效文件),还与try_files有关
+                                                    location匹配时与此变量进行匹配 
+                        $request_uri            URL中的原始信息:[URI][PATH_INFO][QUERY] 
+                        $host                   URL中的原始信息:HOST 
+                        $query_string           URL中的原始信息:QUERY(不含问号(?)) 
+                        $is_args                URL中的原始信息:QUERY(只包含问号,或空字符) 
+                        $http_user_agent        浏览终端信息                        Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.62 $
+                        $remote_addr            客户端地址                          192.168.32.28
+                        $http_referer           URL跳转来源                         https://www.baidu.com/     
+                        $request                请求的URI和HTTP协议                 GET / HTTP/1.1
+                        $http_host              请求地址(浏览器地址栏中的值)        hc.com:9007
+                        $time_local             日志写入时间                        16/Mar/2020:00:43:32 +0800
+                        $time_iso8601           日志写入时间(iso8601格式)           2020-03-16T00:43:32+08:00
+                        $msec                   日志写入时间(微秒)                  1584291720.621 
+                        $status                 HTTP请求状态                        304
+                        $request_time           请求过程消耗的时间                  0.000      
+                        $body_bytes_sent        发送给客户端的文件内容大小          0
+                        $connection_requests    这个连接中的请求数量                1   
+                        $connection             连接序号                            1   
+                        $pipe                   是否通过HTTP-pipelined发送,是p否.   .
+                        $remote_user            客户端用户名称                      -
+                        $upstream_status        upstream状态                        -    
+                        $ssl_protocol           SSL协议版本                         -
+                        $ssl_cipher             交换数据的算法                      -
+                        $upstream_addr          提供服务的服务器地址                -     
+                        $upstream_response_time 服务器响应时间                      -
+*********************************************************** 
+查看启动失败原因:
+*****************************
+nginx -t                功能    查看nginx启动失败的原因 
+                        权限    root 
+***********************************************************
+通用配置项:
+*****************************
+include FILE                            将FILE文件中的配置信息包含在使用此语句的位置。 
+                                            使用位置        任何符合语法的位置 
+                                            FILE            表示文件的路径,如:/etc/nginx/modules-enabled/*.conf 
+error_log FILE {debug|info|notice|warn|(error)|crit|alert|emerg} 错误日志,严重程度依次递增,输出的信息量依次递减。子配置优先于全局配置。 
+                                            使用位置        main,http,server,location
+                                            FILE            表示文件的路径,如:/home/ubuntu/LOG/nginx/error.log 
+access_log {off|LOG_FILE [LOG_FORMAT]}  访问日志。对于同一个请求,如果URL没有发生改变,只会产生一条记录,即使在多个位置使用了access_log指令
+                                            使用位置        http,server,location 
+                                            off选项         关闭访问日志
+                                            LOG_FILE        LOG文件
+                                            LOG_FORMAT      LOG格式,可以选择二种方式:
+                                                                使用log_format已经定义好的FORMAT_NAME名称 
+                                                                省略此参数则使用系统默认的日志格式 
+rewrite PATTERN NEW_URL_OR_URI [flag]   网址重定向,如果PATTERN匹配成功则此条命令生效,否则跳过 
+                                            使用位置        server,location,if
+                                            PATTERN         对$uri进行正则匹配的正则表达式 
+                                            NEW_URL_OR_URI  要替换的URI或URL 
+                                                                如果此值以http://或https://开头,则对URL进行重写
+                                            flag            重定向选项,当不写flag参数时,依次尝试以下参数,直到执行成功或全部尝试结束。此参数可取以下值:
+                                                                break       将NEW_URL_OR_URI赋值给$uri,在当前location中继续执行并跳过剩下的rewrite指令
+                                                                last        内部重定向。将NEW_URL_OR_URI赋值给$uri,结束当前的location,使用$uri在nginx内部发起请求
+                                                                redirect    外部重定向。将NEW_URL_OR_URI返回客户端,状态码是302,临时重定向 
+                                                                permanent   外部重定向。将NEW_URL_OR_URI返回客户端,状态码为301,永久重定向 
+return {CODE | CODE STRING|URL}             返回状态码或重定向
+                                            使用位置        server,location,if 
+                                            CODE            状态码 
+                                                                200         STRING表示返回到网页的字符串,作为html显示。可用于调试
+                                                                301         STRING表示永久重定向的URL 
+                                                                302         STRING表示临时重定向的URL 
+                                                                400等       无STRING 
+                                                                500等       无STRING 
+                                            STRING          它的含义与CODE有关 
+                                            URL             使用302临时重定向到URL 
+if (CONDITION) { CONFIG_CODE }              条件判断
+                                            使用位置        server,location
+                                            CONDITION       判断条件,有以下规则:
+                                                                VAR                     如果变量不为空且不为0,则为真。
+                                                                VAR =   VAR_OR_CONST    用于判断=两边的字符串是否相等,相等为真。
+                                                                VAR !=  VAR_OR_CONST    用于判断!=两边的字符串是否相等,不相等为真
+                                                                VAR ~   PATTERN         大小写敏感的正则匹配,匹配成功则为真
+                                                                VAR ~*  PATTERN         大小不敏感的正则匹配,匹配成功则为真
+                                                                -f  VAR_OR_CONST        检查文件是否存在,存在为真
+                                                                !-f VAR_OR_CONST        检查文件是否存在,不存在为真
+                                                                -d  VAR_OR_CONST        检查文件夹是否存在,存在为真
+                                                                !-d VAR_OR_CONST        检查文件夹是否存在,不存在为真 
+                                                                -e  VAR_OR_CONST        检查文件、目录或符号链接是否存在,存在为真
+                                                                !-e VAR_OR_CONST        检查文件、目录或符号链接是否存在,不存在为真
+                                                                -x  VAR_OR_CONST        查是否为可执行文件,是则为真 
+                                                                !-x VAR_OR_CONST        检查是否为可执行文件,不是则为真 
+                                                                    其中:               VAR             表示变量 
+                                                                                        VAR_OR_CONST    表示变量或常量字符串 
+                                                                                        PATTERN         表示正则表达式 
+                                            CONFIG_CODE     如果判断条件为真,则执行此语句
+***********************************************************
+全局配置:
+*****************************
+user USER [GROUP]           所属用户和所属组,用于权限控制,用户的权限配置优先于组的权限配置。其中USER表示用户;GROUP表示用户组。  
+worker_processes {auto|NUM} 工作进程数量。NUM表示数字,可以自定义配置,配置为auto表示自动处理。此项关系到并发性能
+pid FILE                    服务守护进程文件,文件内容为进程PID。FILE表示文件的路径,如:/run/nginx.pid 
+load_module FILE            加载模块。FILE表示文件的路径,如:/usr/share/nginx/modules/ngx_stream_module.so 
+events EVENTS_CONF          events配置,EVENTS_CONF表示配置块,配置块中的配置项详见'events 配置'
+http HTTP_CONF              http配置,HTTP_CONF表示配置块,配置块中的配置项详见'http 配置'
+***********************************************************
+events 配置:
+*****************************
+worker_connections NUM      同一个工作进程同时能处理的连接数量。NUM表示数字,通常使用512 
+accept_mutex {on|off}       只唤醒一个工作进程处理新的连接,防止"惊群问题"发生,on表示开启。不配置此项时默认为on 
+multi_accept {on|off}       同一个工作进程同时处理多个连接,on表示开启。不配置此项时默认为off 
+use {select|poll|kqueue|epoll|resig|/dev/poll|eventport} 强制指定事件驱动模型。不配置此项时自动选择处理,无需人工干预 
+*********************************************************** 
+http 配置:
+***************************** 
+types MIME_TYPES                            文件扩展名与文件类型映射表,通常使用include包含mime.types文件来替换此项配置。MIME_TYPES表示配置块,配置块中的配置项详见'http mime types 配置'。 
+default_type MIME_TYPES_NAME                当请求的文件扩展名不在types映射列表中时,使用此类型。一般使用application/octet-stream作为此项值 
+charset TEXT_CODE                           设置文本编码。TEXT_CODE 表示文本编码,它可以取以下值:
+                                                utf-8               使用UTF8编码 
+log_format FORMAT_NAME FORMAT               日志格式定义
+                                                FORMAT_NAME         表示自定义日志名称     
+                                                FORMAT              字符串自定义日志格式,可以使用内置变量。
+sendfile {on|off}                           以sendfile方式传输文件,on表示开启。不配置此项时默认为off
+sendfile_max_chunk SIZE                     以sendfile方式传输文件的大小。SIZE表示大小设置,它有以下规则:
+                                                取值为0     不限制
+                                                20          限制大小为20b 
+                                                20k         限制大小为20Kb 
+                                                20m         限制大小为20Mb       
+keepalive_timeout TIMEOUT [header_timeout]  连接超时时间。header_timeout表示使用请求头部中的timeout值,这个参数可以使浏览器自动关闭连接
+                                                TIMEOUT     数字,超时时间,单位为秒 
+keepalive_requests NUMBER                   同一个连接中的请求次数限制。NUMBER表示数字,即限制次数。当不配置此项时,默认值为100
+server SERVER_CONF                          重要服务配置,通常使用include包含文件替换此项配置。SERVER_CONF表示配置块,配置块中的配置项详见'http server 配置'。 
+***********************************************************
+http mime types 配置:
+*****************************
+FILE_TYPE    FILE_EXT                       映射文件后缀对应的文件类型,可以无限制地增加此项配置。 
+                                                FILE_TYPE   表示文件类型,例如:text/html
+                                                FILE_EXT    文件后缀,多个后缀使用空格分隔,例如:html htm shtml 
+***********************************************************
+http server 配置:
+配置了fastcgi时最终访问$fastcgi_script_name
+否则最终访问$request_filename 
+*****************************
+server监听优先级,当匹配结果不唯一时,会依照以下规则逐渐匹配直到匹配到唯一的server:
+1.IP匹配(包括域名指向的IP),优先级最高;
+1.端口匹配,优先级低于IP匹配;
+2.域名完全匹配,优先级低于端口匹配;
+3.域名通配符匹配 
+  域名使用前置通配符匹,优先级低于完全匹配;
+  域名使用后置通配符匹配,优先级低于前置通配符匹配;
+4.域名使用正则匹配,优先级低于通配符匹配;
+5.默认匹配,listen配置项后有default或default_server,优先级低于正则匹配;
+6.端口相匹配的第一个server,优先级低于默认匹配。 
+***************************** 
+listen {[IP:]PORT|IP{(:80)|:PORT}}                      http添加对端口PORT的监听,本项server添加对本机IP地址访问的监听。可以无限制地增加此项配置,如无此项配置则相当于"listen 80;"
+                                                            PORT            整数,表示端口,例如:8080 
+                                                            IP              表示ipv4地址或ipv6地址,例如:192.168.32.28,[::](表示本机ipv6地址)。省略IP参数相当于监听本机ipv4地址  
+                                                            示例            listen 9006;                http添加对端口9006的监听,本项server添加对本机ipv4地址访问的监听
+                                                                            listen [::]:9006;           http添加对端口9006的监听,本项server添加对本机ipv6地址访问的监听 
+                                                                            listen 192.168.32.28;       http添加对端口80的监听,本项server添加对本机192.168.32.28地址访问的监听 
+                                                                            listen 192.168.32.28:9005;  http添加对端口9005的监听,本项server添加对本机192.168.32.28地址访问的监听 
+server_name SERVER_NAME ...                             对指定的域名(或IP)进行监听。可以使用通配符(*,通配符必须前置或后置且与其他字符用英文句点分隔)和正则表达式(正则表达式须以~符号开头,PREG) 
+                                                            SERVER_NAME     表示域名,多个域名使用空格分隔 
+root PATH                                               将$document_root赋值为PATH,$request_filename被重新赋值为$document_root+$uri。省略此项配置则默认为:root 默认相对路径的父目录/html 
+                                                            PATH            文件夹路径   
+index FILE_NAMES                                        nginx服务器默认访问文件。省略此项配置则默认为:index index.html  
+                                                            FILE_NAMES      默认主页,多个文件使用空格隔开
+location [=|^~|~|~*| ] PATTERN LOCATION_CONF            匹配规则,可以无限制地增加此项配置。匹配优先级按以下顺序排序 
+                                                            PATTERN         表示URI描述字符串或正则表达式(PREG) 
+                                                            匹配优先级      =               精确匹配。URI完全匹配 PATTERN 字符串 
+                                                                            ^~              前缀匹配。URI开头匹配 PATTERN 字符串 
+                                                                            ~               正则匹配。URI与区分大小写的正则 PATTERN 匹配 
+                                                                            ~*              正则忽略大小写匹配。URI与不区分大小写的正则 PATTERN 匹配 
+                                                                            空格            低优先级前缀匹配。 
+                                                                            全部匹配失败    如果http server中的index配置的文件存在,则访问http server中root配置的路径下的index配置的文件 
+                                                            LOCATION_CONF   LOCATION_CONF配置块,配置块中的配置项详见'location 配置' 
+*********************************************************** 
+location 配置 
+***************************** 
+alias PATH                                              将$document_root赋值为PATH,$request_filename被重新赋值。赋值规则如下:
+                                                            PATH            文件夹路径
+                                                            赋值规则        与location中使用的匹配方式有关:
+                                                                                精确匹配            $request_filename被重新赋值为:$document_root。
+                                                                                前缀匹配            $request_filename被重新赋值为:$document_root+$uri截去前缀匹配的内容剩下的文本
+                                                                                低优先级前缀匹配    同上 
+                                                                                正则匹配            $request_filename被重新赋值为:$document_root。建议结合正则捕获组使用
+                                                                                正则忽略大小写匹配  同上 
+                                                            示例            location ~ ([^/]*)$ {
+                                                                                alias /home/ubuntu/www1/$1;
+                                                                            }
+try_files FILE[/] {SPEC_URI|= CODE}                     检测FILE,如果FILE不存在,则直接重新定向到SPEC_URI或返回CODE;如果FILE存在,则重新赋值$request_filename与$uri,赋值规则如下:
+                                                            FILE[/]         表示资源路径,多个资源路径使用空格隔开(只会使用其中一个有效资源),后接(/)时表示访问文件夹,不接(/)时表示访问文件。一般使用($uri $uri/)代替此项值    
+                                                            SPEC_URI        如果所检测的资源不存在,则重新定向到指定的页面SPEC_URI  
+                                                            CODE            如果所检测的资源不存在,则返回状态码CODE 
+                                                            赋值规则        将$request_filename赋值为$document_root+FILE[/],$uri赋值为FILE[/] 
+proxy_pass  URL                                         代理 
+                                                            URL             表示代理地址,如(http://192.168.32.28) 
+                                                            示例            proxy_pass http://192.168.32.28;            访问http://192.168.1.1/proxy/test.html,则表示访问代理http://192.168.32.28/proxy/test.html 
+fastcgi_pass {IP:PORT|unix:UNIX_SOCKET}                 cgi服务器。cgi配置详见php.txt中关于Fastcgi配置的介绍。
+                                                            IP              服务器IP
+                                                            PORT            服务器端口 
+                                                            UNIX_SOCKET     SOCKET文件路径 
+                                                            示例            fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock 
+                                                            示例            fastcgi_pass 192.168.32.28:9008 
+fastcgi_index FILE_NAME                                 fastcgi服务器默认访问文件 
+                                                            FILE_NAME       如果URI以/结束,则在$fastcgi_script_name中保存URI+FILE_NAME
+fastcgi_split_path_info PATTERN                         对$fastcgi_script_name和$fastcgi_path_info变量进行重新赋值 
+                                                            PATTERN         正则表达式对$uri进行匹配。必须包含两个捕获组:
+                                                                                第一个捕获组中的内容赋值给$fastcgi_script_name 
+                                                                                第二个捕获组中的内容赋值给$fastcgi_path_info 
+fastcgi_param  PARAMS_NAME PARAMS_VALUE                 fastcgi服务器传入参数设置。应该使用"include fastcgi_params;"先包含默认参数设置。
+                                                            PARAMS_NAME     参数名,可取以下值:
+                                                                                SCRIPT_FILENAME     fastcgi服务器执行的脚本文件路径 
+                                                                                PATH_INFO           PATH_INFO值 
+                                                                                PATH_TRANSLATED     根路径与PATH_INFO组成的新路径 
+                                                            PARAMS_VALUE    参数值 
+示例：                                                  静态页面匹配示例:
+                                                            location / {
+                                                                root /var/www;
+                                                                index index;
+                                                                try_files $uri $uri/ =404;
+                                                            }
+                                                        php动态匹配示例:                                   
+                                                            location ~ \.php(.*)$ {
+                                                                root                    /var/www;
+                                                                fastcgi_pass            127.0.0.1:9000;
+                                                                fastcgi_index           index.php;
+                                                                fastcgi_split_path_info ^((?U).+\.php)(/?.+)$;
+                                                                include                 fastcgi_params;
+                                                                fastcgi_param           SCRIPT_FILENAME         $document_root$fastcgi_script_name;
+                                                                fastcgi_param           PATH_INFO               $fastcgi_path_info;
+                                                                fastcgi_param           PATH_TRANSLATED         $document_root$fastcgi_path_info;
+                                                            }
+*********************************************************** 

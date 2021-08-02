@@ -1,0 +1,42 @@
+*****************************************************************************************
+安装:
+下载并安装putty.exe          https://the.earth.li/~sgtatham/putty/latest/w64/putty.exe 
+下载并安装puttygen.exe       https://the.earth.li/~sgtatham/putty/latest/w64/puttygen.exe 
+下载并安装MTPuTTY            http://ttyplus.com/download/mtputty.exe                               
+***********************************************************
+putty使用ssh连接远程主机:
+***********************************************************
+1.获取公钥与私匙文件(putty中的私匙文件与openSsh的文件格式不一致,这两种文件相互转换需要使用puttygen.exe)： 
+        生成:在puttygen.exe中操作:Key->Generate key pair->根据提示在key下方的空白区域中移动鼠标直到完成
+                公钥            File->Save public key
+                私匙(openSsh)   Conversions->Export OpenSsh Key 
+                私匙(putty)     File->Save private key 
+        生成:在ssh命令行(Linux系统)中使用命令ssh-keygen(三次回车确认)生成public key与private key(文件名一般来说分别为id_rsa.pub与id_rsa),在puttygen.exe中操作:Conversions->Import key
+                公钥            id_rsa.pub
+                私匙(openSsh)   id_rsa 
+                私匙(putty)     File->Save private key 在puttygen.exe中操作:Conversions->Import key
+        转换:已经有公钥和私匙(假设公钥的名称为pub)的情况下,在puttygen.exe中操作:Conversions->Import key中导入私匙
+                公钥            pub
+                私匙(openSsh)   Conversions->Export OpenSsh Key 
+                私匙(putty)     File->Save private key 
+2.在putty.exe中配置远程连接:
+        左侧选择Session,右侧在Host Name中填写远程主机username@host,Port中填写ssh端口,Saved Session中填写连接名称(任意),随后点击Save。如果不需要使用私匙,到此处即已配置完成
+        左侧选择Connection->SSH->Auth,右侧在Private key file for authentication中选择私匙(putty)
+        左侧选择Session,右侧点击Save 
+*****************************************************************************************
+putty使用ssh代理连接远程主机:
+***********************************************************
+1.在putty.exe中配置跳板机(代理)到目标远程主机的连接:    
+        左侧选择Session,右侧在Host Name中填写远程主机username@host,Port中填写ssh端口,Saved Session中填写连接名称(任意,AGENT),随后点击Save。如果不需要使用私匙,到此处即已配置完成
+        左侧选择Connection->SSH->Auth,右侧在Private key file for authentication中选择私匙(putty)
+        左侧选择Connection->SSH->Tunnels,右侧在Source port中填写一个大于1024的四位数字MYPORT,在Destination中填写目标远程主机的ip与端口(host:port),点击Add,下方选择Local与Auto
+        左侧选择Connection,右侧在Seconds between keepalives(0 to turn off)中填写10,在low-level TCP connection options下方勾选全部选项 
+        左侧选择Session,右侧点击Save 
+2.访问目标远程主机的配置:
+        左侧选择Session,右侧在Host Name中填写远程主机username@localhost,Port中填写MYPORT,Saved Session中填写连接名称(任意,DEST),随后点击Save
+3.访问目标远程主机:
+        左侧选择Session,双击AGENT,打开窗口后不要关闭 
+        左侧选择Session,双击DEST,即可通过ssh代理访问目标远程主机 
+*****************************************************************************************
+MTPuTTY配置:
+运行mtputty.exe->Tools->PuTTY location->PuTTY(KiTTY) location中选择putty.exe->点击OK

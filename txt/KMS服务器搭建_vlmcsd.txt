@@ -1,0 +1,72 @@
+***********************************************************************
+安卓手机:
+********************************
+方法一：
+1、下载小付KMS并安装；
+2、在小付KMS中的设置选项中设置为热点模式，启用手机热点；
+3、点击启用服务器即可，日志中输出successfully字样即表明KMS服务器搭建成功，可以激活连接到热点的Office VOL或Windows VL。
+********************************
+方法二：
+1、在Android目录中找到手机对应的CPU构架的vlmcsd文件；
+2、将找到的文件拷贝到手机文件管理中并改名为kms；
+3、Root手机授权ES文件管理器，并把kms文件拷贝到system/bin中，并用ES文件管理器修改权限为755，然后取消对ES文件管理器的Root的授权；
+4、安装终端模拟器，对终端模拟器进行Root授权，运行以下命令：
+   su
+   kms
+5、KMS服务器搭建成功，本机的IP地址可以作为激活地址，用于激活与手机同一个局域中的Office VOL或Windows VL。
+*************************************************************************
+
+
+OpenWtr路由器：
+1、在Linux目录中找到电脑对应的CPU构架的vlmcsd文件和首层目录的kms.ini文件；
+2、将找到的文件文件拷贝到Windows电脑文件管理器中并改名为kms；
+3、用WinSCP登录路由器，在ect文件夹中创建kms文件夹，并将kms.ini与kms文件拷贝到ect\kms文件夹中，修改kms文件的属性为755；
+4、本地启动脚本的exit 0前加一行：/etc/kms/kms -i /etc/kms/kms.ini -p /tmp/kms.pid -l /tmp/kms.log；
+5、重新启动路由器，KMS服务器搭建成功，本机的IP地址可以作为激活地址，用于激活与手机同一个局域中的Office VOL或Windows VL。
+
+Win7:
+1、在Windows目录中找到对应CPU构架的vlmcsd文件；
+2、将找到的文件拷贝到电脑文件管理器中并改名为kms；
+3、把kms文件拷贝到C:\Windows\System32中；
+4、在命令行中运行以下命令：
+   自动启动：C:\Windows\System32\kms -s (移除kms服务开机自动启动的命令为：C:\Windows\System32\kms -S)
+   手动启动：kms
+5、把kms服务添加到防火墙的1688端口，重新启动Windows，KMS服务器搭建成功，本机的IP地址可以作为激活地址，用于激活与此电脑同一个局域中的Office VOL或Windows VL。
+
+Linux:
+1、在Linux目录中找到电脑对应的CPU构架的vlmcsd文件；
+2、将找到的文件文件拷贝到电脑文件管理器中并改名为kms；
+3、把kms文件拷贝到usr/bin中，打开命令行输入：sudo chmod 755 /usr/bin/kms，用于修改权限为755；
+4、在命令行中输入以下命令：
+   /usr/bin/kms
+5、把kms服务添加到防火墙的1688端口，KMS服务器搭建成功，本机的IP地址可以作为激活地址，用于激活与此电脑同一个局域中的Office VOL或Windows VL。
+
+Mac OS X:
+1、在MacOSX目录中找到电脑对应的CPU构架的vlmcsd文件；
+2、将找到的文件拷贝到电脑文件管理器中并改名为kms；
+3、把kms文件拷贝到usr/bin中，打开命令行输入：sudo chmod 755 /usr/bin/kms，用于修改权限为755；
+4、在命令行中运行以下命令：
+   /usr/bin/kms
+5、KMS服务器搭建成功，本机的IP地址可以作为激活地址，用于激活与此电脑同一个局域中的Office VOL或Windows VL。
+
+激活Windows VL:
+用管理员帐户运行CMD窗口执行以下命令：
+slmgr /skms 激活地址
+slmgr /ipk 安装密钥
+slmgr /ato
+
+示例：
+激活地址为：192.168.31.8
+安装密钥为：W269N-WFGWX-YVC9B-4J6C9-T83GX
+
+激活Office VOL:
+用管理员帐户运行CMD窗口执行以下命令：
+cd office安装路径
+cscript ospp.vbs /sethst:激活地址
+cscript ospp.vbs /inpkey:安装密钥
+cscript ospp.vbs /act
+
+示例：
+安装路径为：C:\Programs\Microsoft Office\Office14
+激活地址为：192.168.31.8
+安装密钥为：VYBBJ-TRJPB-QFQRF-QFT4D-H3GVB

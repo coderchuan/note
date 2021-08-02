@@ -1,0 +1,30 @@
+
+仅适用于C++11
+
+1、本地、UTF-8、UTF-16(大小端)、UTF-32(大小端)之间的编码进行任意转换;
+2、保存为codet.h文件，放在main.cpp同一目录下，并在main.cpp中包含此头文件#include"codet.h"
+3、参数说明：
+   第一个参数代表将要转换的字符串类(#include<string>、std::string,std::wstring,std::u16string,std::u32string)
+   第二个参数代表转换以后的字符串类(#include<string>、std::string,std::wstring,std::u16string,std::u32string)
+   第三个参数标志源字符串类使用的是大端还是小端，1为大端0为小端，若源字符串无大小端的区别如本地编码和UTF8编码，则此标志无效,默认为0
+   第四个参数标志转换后的字符串类使用大端还是小端，1为大端0为小端，若转换后的字符串无大小端的区别如本地编码和UTF8编码，则此标志无效,默认为0
+   第五个参数：'U'代表把本地编码字符转换为UNICODE编码(UTF-8、UTF-16、UTF-32)字符
+               'L'代表把UNICODE编码(UTF-8、UTF-16、UTF-32)字符转换为本地编码字符
+               只有本地编码与UNICODE编码相互转换时才有第五个参数
+4、调用示例：
+   trans(string,string);             //不转换，相当于把第一个参数复制到第二个参数
+   trans(string,wstring);            //把string的UTF-8编码转换成wstring的编码,string的UTF-8不区分大小端，wstring默认使用小端;
+   trans(string,u32string,0,1);      //把string的UTF-8编码转换成u32string的UTF-32编码,string的UTF-8不区分大小端，u32string默认使用大端;
+   trans(wstring,u16string);         //把wstring的编码转换成u16string的UTF-16编码，两者默认使用小端;
+   trans(wstring,u16string,0,1);     //把wstring的编码转换成u16string的UTF-16编码，wstring使用小端，u16string使用大端;
+   trans(u32string,u16string,1,1);   //把u32string的UTF-32编码转换成u16string的UTF-16编码，u32string使用大端，u16string使用大端;
+   trans(wstring,u16string,1);       //把wstring的编码转换成u16string的UTF-16编码，wstring使用大端，u16string默认使用小端;
+   trans(wstring,string);            //把wstring的编码转换成string的UTF-8编码，wstring默认使用小端;
+   trans(wstring,string,1);          //把wstring的编码转换成string的UTF-8编码，wstring使用大端;
+   trans(string,string,0,0,'U');     //把string的本地编码转换为string的UTF-8编码
+   trans(string,string,0,0,'L');     //把string的UTF-8编码转换为string的本地编码
+   trans(string,u16string,0,0,'U');  //把string的本地编码转换成u16string的UTF-16编码，u16string使用小端;
+   trans(string,u16string,0,1,'U');  //把string的本地编码转换成u16string的UTF-16编码，u16string使用大端;
+   trans(u16string,string,0,0,'L');  //把u16string的UTF-16编码转换成string的本地编码，u16string使用小端;
+   trans(u16string,string,1,0,'L');  //把u16string的UTF-16编码转换成string的本地编码，u16string使用大端;
+   

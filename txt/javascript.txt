@@ -1,0 +1,163 @@
+*************************************************
+javascript命名规则：区分大小写，在命名时应该使用"驼峰命名法"
+*************************************************
+elements对象
+*********************
+成员:
+elements.属性名     动态获得元素自有属性的值 
+
+函数:
+string elements.getAttribute(string attr_name)      
+        功能        获取元素的初值或获取通过setAttribute函数设置的值
+        返回值      返回元素的属性值,如果元素不存在当返回null或"" 
+        attr_name   属性名
+undefined elements.setAttribute(string attr_name,string value)
+        功能        设置元素的属性值 
+        返回值      undefined     
+************************************************* 
+内置函数： 
+********************* 
+int setTimeout(function fun,int delay,var paramN)
+        功能        延迟执行函数 
+        返回值      整数，返回将要执行的函数的唯一ID，在该函数还没有执行前可以通过clearTimeout()函数传入唯一ID来取消该函数的执行
+        fun         闭包函数  
+        delay       延迟毫秒数
+        paramN      闭包函数的第N个参数,多个参数使用逗号(,)隔开;
+int setTimeout(string code,int delay) 
+        功能        延迟执行代码
+        返回值      整数，返回将要执行的函数的唯一ID，在该函数还没有执行前可以通过clearTimeout()函数传入唯一ID来取消该函数的执行
+        code        javascript代码 
+        delay       延迟毫秒数
+undefined clearTimeout(int timeoutID)
+        功能        在setTimeout设定的延迟执行函数还没有执行时,取消延迟执行 
+        返回值      undefined 
+        timeoutID   由setTimeout产生的唯一ID  
+***********************************************************************************************************************
+jQuery
+****************************************************************************************
+$.ajax的使用(参数详解,参数类型后使用':'接参数，每个参数之间应用使用','隔开)
+*****************************
+原型:jQuery.ajax([settings])
+settings:      //PlainObject,$.ajax的参数配置,它可以配置以下的参数：
+               type           //请求方法
+                              //"post",此为默认值
+                              //"get"
+               url            //请求地址，远程文件地址(http)或本地文件地址，默认值为当前文件 
+               data           //Object或String类型,发送到服务器的数据。当Object中键所对应的值为空对象时,则不传递此键所对应的值;若Object为空,则不传递参数
+               contentType    //String数据类型或false,发送的数据类型和编码方式
+                              //"application/x-www-form-urlencoded",默认值,自动转换
+                              //"application/json;charset=utf-8",发送的是json数据类型,编码方式为utf-8
+                              //"application/javascript;charset=utf-8",发送的是javascript脚本类型
+                              //"text/html;charset=utf-8",发送的是html数据类型,编码方式为utf-8
+                              //"text/xml;charset=utf-8",发送的是xml数据类型,编码方式为utf-8
+                              //"text/plain;charset=utf-8",发送的是普通文本,编码方式为utf-8
+                              //"image/GIF",发送的是GIF图片
+                              //"image/JPEG",发送的是JPEG图片
+                              //false,发送的是文件而不是文本
+               dataType       //String类型,接收到数据进行处理时dataFilter使用的数据类型
+                              //"html",默认值
+                              //"json"
+                              //"text"
+                              //"xml"
+                              //"script"
+                              //"jsonp",服务器返回的是跨域调用本地函数的脚本。数据为此类型时,将会自动执行jsonp参数下的jsonpCallback值的回调函数名
+               jsonp          //String数据类型,请求中包含的回调函数的参数名称。默认为callback
+               jsonpCallback  //String数据类型,请求中包含的回调函数名称，默认为ajax自动生成的随机函数名。此函数是直接调用的是success参数中的函数。
+               beforeSend     //function(XMLHttpRequest)类型,发送请求前执行的javascript函数。XMLHttpRequest对象是http请求的参数。参数可选
+               success        //function(data,textStatus)类型,请求成功后执行的函数。data是经dataFilter处理后的数据,textStatus是状态信息。参数可选
+               error          //function(XMLHttpRequest,textStatus,errorThrown)类型,请求失败后执行的函数。XMLHttpRequest对象是http请求的参数,textStatus是状态信息,errorThrown是错误对象。参数可选
+               complete       //function(XMLHttpRequest,textStatus)类型,请求完成后执行的函数(成功或失败)。XMLHttpRequest对象是http请求的参数,textStatus是状态信息。参数可选
+               dataFilter     //function(data,type)类型,请求成功后对接收的数据类型进行处理,返回处理后的数据。data是从服务器返回的数据,type为dataType参数设置的类型。参数可选
+               timeout        //Number数据类型,请求超时时间
+               cache          //Boolean数据类型,是否缓存
+                              //true,默认值
+                              //false
+               async          //Boolean数据类型,是否异步请求
+                              //true,默认值,此时为异步请求,此时浏览器不被阻塞
+                              //false,设置为此值时,浏览器将被阻塞
+               global         //Boolean数据类型,是否触发全局ajax事件
+                              //true,默认值
+                              //false
+               ifModified     //Boolean数据类型,是否仅在服务器数据改变时获取新数据。服务器数据改变判断的依据是Last-Modified头信息。
+                              //true
+                              //false,默认值
+               username       //String数据类型,请求时使用的用户名
+               password       //String数据类型,请求时使用的密码
+               scriptCharset  //String数据类型,返回的数据为脚本时,使用此编码执行
+*****************************
+示例：
+$.ajax(
+        {
+            type:"post",
+            url:"./test7.php",
+            data:{"test":"测试"},
+            async:true,
+            dataType:"html",
+            success:function(received) 
+            {
+                console.log(received);
+            }
+        }
+      );
+****************************************************************************************
+$.post使用：(它是$.ajax方法的post方法的异步简化版本)
+*****************************
+原型:jQuery.post(url[,data][,success][,dataType])
+url            //请求地址，远程文件地址(http)或本地文件地址，默认值为当前文件
+data           //PlainObject或String类型,发送到服务器的数据
+success        //function(data,textStatus)类型,请求成功后执行的函数。data是经dataFilter处理后的数据,textStatus是状态信息。参数可选
+dataType       //String类型,接收到数据进行处理时dataFilter使用的数据类型
+               //"html",默认值
+               //"json"
+               //"text"
+               //"xml"
+               //"script"
+*****************************
+$.post对象可以调用以下方法：
+done(fuction(){})        //请求成功后的处理方法
+fail(function(){})       //请求失败后的处理方法
+always(function(){})     //请求后总是执行的处理方法
+*****************************
+示例1：
+$.post("./test.php",
+      {"test":"测试"},
+      function(received){console.log(received);},
+      "html");
+
+示例2：
+var jqxhr=$.post("example.php",function(){alert("success");})
+           .done(function(){alert("second success");})          //设置done函数
+           .fail(function(){alert("error");})                   //设置fail函数
+           .always(function(){alert("finished");});             //设置always函数
+jqxhr.always(function(){alert("second finished");});            //重新设置always函数
+****************************************************************************************
+$.get使用：(它是$.ajax方法的get方法的异步简化版本)
+*****************************
+原型:jQuery.get(url[,data][,success][,dataType])
+url            //请求地址，远程文件地址(http)或本地文件地址，默认值为当前文件
+data           //PlainObject或String类型,发送到服务器的数据
+success        //function(data,textStatus)类型,请求成功后执行的函数。data是经dataFilter处理后的数据,textStatus是状态信息。参数可选
+dataType       //String类型,接收到数据进行处理时dataFilter使用的数据类型
+               //"html",默认值
+               //"json"
+               //"text"
+               //"xml"
+               //"script"
+*****************************
+$.get对象可以调用以下方法：
+done(fuction(){})        //请求成功后的处理方法
+fail(function(){})       //请求失败后的处理方法
+always(function(){})     //请求后总是执行的处理方法
+*****************************
+示例1：
+$.get("./test.php",
+      {"test":"测试"},
+      function(received){console.log(received);},
+      "html");
+
+示例2：
+var jqxhr=$.get("example.php",function(){alert("success");})
+           .done(function(){alert("second success");})          //设置done函数
+           .fail(function(){alert("error");})                   //设置fail函数
+           .always(function(){alert("finished");});             //设置always函数
+jqxhr.always(function(){alert("second finished");});            //重新设置always函数

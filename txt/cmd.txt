@@ -1,0 +1,25 @@
+************************************************************************************************************************
+CMD 
+********************************************************************
+判断当前CMD是不是管理员： 
+在命令行中执行以下命令：
+net session
+如果执行结果是拒绝访问，表明当前用户为非管理员，反之则为管理员用户。
+********************************************************************
+CMD指令
+**********************************
+wslconfig /list                 列出Windows10中安装的所有Linux子系统  
+wslconfig /setdefault NAME      设置命令"bash"默认启动的Linux子系统。NAME表示"wslconfig /list"命令列出的Linux子系统名称 
+                                    若想要在命令行中启动Linux子系统，可以用管理员身份进入C:\Program Files\WindowsApps目录找到含有子系统名称且含有"X64"字样的目录，其中的exe文件的名称(可以不加后缀)就是启动对应的Linux子系统的命令。以下是常见的Linux子系统启动命令:
+                                        启动debian      debian 
+                                        启动centos      mydistro 
+                                        启动ubuntu18.04 ubuntu1804 
+cmd /k "CMDCODE"                使用cmd执行命令"CMDCODE",常用于第三软件调用.执行命令CMDCODE后保持(keep)窗口 
+cmd /c "CMDCODE"                使用cmd执行命令"CMDCODE",常用于第三软件调用.执行命令CMDCODE后关闭(close)窗口  
+ipconfig /flushdns              重新加载hosts文件 
+start dir                       打开dir的图形界面目录 
+net session                     列出或断开本地计算机和与之连接的客户端的会话 
+                                    不带参数        列出与本的session连接。另可用于测试当前窗口或脚本是否具有管理员权限，如果拒绝访问则没有管理员权限，反之则有管理员权限。
+                                    \\name          列出与名为name的session连接 
+                                    /delete         删除与本机的session连接 
+                                    \\name /delete  删除与名为name的session连接  

@@ -1,0 +1,48 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title id='title'>我的笔记</title>
+    <script src="./index/js/marked.js"></script>
+</head>
+<body>
+    <div id="content">
+        加载中...
+    </div>
+</body>
+</html>
+
+<script>
+    var url=window.location.href;
+    var pattern = /title=\/?([^&?]+)\/?/;
+    var result=url.match(pattern);
+    var url="";
+    var title="";
+    if(result && result.length>0){
+        var title_str=result[1];
+        url="./"+title_str+".md";
+        result=title_str.match(/([^\/]+)$/);
+        if(result && result.length>0){
+            title=result[1];
+        }
+        get(url,title);
+    }else{
+        url="./index/index.md"+"?random="+parseInt(Math.random()*100000);
+        title="我的笔记";
+        get(url,title);
+    }
+    function get(url,title) 
+    {
+        if(url!==''){
+            var req = new XMLHttpRequest();
+            req.open('GET', url, true);
+            req.onloadend = function() {
+                var md_to_html=marked(req.responseText);
+                document.getElementById('title').text =decodeURI(title);
+                document.getElementById('content').innerHTML=md_to_html;
+            };
+            req.send(null);
+        }
+    }
+</script>
+
+

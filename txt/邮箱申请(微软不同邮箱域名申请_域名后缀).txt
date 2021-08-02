@@ -1,0 +1,46 @@
+微软不同的邮箱域名申请方法(脚本)：
+用Chrome或Edge浏览器打开微软帐户设置别名的位置，按下F12键，在控制台处输入如下代码：在弹出的窗口中输入想要的邮箱域名确定，不管想要什么样名称的邮箱，第一次请先输入admin，第二次以后才能输入自己想要的邮箱域名。
+var sub = window.prompt('请输入msn.com或hotmail.com或live.com或live.cn');if(sub){document.getElementById("SingleDomain").value = sub;document.getElementById("idSingleDomain").innerText ="@"+sub;};
+1、中国可注册outlook.com，hotmail.com，live.com，live.cn后缀。
+2、香港可注册outlook.com，hotmail.com.hk，hotmail.com，live.hk后缀。
+3、台湾可注册outlook.com，hotmail.com.tw，hotmail.com，livemail.tw后缀。
+4、日本可注册outlook.jp，outlook.com，hotmail.co.jp，live.jp后缀。
+5、韩国可注册outlook.kr，outlook.com，hotmail.co.kr，hotmail.com，live.co.kr后缀。
+6、美国可注册outlook.com，hotmail.com，live.com后缀。
+7、英国可注册outlook.com，hotmail.co.uk，live.co.uk后缀。
+8、法国可注册outlook.fr，outlook.com，hotmail.fr，live.fr后缀。
+9、加拿大可注册outlook.com，hotmail.ca，hotmail.com，live.ca后缀。
+10、澳大利亚可注册outlook.com，outlook.com.au，hotmail.com，hotmail.com.au，live.com.au后缀。
+11、新加坡可注册outlook.sg，outlook.com，hotmail.sg，hotmail.com，live.com.sg后缀。
+12、新西兰可注册outlook.co.nz，outlook.com，hotmail.co.nz，live.com后缀。
+13、德国可注册outlook.de，outlook.com，hotmail.de，hotmail.com，live.de后缀。
+14、墨西哥可注册outlook.com，hotmail.com，live.com.mx后缀。
+15、爱尔兰可注册outlook.ie，outlook.com，hotmail.com，live.ie后缀。
+16、印度可注册outlook.com，outlook.in，hotmail.com，hotmail.co.in，live.in后缀。
+
+
+
+各国(地区)经典域名：
+at 奥地利
+ai 安奎拉
+am 亚美尼亚
+bb 巴巴多斯
+cn 中国
+ch 瑞士
+do 多米尼加共和国
+er 厄立特利亚
+ie 爱尔兰
+in 印度
+is 冰岛
+it 意大利
+li 列支敦士登
+ni 尼加拉瓜
+no 挪威
+re 留尼汪岛
+sd 苏丹
+so 索马里
+ug 乌干达
+ye 也门
+my 马来西亚
+mv 马尔代夫
+mo 澳门

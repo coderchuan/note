@@ -1,0 +1,10 @@
+1、解压包含企业版的Windows10_1709版本的ISO镜像，例如解压到D:\ISO文件夹；
+2、使用Dism++挂载解压后的ISO文件夹中的install.wim文件(D:\ISO\sources\install.wim)，版本选择Enterprise，挂载到D:\WIM文件夹；
+3、关闭Dism++，确保网络连接正常，用管理员权限运行命令提示符，输入以下命令：
+   Dism /image:D:\wim /Get-TargetEditions
+   Dism /image:D:\wim /Set-Edition:EnterpriseG
+   Dism /image:D:\wim /Set-ProductKey:YYVX9-NTFWV-6MDM3-9PT4T-4M68B
+
+4、运行成功后，关闭命令提示符，打开Dism++，选择另存为映像，保存到D:\install.wim；
+5、将D:\install.wim复制到D:\ISO\sources文件夹下，替换原有的install.wim文件；
+6、使用Dism++的ISO生成器，保存到D:\Windows10_EnterpriseG，标签为Windows10_EnterpriseG。

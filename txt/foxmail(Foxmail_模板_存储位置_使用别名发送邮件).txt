@@ -1,0 +1,13 @@
+Foxmail 7.2更改默认的邮件存储位置：
+1、首先在Foxmail中成功登录一个邮箱地址，然后关闭Foxmail应用程序；
+2、在Foxmail的安装目录下，找到一个名为“FMStorage.list”的文件，使用记事本的方式打开，将里面的“Storage\”字符串更改为你想要的路径，例如更改为“D:\Foxmail\”；
+3、把安装目录下的Storage目录下的以邮箱名命名的文件夹移动到想要的路径下，例如移动到“D:\Foxmail\”
+4、重启Foxmail，更改默认存储的工作已经完成。
+
+Foxmail中使用Microsoft邮箱的别名发送邮件：
+1、首先直接使用Microsoft主要账户名称在Foxmail客户端中成功登录；
+2、在设置菜单中选择账号选项，Email地址中填写想要使用的别名、显示名称就是在Foxmail中会显示的邮箱名称，为了便于区分建议也使用想要使用的别名、发信名称可以不必填写，但是为了便于识别建议填写在Microsoft中使用的姓名；
+3、点击确定以保存更改。
+
+Foxmail邮件模板使用方法：
+安装好Foxmail后，把邮件模板中的.mht文件放入Foxmail 7.2\Global\Template目录中，例如：C:\Program\Foxmail 7.2\Global\Template

@@ -1,0 +1,2 @@
+如果有home.zip.001与home.zip.002的压缩文件，WINRA无法解压，执行以下命令后即可解压：
+copy /b home.zip.* home.zip

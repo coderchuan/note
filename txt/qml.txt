@@ -1,0 +1,720 @@
+**********************************************
+基本语法：
+property alias ____ : ____  //别名,参数分别是新名称、旧名称,如果父对象的子对象欲被父对象外部的对象访问,必须对id属性定义一个别名.
+
+所有QML类的公共可写属性
+id : ____                   //唯一标识符.只能用小写字母开头,其他字符可以由小写字母、大写字母、数字和下划线组成.
+objectName : string         //对象名称
+
+所有QML类的公共信号(id属性除外):
+形式:on+属性名+Changed    //构成一个信号名
+**********************************************
+Gradient(渐变)类
+可写属性：
+stops : list<GradientStop>
+**********************************************
+GradientStop(渐变位置)类：
+可写属性：
+position : real            //位置0-1,0为起点,1为终点
+color : color              //颜色
+**********************************************
+Fontloader类
+可写属性:
+source : url               //加载的字体远程或本机地址
+
+只读属性 : 
+name : string              //加载字体后的名称
+status : enumeration       //字体加载的状态
+                           //FontLoader.Null(未加载)
+                           //FontLoader.Ready(加载完成)
+                           //FontLoader.Loading(加载中) 
+                           //FontLoader.Error(加载出错)
+
+LCD_DIGIT字体下载(截止到2019年2月6日仍然有效):https://www.dafont.com/theme.php?cat=302
+**********************************************
+Path类
+可写属性:
+closed : bool                       //是(true)否(false)闭合路径
+startX : real                       //起点的X坐标
+startY : real                       //起点的Y坐标
+pathElements : list<PathElement>    //路径列表,路径类型可以是以下几种
+                                    //PathLine       直线类
+                                    //PathQuad       二次贝赛尔曲线类
+                                    //PathCubic      三次贝赛尔曲线类
+                                    //PathArc        弧类
+                                    //PathAngleArc   由半径,圆,角度指定的弧类
+                                    //PathSvg        由svg字符串描述的字符串类
+                                    //PathCurve      由Catmull-Rom曲线上的点生成的曲线类
+                                    //PathAttribute  路径属性类
+                                    //PathPercent    路径上的组件的间距类
+**********************************************
+Animation动画类(抽象类,不可直接使用,进程在主线程中)
+可写属性:
+alwaysRunToEnd : bool      //是(true)否(false)完整地播放当前正在播放的动画一次
+                           //当值为true时即使设置running的值为false或者调用了stop函数也会播放完整当前的动画一次
+                           //当值为false时设置running的值为false或者调用了stop函数时,动画将会在当前的状态下立即停止,并保持当前的状态
+                           //默认值为false.注意:在Transition中,此属性没有作用
+loops : int                //动画循环播放的次数,默认次数为1次.设置running的值为false或者调用了stop函数时停止,如果alwaysRunToEnd值为true,则当前动画播放完整的一次后再停止
+paused : bool              //是(true)否(false)暂停播放
+running : bool             //是(true)否(false)正在播放动画
+                           //当动画开始播放后,循环次数没有使用完成并且没有调用stop函数或设置running为false时,此属性值就是true
+                           //当动画没有开始播放,循环次数使用完或者设置running或调用stop函数后,此属性值就是false
+信号:
+started()                  //动画开始播放时发出的信号.包括自动开始播放,start函数被调用,或者running被设置为true.在Behavior和Transition中无效
+stopped()                  //动画停止时发出的信号.包括stop函数被调用,循环次数被用完,或者running被设置为false.在Behavior和Transition中无效
+函数:
+start()                    //开始播放动画.设置running的值为true
+stop()                     //停止播放动画.设置running的值为false
+complete()                 //当调用了stop函数后,如果没有设置alwaysRunToEnd为true,则把动画设置为终点状态
+pause()                    //暂停播放动画.当running的值为true时,设置paused的值为true
+resume()                   //继续播放动画.当running的值为true时,设置paused的值为false
+restart()                  //重新播放动画.先设置running的值为false,再设置running的值为true
+**********************************************
+Animator类(抽象类,不可直接使用,进程不在主线程中)
+继承自Animation
+可写属性:
+easing.type : enumeration          //曲线类型自变量为时间t
+                                   //Easing.Linear                 线性增长
+                                   //Easing.InQuad                 二次曲线,加速增长
+                                   //Easing.OutQuad                二次曲线,减速增长
+                                   //Easing.InOutQuad              二次曲线的混合型,先加速增长,后减速增长
+                                   //Easing.OutInQuad              二次曲线的混合型,先减速增长,后加速增长
+                                   //Easing.InCubic                三次曲线,加速增长
+                                   //Easing.OutCubic               三次曲线,减速增长
+                                   //Easing.InOutCubic             三次曲线的混合型,先加速增长,后减速增长
+                                   //Easing.OutInCubic             三次曲线的混合型,先减速增长,后加速增长
+                                   //Easing.InQuart                四次曲线,加速增长
+                                   //Easing.OutQuart               四次曲线,减速增长
+                                   //Easing.InOutQuart             四次曲线的混合型,先加速增长,后减速增长
+                                   //Easing.OutInQuart             四次曲线的混合型,先减速增长,后加速增长
+                                   //Easing.InQuint                五次曲线,加速增长
+                                   //Easing.OutQuint               五次曲线,减速增长
+                                   //Easing.InOutQuint             五次曲线的混合型,先加速增长,后减速增长
+                                   //Easing.OutInQuint             五次曲线的混合型,先减速增长,后加速增长
+                                   //Easing.InSine                 正弦函数,加速增长
+                                   //Easing.OutSine                正弦函数,减速增长
+                                   //Easing.InOutSine              正弦函数,先加速增长,后减速增长
+                                   //Easing.OutInSine              正弦函数,先减速增长,后加速增长
+                                   //Easing.InExpo                 指数函数,加速增长
+                                   //Easing.OutExpo                指数函数,减速增长
+                                   //Easing.InOutExpo              指数函数,先加速增长,后减速增长
+                                   //Easing.OutInExpo              指数函数,先减速增长,后加速增长
+                                   //Easing.InCirc                 圆形,加速增长
+                                   //Easing.OutCirc                圆形,减速增长
+                                   //Easing.InOutCirc              圆形,先加速增长,后减速增长
+                                   //Easing.OutInCirc              圆形,先减速增长,后加速增长
+                                   //Easing.InElastic              弹性函数缓和曲线,稳定到不稳定
+                                   //Easing.OutElastic             弹性函数缓和曲线,不稳定到稳定
+                                   //Easing.InOutElastic           弹性函数缓和曲线,稳定到不稳定再到稳定
+                                   //Easing.OutInElastic           弹性函数缓和曲线,不稳定到稳定再到不稳定
+                                   //Easing.InBack                 后退的缓和曲线,先减速减小再加速增长
+                                   //Easing.OutBack                后退的缓和曲线,先减速增长再加速减小
+                                   //Easing.InOutBack              后退的缓和曲线,减速减小,加速增长,减速增长,减速增长
+                                   //Easing.OutInBack              后退的缓和曲线,减速增长,加速减小,减速减小,加速增长
+                                   //Easing.InBounce               弹跳函数缓和曲线,稳定到不稳定
+                                   //Easing.OutBounce              弹跳函数缓和曲线,不稳定到稳定
+                                   //Easing.InOutBounce            弹跳函数缓和曲线,稳定,不稳定,稳定
+                                   //Easing.OutInBounce            弹跳函数缓和曲线,不稳定,稳定,不稳定
+                                   //Easing.Bezier                 贝赛尔曲线,由easing.bezierCurve属性决定
+easing.bezierCurve : list<real>    //仅供easing.type的Easing.Bezier类型使用
+                                   //使用数组定义,共三个点,前两个点是控制点,最后一个是固定的终点1,1,形式为[cx1,cy1,cx2,cy2,1,1]
+                                   //例:easing.bezierCurve:[0,1,1,1,1,1]
+easing.amplitude : real            //仅供easing.type的Easing.InBounce,Easing.OutBounce,Easing.InOutBounce,Easing.OutInBounce,Easing.InElastic,Easing.OutElastic, Easing.InOutElastic,Easing.OutInElastic类型使用
+easing.overshoot : real            //仅供easing.type的Easing.InBack,Easing.OutBack,Easing.InOutBack,Easing.OutInBack类型使用
+easing.period : real               //仅供easing.type的Easing.InElastic,Easing.OutElastic,Easing.InOutElastic,Easing.OutInElastic类型使用
+from : real                        //初始值
+to : real                          //终止值
+target : QtQuick::Item             //作用对象
+**********************************************
+PauseAnimation类(动画容器类中使用.动画暂停类)
+继承自Animation
+duration : int                     //动画持续时间,单位为毫秒
+**********************************************
+PropertyAction类(动画容器类中使用.动画属性设置类)
+继承自Animation
+可写属性:
+exclude : list<Object>             //非作用对象
+properties : string                //被作用的属性
+property : string                  //被作用的属性
+target : Object                    //作用对象
+targets : list<Object>             //作用对象
+value : variant                    //属性值
+**********************************************
+AnchorAnimation类(AnchorChanges调用)
+继承自Animation
+可写属性:
+duration : int                     //动画持续时间,单位为毫秒
+easing.type : enumeration          //曲线类型自变量为时间t.具体类型见Animator类
+easing.bezierCurve : list<real>    //仅供easing.type的Easing.Bezier类型使用
+                                   //使用数组定义,共三个点,前两个点是控制点,最后一个是固定的终点1,1,形式为[cx1,cy1,cx2,cy2,1,1]
+                                   //例:easing.bezierCurve:[0,1,1,1,1,1]
+easing.amplitude : real            //仅供easing.type的Easing.InBounce,Easing.OutBounce,Easing.InOutBounce,Easing.OutInBounce,Easing.InElastic,Easing.OutElastic, Easing.InOutElastic,Easing.OutInElastic类型使用
+easing.overshoot : real            //仅供easing.type的Easing.InBack,Easing.OutBack,Easing.InOutBack,Easing.OutInBack类型使用
+easing.period : real               //仅供easing.type的Easing.InElastic,Easing.OutElastic,Easing.InOutElastic,Easing.OutInElastic类型使用
+targets : list<Item>               //作用对象,如果不指定的话,所有的AnchorChanges信号都会被用于此动画.
+**********************************************
+PathAnimation类(独立使用)
+继承自Animation
+可写属性:
+anchorPoint : point                //动画变换点.在动画中,以该点作为质点进行相应的动画
+duration : int                     //动画持续时间,单位为毫秒
+easing.type : enumeration          //曲线类型自变量为时间t.具体类型见Animator类
+easing.bezierCurve : list<real>    //仅供easing.type的Easing.Bezier类型使用
+                                   //使用数组定义,共三个点,前两个点是控制点,最后一个是固定的终点1,1,形式为[cx1,cy1,cx2,cy2,1,1]
+                                   //例:easing.bezierCurve:[0,1,1,1,1,1]
+easing.amplitude : real            //仅供easing.type的Easing.InBounce,Easing.OutBounce,Easing.InOutBounce,Easing.OutInBounce,Easing.InElastic,Easing.OutElastic, Easing.InOutElastic,Easing.OutInElastic类型使用
+easing.overshoot : real            //仅供easing.type的Easing.InBack,Easing.OutBack,Easing.InOutBack,Easing.OutInBack类型使用
+easing.period : real               //仅供easing.type的Easing.InElastic,Easing.OutElastic,Easing.InOutElastic,Easing.OutInElastic类型使用
+endRotation : real                 //结束角度(角度制),配合orientation属性使用
+orientation : enumeration          //路径方向,以哪条边作为底边并将这条底边作为所指的方向作为移动的方向
+                                   //PathAnimation.Fixed        不旋转
+                                   //PathAnimation.RightFirst   以右边作为移动的方向
+                                   //PathAnimation.LeftFirst    以左边作为移动的方向
+                                   //PathAnimation.BottomFirst  以底边作为移动的方向
+                                   //PathAnimation.TopFirst     以顶边作为移动的方向
+orientationEntryDuration : real    //调整到起始方向的时间
+orientationExitDuration : real     //调整到结束方向的时间
+path : Path                        //动画路径
+target : Item                      //作用对象
+**********************************************
+ScriptAction类(独立使用.脚本执行类)
+继承自Animation
+可写属性:
+script : script                    //要运行的javaScript脚本
+scriptName : string                //脚本名
+**********************************************
+PropertyAnimation类(独立使用;PropertyChanges调用)
+继承自Animation
+可写属性:
+duration : int                     //动画持续时间,单位为毫秒
+easing.type : enumeration          //曲线类型自变量为时间t.具体类型见Animator类
+easing.bezierCurve : list<real>    //仅供easing.type的Easing.Bezier类型使用
+                                   //使用数组定义,共三个点,前两个点是控制点,最后一个是固定的终点1,1,形式为[cx1,cy1,cx2,cy2,1,1]
+                                   //例:easing.bezierCurve:[0,1,1,1,1,1]
+easing.amplitude : real            //仅供easing.type的Easing.InBounce,Easing.OutBounce,Easing.InOutBounce,Easing.OutInBounce,Easing.InElastic,Easing.OutElastic, Easing.InOutElastic,Easing.OutInElastic类型使用
+easing.overshoot : real            //仅供easing.type的Easing.InBack,Easing.OutBack,Easing.InOutBack,Easing.OutInBack类型使用
+easing.period : real               //仅供easing.type的Easing.InElastic,Easing.OutElastic,Easing.InOutElastic,Easing.OutInElastic类型使用
+exclude : list<Object>             //非作用对象
+properties : string                //被作用的属性
+property : string                  //被作用的属性
+target : Object                    //作用对象
+targets : list<Object>             //作用对象
+from : variant                     //动画起始的属性值
+to : variant                       //动画终止的属性值
+**********************************************
+ScriptAction类(独立使用.脚本执行类)
+继承自Animation
+可写属性:
+script : script                    //要运行的javaScript脚本
+scriptName : string                //脚本名
+**********************************************
+OpacityAnimator类(独立使用.透明度动画,单独进程)
+继承自Animator
+**********************************************
+ScaleAnimator类(独立使用.缩放动画,缩放点由目标对象中的transformOrigin决定,单独进程)
+继承自Animator
+**********************************************
+UniformAnimator类(独立使用.Uniform(OPENGL)动画,单独进程)
+继承自Animator
+可写属性:
+uniform : string                   //应用于Uniform的变量名
+**********************************************
+XAnimator类(独立使用.宽度动画,单独进程)
+继承自Animator
+**********************************************
+YAnimator类(独立使用.高度动画,单独进程)
+继承自Animator
+**********************************************
+RotationAnimator类(独立使用.旋转动画,单独进程)
+继承自Animator
+RotationAnimation类(独立使用.旋转动画,GUI进程)
+继承自PropertyAnimation
+可写属性:
+direction : enumeration            //旋转方向
+                                   //RotationAnimator.Numerical         默认值.按终点数字与起点数字的差值来决定方向,正值为顺时针,负值为逆时针
+                                   //RotationAnimator.Shortest          就近自动选择方向
+                                   //RotationAnimator.Clockwise         顺时针
+                                   //RotationAnimator.Counterclockwise  逆时针
+**********************************************
+ColorAnimation类(独立使用.颜色动画,GUI进程)
+继承自PropertyAnimation
+可写属性:
+from : color                      //起点颜色
+to : color                        //终点颜色
+**********************************************
+NumberAnimation类(独立使用.数字动画,GUI进程)
+继承自PropertyAnimation
+可写属性:
+from : real                       //起点数字
+to : real                         //终点数字
+**********************************************
+Vector3dAnimation类(独立使用.空间点动画,GUI进程)
+继承自PropertyAnimation
+可写属性:
+from : vector3d                    //起点
+to : vector3d                      //终点
+**********************************************
+ParallelAnimation容器类(独立使用;PropertyChanges调用.容纳多个Animation对象,容器中的动画对象同时播放)
+继承自Animation
+**********************************************
+SequentialAnimation容器类(独立使用;PropertyChanges调用.容纳多个Animation对象,容器中的动画对象按顺序播放)
+继承自Animation
+**********************************************
+ParentAnimation容器类(独立使用;ParentChange调用.容纳多个Animation对象,当父对象改变时播放相应的动画)
+继承自Animation
+可写属性:
+target : Item                      //作用对象
+newParent : Item                   //新的父对象
+via : Item                         //作用未知.仅用于ParentChange调用时.当新的父对象和旧的父对象都被删除时,设置via的值作为父对象
+**********************************************
+Transition变换类(当状态发生改变时,触发此属性中相应的动画)
+可写属性:
+animations : list<Animation>       //动画
+enabled : bool                     //是(true)否(false)启用"from"到"to"状态变化时的变换.默认true
+from : string                      //起始状态
+to : string                        //终止状态
+running : bool                     //是(true)否(false)正在运行
+reversible : bool                  //是(true)否(false)反向变换(触发条件相反时).默认为false
+
+**********************************************
+Qt类
+函数:
+color lighter(color baseColor, real factor)      //返回颜色,增亮颜色,默认增亮比例为50%,即factor=1.5 factor越大,颜色越亮	
+color darker(color baseColor, real factor)       //返回颜色,增暗颜色,默认增暗比例为100%,即factor=2  factor越大,颜色越暗
+**********************************************
+Item类
+继承自QtObject
+可写属性:
+anchors.fill : Item                               //整个对象的大小为Item那么大
+activeFocus : bool                                //是(true)否(false)具有焦点
+activeFocusOnTab : bool                           //是(true)否(false)可以通过Tab键切换到有焦点的状态
+antialiasing : bool                               //是(true)否(false)抗锯齿.默认false
+baselineOffset : int                              //基线位置,默认为0(以自身为坐标系).其他的基线都有固定的位置,不可指定,仅有基线的位置可以指定
+anchors.margins : real                            //四周边界宽度.四周锚线与指定对象锚线的距离,默认为0
+anchors.topMargin : real                          //上方边界宽度.上方锚线与指定对象锚线的距离,默认为0
+anchors.bottomMargin : real                       //下方边界宽度.下方锚线与指定对象锚线的距离,默认为0
+anchors.leftMargin : real                         //左边边界宽度.左边锚线与指定对象锚线的距离,默认为0
+anchors.rightMargin : real                        //右边边界宽度.右边锚线与指定对象锚线的距离,默认为0
+anchors.horizontalCenterOffset : real             //水平中心偏移.水平中心锚线与指定对象的锚线的距离,默认为0
+anchors.verticalCenterOffset : real               //竖直中心偏移.铅垂中心锚线与指定对象的锚线的距离,默认为0
+anchors.baselineOffset : real                     //基线偏移.基线与指定对象的锚线的距离.默认为0
+anchors.top : AnchorLine                          //其他对象的锚线在当前对象的顶部锚线相距anchors.topMargin的位置
+anchors.bottom : AnchorLine                       //其他对象的锚线在当前对象的底部锚线相距anchors.bottomMargin的位置 
+anchors.left : AnchorLine                         //其他对象的锚线在当前对象的左边锚线相距anchors.leftMargin的位置     
+anchors.right : AnchorLine                        //其他对象的锚线在当前对象的右边锚线相距anchors.rightMargin的位置 
+anchors.horizontalCenter : AnchorLine             //其他对象的锚线在当前对象的水平中间锚线相距anchors.horizontalCenterOffset的位置   
+anchors.verticalCenter : AnchorLine               //其他对象的锚线在当前对象的竖直中间锚线相距anchors.verticalCenterOffset的位置  
+anchors.centerIn : Item                           //其他对象的水平中间锚线和铅垂中间锚线分别与当前对象水平中间锚线的竖直中间锚线和竖直中间锚线相距anchors.horizontalCenterOffset和anchors.verticalCenterOffset
+anchors.baseline : AnchorLine                     //其他对象的锚线在当前对象的基线相距anchors.baselineOffset的位置
+anchors.alignWhenCentered : bool                  //是(true)否(false)强制偏移中心像素点.默认true.当width或height属性是奇数时,强制中心锚线偏移一个像素点而不是对齐到半个像素点处
+children : list<Item>                             //子对象(可视)
+resources : list<Object>                          //子对象(不可视)
+data : list<Object>                               //子对象(不可视与可视混合)
+clip : bool                                       //是(true)否(false)剪裁超出当前对象大小的子对象的显示,默认false
+containmentMask : QObject*                        //为bool contains(Qt.point)函数提供返回结果的判断依据
+                                                  //属性值是一个子对象，可以使用id来作为属性值
+                                                  //当鼠标点击子对象区域时,调用bool contains(Qt.point)将返回true,点击其他区域时则返回false
+                                                  //但是要注意的是,传入bool contains(Qt.point)的参数是以被点击的子对象的坐标系为基准的
+enabled : bool                                    //是(true)否(false)接收鼠标和键盘事件,默认为true
+focus : bool                                      //是(true)否(false)作为父对象的默认焦点子对象
+width : real                                      //宽度
+height : real                                     //高度
+x : real                                          //x坐标
+y : real                                          //y坐标
+z : real                                          //当多个对象重叠时,该对象的所在层数,默认为0层
+                                                  //通常情况下,不指定层数时,后定义的对象在先定义的对象的上面,子对象在父对象的上面
+implicitHeight : real                             //对象的默认高度.Text,Image和TextEdit部件不推荐使用此属性,因为它们本身具有此属性,如果再指定话将会导致被指定两次,从而导致性能损失
+implicitWidth : real                              //对象的默认宽度.Text,Image和TextEdit部件不推荐使用此属性,因为它们本身具有此属性,如果再指定话将会导致被指定两次,从而导致性能损失
+layer.enabled : bool                              //是(true)否(false)启用布局.默认为false
+layer.sourceRect : rect                           //图层渲染区域,默认为整个对象的大小
+layer.effect : Component                          //图层特效.一般使用构造器构造ShaderEffect对象,但是不仅限于此
+layer.format : enumeration                        //图层形式
+                                                  //ShaderEffectSource.Alpha  透明通道方式
+                                                  //ShaderEffectSource.RGB    RGB方式
+                                                  //ShaderEffectSource.RGBA   含有透明通道的RGB方式
+layer.mipmap : bool                               //是(true)否(false)为图层纹理生成贴图
+layer.samplerName : string                        //图层采样的属性名
+layer.samples : enumeration                       //图层采样形式.不建议设置
+                                                  //2 部分采样等级2
+                                                  //4 部分采样等级4
+layer.smooth : bool                               //是(true)否(false)启用图层平滑
+layer.textureMirroring : enumeration              //生成纹理的镜像方式
+                                                  //ShaderEffectSource .NoMirroring         不镜像
+                                                  //ShaderEffectSource .MirrorHorizo​​ntally  沿X轴翻转
+                                                  //ShaderEffectSource .MirrorVertically    沿y轴翻转,默认值
+layer.textureSize : size                          //图层纹理的大小
+layer.wrapMode : enumeration                      //OpenGL重复模式.指定了layer.effect后此属性才有效果
+                                                  //ShaderEffectSource.ClampToEdge          使用GL_CLAMP_TO_EDGE方式水平重复和竖直重复
+                                                  //ShaderEffectSource.RepeatHorizontally   使用GL_REPEAT方式水平重复,使用GL_CLAMP_TO_EDGE方式竖直重复
+                                                  //ShaderEffectSource.RepeatVertically     使用GL_REPEAT方式竖直重复,使用GL_CLAMP_TO_EDGE方式水平重复
+                                                  //ShaderEffectSource.Repeat               使用GL_REPEAT方式水平和竖直重复
+opacity : real                                    //不透明度0-1,0为完全透明,1为不透明
+parent : Item                                     //父对象
+rotation : real                                   //旋转角度,单位为角度
+scale : real                                      //缩放比例,正数,1为原本大小
+smooth : bool                                     //是(true)否(false)启用平滑
+states : list<State>                              //状态列表,可以定义多个状态,并为每个状态设置名称
+state : string                                    //当前状态.应与states中的列表中的名称相同
+transition：list < Transition >                   //变换列表(可以控制子对象),可以定义多个变换方式,并可以根据不同的状态执行相应的变换
+transform : list<Transform>                       //对象本身的属性的变换列表,按顺序执行
+transformOrigin : enumeration                     //变换原点
+                                                  //Item.TopLeft      左上角
+                                                  //Item.Top          上方中点
+                                                  //Item.TopRight     右上角
+                                                  //Item.Left         左边中点
+                                                  //Item.Center       对象中心,默认值
+                                                  //Item.Right        右边中点
+                                                  //Item.BottomLeft   左下角
+                                                  //Item.Bottom       下方中点
+                                                  //Item.BottomRight  右下角
+visible : bool                                    //是(true)否(false)可见.默认为true
+只读属性:
+visibleChildren : list<Item>                      //子对象(可视)
+childrenRect.x : real                             //所有子对象合并成一个对象的x坐标(以自身为坐标系)
+childrenRect.y : real                             //所有子对象合并成一个对象的y坐标(以自身为坐标系)
+childrenRect.width : real                         //所有子对象合并成一个对象的宽度
+childrenRect.height : real                        //所有子对象合并成一个对象的高度
+函数:
+Item childAt(real x, real y)                      //返回在坐标点上的最后一个被创建的可视子对象,x和y是以当前对象为坐标系统的
+Item nextItemInFocusChain(bool forward)           //返回焦点链对象.如果forward是true,则返回下一个焦点链对象,如果forward是false,则返回上一个焦点链对象
+bool contains(point point)                        //返回指定点是否在containmentMask指定的区域,点的坐标是以子对象为坐标系的
+forceActiveFocus(Qt::FocusReason reason)          //强制给当前对象赋予焦点,参数是焦点类型
+                                                  //Qt::MouseFocusReason          发生鼠标动作
+                                                  //Qt::TabFocusReason            Tab键被按下
+                                                  //Qt::BacktabFocusReason        Shift或Control键被按下
+                                                  //Qt::ActiveWindowFocusReason   窗口的活动状态被改变
+                                                  //Qt::PopupFocusReason          弹出窗口被打开或者被关闭
+                                                  //Qt::ShortcutFocusReason       使用了快捷方式
+                                                  //Qt::MenuBarFocusReason        菜单栏有焦点
+                                                  //Qt::OtherFocusReason          其他
+forceActiveFocus()                                //强制给当前对象赋予焦点.焦点类型为Qt::OtherFocusReason
+bool grabToImage(callback(result), targetSize)    //抓取当前的对象图像.第一个参数是回调函数(包含有ItemGrabResult对象),第二个参数是抓取的图像的大小.如果抓取成功返回true,反之
+QPointF mapFromGlobal(real x, real y)             //把全局坐标点转换为当前对象坐标点
+QPointF mapToGlobal(real x, real y)               //把当前对象坐标点转换为全局坐标点
+QPointF mapFromItem(Item item, real x, real y)    //把指定子对象中的点转换为当前对象中的点
+QRectF mapFromItem(Item item, real x, real y, real width, real height) //把指定子对象中的矩形转换为当前对象中的矩形
+QPointF mapToItem(Item item, real x, real y)      //把当前对象中的点转换为指定子对象中的点
+QRectF mapToItem(Item item, real x, real y, real width, real height)   //把当前对象中的矩形转换为指定子对象中的矩形
+**********************************************
+Rectangle类
+继承自Item
+可写属性：
+antialiasing : bool        //是(true)否(false)反锯齿,默认值为true
+border.width : int         //边界宽度
+border.color : color       //边界颜色
+radius : real              //圆角半径
+gradient : Gradient        //颜色渐变,gradient与color同时被指定时,gradient生效
+color : color              //填充颜色,gradient与color同时被指定时,gradient生效
+**********************************************
+Image类
+继承自Item
+可写属性:
+asynchronous : bool                  //是(true)否(false)异步加载图像,默认为false.当此属性为false时,用户界面将会被阻塞,直到图像加载完成；当此属性为true时,用户界面将不会被阻塞.
+autoTransform : bool                 //是(true)否(false)图像自动转换,默认为false.当此属性为false时,加载的图像将不会被自动转换为元数据类型；当此属性为true时,加载的图像将会被自动转换为元数据类型.
+cache : bool                         //是(true)否(false)缓存图像,默认为true.当图像较大时,应设置此属性为false.
+fillMode : enumeration               //图片填充模式,默认为Image.Stretch
+                                     //Image.Stretch            拉伸模式
+                                     //Image.PreserveAspectFit  按比例缩放图片以能完全并且最大地显示,但是不剪裁图片
+                                     //Image.PreserveAspectCrop 按比例缩放图片以能刚好把窗口填充,多余的部分无法显示
+                                     //Image.Tile               当图片原始大小不能填充窗口大小时,水平和垂直复制图片
+                                     //Image.TileVertically     当图片原始大小不能填充窗口大小时,水平拉伸、垂直复制
+                                     //Image.TileHorizontally   当图片原始大小不能填充窗口大小时,水平复制、垂直拉伸
+                                     //Image.Pad                不作任何转换
+horizontalAlignment : enumeration    //图片的水平布局位置,默认值为Image.AlignHCenter
+                                     //Image.AlignLeft          左
+                                     //Image.AlignHCenter       中
+                                     //Image.AlignRight         右
+verticalAlignment : enumeration      //图片的垂直布局位置,默认值为Image.AlignVCenter
+                                     //Image.AlignTop           上
+                                     //Image.AlignVCenter       中
+                                     //Image.AlignBottom        下
+smooth : bool                        //是(true)否(false)为图片的变换提供平滑效果以展示更加优质的视觉效果.效果依赖于硬件配置.默认值为true.
+mipmap : bool                        //是(true)否(false)为图片的变换提供平滑效果以展示更加优质的视觉效果.效果依赖于运行环境,一般来说效果比smooth好.默认值为false.
+mirror : bool                        //是(true)否(false)水平翻转图片.默认值为false
+source : url                         //图片的远程或本机地址.
+sourceSize.width : int               //图片的宽度
+sourceSize.height : int              //图片的高度
+
+只读属性:
+paintedHeight : real                 //图片的高度
+paintedWidth : real                  //图片的宽度
+status : enumeration                 //图片加载的状态
+                                     //Image.Null(未加载)
+                                     //Image.Ready(加载完成)
+                                     //Image.Loading(加载中) 
+                                     //Image.Error(加载出错)
+**********************************************
+Text类
+继承自Item
+text : strig                                //要显示的文本
+baseUrl : url                               //作用未知.指定一个基址用于解析网址.解析时给定的字符串的最后一个'/'字符后面的字符将会被舍弃.默认值为：当前qml文件的qrc路径
+bottomPadding : real                        //文字底部的空白区域的像素大小
+topPadding : real                           //文字顶部的空白区域的像素大小
+rightPadding : real                         //文字右方的空白区域的像素大小
+leftPadding : real                          //文字左方的空白区域的像素大小
+padding : real                              //文字四周的空白区域的像素大小
+clip : bool                                 //是(true)否(false)截断超出item大小之外的文字显示.默认值为false
+color : color                               //文字颜色
+font.kerning : bool                         //是(true)否(false)启用OpenType字距调整功能.禁用此功能提高性能,但会牺牲一些美观功能.默认值是true.
+font.letterSpacing : real                   //字符间距.正值在标准的间距上增加间距,负值在标准的间距上减小间距
+font.pointSize : real                       //设置字体的字号大小,与font.pixelSize只能设置其中一个.pointSize如果值为1,字体的物理高度为pointSize/72 英尺(inch),pixelSize高度为DPI*pointSize/72
+font.pixelSize : int                        //设置字体的像素大小,与font.pointSize只能设置其中一个.pixelSize如果值为1,字体的物理高度为pixelSize/DPI 英尺(inch),pointSize字号大小为为72*pixelSize/DPI                                
+font.preferShaping : bool                   //是(true)否(false)更加清晰地显示字体.此函数是一个附加效果,默认值为true
+font.family : string                        //字体
+font.italic : bool                          //是(true)否(false)设置斜体字
+font.strikeout : bool                       //是(true)否(false)设置删除线
+font.underline : bool　　　　　　　　　　　　　　　　　　　　　　　//是(true)否(false)设置下划线
+font.bold : bool                            //是(true)否(false)设置粗体字
+font.styleName : string                     //设置样式名称,不区别大小写
+font.wordSpacing : real                     //设置单词间空格(space)的像素宽度,正值在标准的宽度上增加像素量,负值标准的宽度上减去像素量
+minimumPixelSize : int                      //设置最小像素大小,与minimumPointSize只能设置其中一个
+minimumPointSize : int                      //设置最小字号大小,与minimumPixelSize只能设置其中一个
+styleColor : color                          //样式颜色.与style配合使用,设置Outline轮廓的颜色,Raised的颜色,Sunken的颜色
+style : enumeration                         //文本样式
+                                            //Text.Normal    正常模式 默认模式
+                                            //Text.Outline   外轮廓模式
+                                            //Text.Raised    凸起模式
+                                            //Text.Sunken    凹下模式
+linkColor : color                           //链接文本的颜色.与textFormat配合使用,但是Text.RichText模式无法使用
+textFormat : enumeration                    //文本模式
+                                            //Text.AutoText   自动判断模式 默认模式 
+                                            //Text.PlainText  平文本模式
+                                            //Text.StyledText 样式表文本
+                                            //Text.RichText   富文本模式
+lineHeight : real                           //行高,以lineHeightMode确定单位
+lineHeightMode : enumeration                //行高模式
+                                            //Text.ProportionalHeight 行距模式,以标准行高作为基线之间的距离.默认模式
+                                            //Text.FixedHeight        像素模式,以像素大小作为基线之间的距离
+renderType : enumeration                    //字体渲染类型
+                                            //Text.QtRendering      QT渲染
+                                            //Text.NativeRendering  本地渲染
+font.hintingPreference : enumeration        //文本提示偏好设置,当且仅当renderType的值为Text.NativeRendering时此属性才有作用.作用效果依赖于当前的运行平台
+                                            //Font.PreferDefaultHinting 使用当前平台的默认渲染方式
+                                            //Font.PreferNoHinting      如果可能的话,不渲染字体轮廓
+                                            //Font.PreferVerticalHinting如果可能的话,只进行垂直方向的渲染
+                                            //Font.PreferFullHinting    如果可能的话,水平和垂直方向都进行渲染
+horizontalAlignment : enumeration           //文字的水平对齐方式.
+                                            //Text.AlignJustify      两端对齐
+                                            //Text.AlignLeft         左
+                                            //Text.AlignHCenter      中
+                                            //Text.AlignRight        右
+verticalAlignment : enumeration             //文字的纵向对齐方式.
+                                            //Text.AlignTop           上
+                                            //Text.AlignVCenter       中
+                                            //Text.AlignBottom        下
+elide : enumeration                         //当给定的宽度不能完全显示文本时,出现的省略符号的位置.仅适用于单行文本.默认不出现省略符号
+                                            //Text.ElideNone.  不出现省略符号
+                                            //Text.ElideLeft.  省略符号出现在左边
+                                            //Text.ElideMiddle.省略符号出现在中间
+                                            //Text.ElideRight. 省略符号出现在右边
+font.capitalization : enumeration           //文本大写呈现策略.默认为Font.MixedCase,即原样显示文本
+                                            //Font.AllUppercase. 全部大写呈现
+                                            //Font.AllLowercase. 全部小写呈现
+                                            //Font.Capitalize.   首字母大写呈现,其余的文本原样呈现
+                                            //Font.SmallCaps.    小写字母都转换为大写的小型字母
+fontSizeMode : enumeration                  //字体显示适应模式.以font.pixelSize或font.pointSize的设定大小作为最大大小,以minimumPixelSize或minimumPointSize的设定大小作为最小大小
+                                            //Text.FixedSize       不自动适应,默认模式,始终使用font.pixelSize和font.pointSize设定的大小                                
+                                            //Text.HorizontalFit   横向自动适应
+                                            //Text.VerticalFit     纵向自动适应
+                                            //Text.Fit             自动适应
+wrapMode : enumeration                      //当文本的窗口宽度不够显示文本时,文本自动换行的模式设定
+                                            //Text.NoWrap          不自动换行
+                                            //Text.WordWrap        在字符边界换行
+                                            //Text.WrapAnywhere    在任意位置处换行
+                                            //Text.Wrap            尽可能地在字符边界处换行
+font.weight : enumeration                   //设置字重,默认为Font.Normal
+                                            //Font.Thin
+                                            //Font.Light
+                                            //Font.ExtraLight
+                                            //Font.Normal
+                                            //Font.Medium
+                                            //Font.DemiBold
+                                            //Font.Bold
+                                            //Font.ExtraBold
+                                            //Font.Black
+
+只读属性:
+advance : QSizeF                            //width值表最后一行文字的基线的终点减去起点的像素差值,height值表最后一条基线到第一条基线的像素间距
+contentHeight : real                        //文字的总占像素高度
+contentWidth : real                         //文字的总占像素宽度
+effectiveHorizontalAlignment : enumeration  //当前的文字的水平布局状态
+truncated : bool                            //文本截断.当文本超过最大行数限制或文本宽度超过最大宽度限制时,返回true.富文本模式不支持使用此属性
+lineCount : int                             //行数
+hoveredLink : string                        //鼠标悬停时的富文本格式(HTML格式)文本
+fontInfo.family : string                    //字体
+fontInfo.bold : bool                        //粗体
+ontInfo.italic : bool                       //斜体
+fontInfo.pixelSize : int                    //像素大小
+fontInfo.pointSize : real                   //字号
+fontInfo.styleName : string                 //样式
+fontInfo.weight : int                       //字重
+
+信号:
+linkActivated(string link)                  //当富文本格式(HTML格式)的文本被点击时,发出此信号,信号是string对象,参数为link.注意:当定义的MouseArea与富文本格式(HTML格式)文本区域重合时,此信号将不会被发出
+linkHovered(string link)                    //当富文本格式(HTML格式)的文本被鼠标掠过时,发出此信号,信号是string对象,参数为link.
+lineLaidOut(object line)                    //当文本行被定位时,发出此信号.信号是object对象,参数为line,无论此信号被发送多少次,传入的参数的值都是当前行的文字相对于原始位置的相对值
+                                            可写属性:
+                                            //line.x                   文本的左上角的x坐标
+                                            //line.y                   文本的左上角的y坐标
+                                            //line.width               文本的宽度
+                                            //line.height              文本的高度
+                                            只读属性:
+                                            //line.number              当前行数
+
+函数:
+forceLayout()                               //刷新
+linkAt(real x, real y)                      //返回值为string.功能:返回当前窗口中的坐标(x,y)处的富文本格式(HTML格式)的文本,如果没有这样的文本,则返回空字符串.此函数多用于自定义MouseArea的onClicked槽函数中
+**********************************************
+Row定位器类
+继承自Item
+可写属性:
+add : Transition                            //当定位器添加了新的对象,或者旧对象的visible由false变为true时触发此变换
+populate : Transition                       //当定位器被第一次创建时触发此变换
+move : Transition                           //当定位器中的子对象的位置发生改变时触发此变换
+padding : real                              //四周间距
+bottomPadding : real                        //底边间距
+topPadding : real                           //顶部间距
+leftPadding : real                          //左边间距
+rightPadding : real                         //右边间距
+spacing : real                              //相邻对象之间的间距
+layoutDirection : enumeration               //定位器的列布局方向.具体类型见effectiveLayoutDirection属性
+只读属性:
+effectiveLayoutDirection : enumeration      //定位器的列布局方向
+                                            //Qt.LeftToRight    默认值.从左至右
+                                            //Qt.RightToLeft    从右至左
+信号:
+positioningComplete()                       //当定位器被创建完成时发出此信号
+函数:
+forceLayout()                               //刷新
+**********************************************
+Column定位器类
+继承自Item
+可写属性:
+add : Transition                            //当定位器添加了新的对象,或者旧对象的visible由false变为true时触发此变换
+populate : Transition                       //当定位器被第一次创建时触发此变换
+move : Transition                           //当定位器中的子对象的位置发生改变时触发此变换
+padding : real                              //四周间距
+bottomPadding : real                        //底边间距
+topPadding : real                           //顶部间距
+leftPadding : real                          //左边间距
+rightPadding : real                         //右边间距
+spacing : real                              //相邻对象之间的间距
+信号:
+positioningComplete()                       //当定位器被创建完成时发出此信号
+函数:
+forceLayout()                               //刷新
+**********************************************
+Grid定位器类
+继承自Item
+可写属性:
+add : Transition                                 //当定位器添加了新的对象,或者旧对象的visible由false变为true时触发此变换
+populate : Transition                            //当定位器被第一次创建时触发此变换
+move : Transition                                //当定位器中的子对象的位置发生改变时触发此变换
+padding : real                                   //四周间距
+bottomPadding : real                             //底边间距
+topPadding : real                                //顶部间距
+leftPadding : real                               //左边间距
+rightPadding : real                              //右边间距
+spacing : real                                   //相邻对象之间的间距(行与列)
+columnSpacing : qreal                            //列间距
+rowSpacing : qreal                               //行间距 
+columns : int                                    //列数
+rows : int                                       //行数
+horizontalItemAlignment : enumeration            //定位器子对象的横向布局方式,具体类型见effectiveHorizontalItemAlignment属性
+verticalItemAlignment : enumeration              //定位器子对象的纵向布局方式
+                                                 //Grid.AlignTop            上
+                                                 //Grid.AlignVCenter        中
+                                                 //Grid.AlignBottom         下
+layoutDirection : enumeration                    //定位器的列布局方向.具体类型见effectiveLayoutDirection属性
+flow : enumeration                               //流方向(增加新的子对象时的定位方向)
+                                                 //Grid.LeftToRight    默认值.从左至右
+                                                 //Grid.TopToBottom    从上至下
+只读属性:
+effectiveHorizontalItemAlignment : enumeration   //定位器子对象的横向布局方式
+                                                 //Grid.AlignLeft           左
+                                                 //Grid.AlignHCenter        中
+                                                 //Grid.AlignRight          右
+effectiveLayoutDirection : enumeration           //定位器的列布局方向
+                                                 //Qt.LeftToRight    默认值.从左至右,从上至下
+                                                 //Qt.RightToLeft    从右至左,从上至下
+信号:
+positioningComplete()                            //当定位器被创建完成时发出此信号
+函数:
+forceLayout()                                    //刷新
+**********************************************
+Flow定位器类(当一行或一列不能容纳子对象的数量时,自动扩展到下一行或下一列)
+继承自Item
+可写属性:
+add : Transition                            //当定位器添加了新的对象,或者旧对象的visible由false变为true时触发此变换
+populate : Transition                       //当定位器被第一次创建时触发此变换
+move : Transition                           //当定位器中的子对象的位置发生改变时触发此变换
+padding : real                              //四周间距
+bottomPadding : real                        //底边间距
+topPadding : real                           //顶部间距
+leftPadding : real                          //左边间距
+rightPadding : real                         //右边间距
+spacing : real                              //相邻对象之间的间距
+layoutDirection : enumeration               //定位器的列布局方向.具体类型见effectiveLayoutDirection属性
+flow : enumeration                          //流方向(增加新的子对象时的定位方向)
+                                            //Flow.LeftToRight    默认值.从左至右
+                                            //Flow.TopToBottom    从上至下
+只读属性:
+effectiveLayoutDirection : enumeration      //定位器的列布局方向
+                                            //Qt.LeftToRight    默认值.从左至右,从上至下
+                                            //Qt.RightToLeft    从右至左,从上至下
+信号:
+positioningComplete()                       //当定位器被创建完成时发出此信号
+函数:
+forceLayout()                               //刷新
+**********************************************
+Repeater类(重复器)
+继承自Item
+可写属性:
+delegate : Component                        //委托器,用于构造对象
+model : variant                             //数据列表.访问此数数据列表中的数据应使用modelData,访问数据序号应使用index
+                                            //int           表示创建的对象的数量
+                                            //ListModel     列表类
+                                            //string list   字符串列表
+                                            //object list   对象列表
+只读属性:
+count : int                                 //数量
+信号:
+itemAdded(int index, Item item)             //子对象创建完成时发出此信号
+itemRemoved(int index, Item item)           //子对象被移除时发出此信号
+函数:
+Item itemAt(index)                          //根据序号返回子对象
+**********************************************
+**********************************************
+
+
+
+
+
+
+
+
+
+
+
+
+**********************************************
+**********************************************
+**********************************************
+**********************************************
+**********************************************
+技巧总结:
+一.定位方式(在同一个对象中,应只选择一种试,否则会出现无法预料的结果)
+   1.x和y定位
+   2.定位器定位
+   3.锚定位
+二.对象尺寸(在同一个对象中,应只选择一种试,否则会出现无法预料的结果)
+   1.width和height确定
+   2.锚确定
+   
+
+
+
+
+
+
+

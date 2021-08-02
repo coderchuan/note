@@ -1,0 +1,13 @@
+加载离线crx：改后缀为.zip，解压，在Chrome扩展程序中启用开发者模式加载已解压的扩展程序
+
+获取crx文件：
+1、在谷歌浏览器的扩展插件下载页面找到要下载的插件，点击进入，在网址栏中获取扩展的ID；
+2、打开下面三个网址中的一个，把扩展ID粘贴到ID栏中，点击下载即可。
+http://chrome-extension-downloader.com
+http://crx.zhuzhu.org/
+http://yurl.sinaapp.com/crx.php
+
+获取Chrome在线安装版本：
+https://www.google.cn/chrome/
+获取Chrome离线安装版本：
+https://www.google.cn/chrome/?standalone=1

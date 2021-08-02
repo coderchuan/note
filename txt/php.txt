@@ -1,0 +1,2469 @@
+﻿************************************************************************************************************************
+安装
+************************************************************
+ubuntu      sudo apt install php 
+************************************************************
+基本概念：
+************************************************************
+PHP标识符命名规则：区分大小写
+标识符：可以使用数字、字母、下划线组成，首字符不能为数字，区分大小写。
+变量：变量还应该使用美元符号($)作为前缀。
+常量：变量遵循标识符的命名规则。
+函数：函数名遵循标识符的命名规则。
+************************************************************
+可变标识符(可变变量、可变函数)：
+******************************
+使用一个变量来存储另一个变量的变量名或者函数的名称。如下两例：
+1、可变变量：
+$a="name";
+$name="yang";
+echo $$a;          //输出:yang。$a表示字符串"name",$$a相当于:$name;
+
+2、可变函数：
+例如：
+function getName($arg="Yang")
+{
+    echo $arg;
+}
+$a='getName';
+$a("Zhang");       //输出:Zhang。$a表示字符串"getName",$a("Zhang")相当于:getName("Zhang");
+************************************************************
+PHP标签：
+******************************
+<?php ... ?>                    //标准风格
+<?=...?>                        //标准风格，与<?php echo ...?>等价，只能用于输出
+<script language="PHP" ...>     //脚本风格
+<? ... ?>                       //简写风格,在php.ini中进行如下设置： 
+                                //short_open_tag=On
+                                //asp_tags=On
+<% ... %>                       //ASP风格,在php.ini中进行如下设置：
+                                //short_open_tag=On
+                                //asp_tags=On
+************************************************************
+PHP注释：
+******************************
+//...                           //单行注释,注释中不能包含"?>",否则会被认为程序已经结束
+/* ... */                       //多行注释
+#...                            //脚本注释
+************************************************************
+PHP分隔符：
+******************************
+;                               //语句分隔符
+************************************************************
+变量与常量
+************************************************************
+变量：
+******************************
+1、无需声明                 PHP变量无需声明即可使用
+2、赋值                     使用"="符号进行赋值
+3、引用赋值                 使用"&="符号进行引用赋值。相当于一个变量有了两个变量名，两个变量名都可以对该变量进行操作。
+4、解除引用                 unset(),使用此函数进行解除引用赋值 
+5、预定义变量               $argc                 传递给脚本的参数数量
+                            $argv                 传递给脚本的参数数组
+                            $GLOBAL               全局作用域中的全部变量 
+                            $_SERVER              服务器和执行环境信息
+                                $_SERVER['SERVER_PROTOCOL']      请求页面时通信协议规范。
+                                $_SERVER['HTTP_HOST']            服务器主机名。 
+                                $_SERVER['SERVER_PORT']          服务器使用的端口。
+                                $_SERVER['QUERY_STRING']         网址中的参数字符串[即问号(?)后的字符串]。
+                                $_SERVER['REQUEST_URI']          服务器主机名之后的字符串信息。
+                                $_SERVER['PHP_SELF']             脚本名。与执行命令的根目录有关。结果为完整的路径名减去当前执行目录的路径。
+                                $_SERVER['SCRIPT_FILENAME']      脚本名。在网页端时表绝对路径；在命令行下，与$_SERVER['PHP_SELF']功能相同。
+                                $_SERVER['argc']                 命令的数量。
+                                $_SERVER['argv']                 命令数组，数量为$_SERVER['argc']。
+                                $_SERVER['GATEWAY_INTERFACE']    服务器使用的CGI规范版本。
+                                $_SERVER['SERVER_ADDR']          服务器IP地址。
+                                $_SERVER['SERVER_NAME']          配置文件httpd.conf中的ServerName值。 
+                                $_SERVER['SERVER_SOFTWARE']      服务器标识。
+                                $_SERVER['REQUEST_METHOD']       访问页面使用的请求方法。例如，“GET”, “HEAD”，“POST”，“PUT”。
+                                $_SERVER['REQUEST_TIME']         请求开始时的时间戳。
+                                $_SERVER['REQUEST_TIME_FLOAT']   请求开始时的时间戳，微秒级别的精准度。
+                                $_SERVER['DOCUMENT_ROOT']        当前运行脚本所在的文档根目录。
+                                $_SERVER['HTTP_ACCEPT']          请求的字符集。
+                                $_SERVER['HTTP_ACCEPT_ENCODING'] 请求的字符编码。
+                                $_SERVER['HTTP_ACCEPT_LANGUAGE'] 请求的语言。
+                                $_SERVER['HTTP_CONNECTION']      是否为长连接。值为"Keep-Alive"或"close"。
+                                $_SERVER['HTTP_REFERER']         链接到当前页面的前一页面的地址。
+                                $_SERVER['HTTP_USER_AGENT']      浏览器标识
+                                $_SERVER['HTTPS']                是否通过https协议访问，通过 HTTPS 协议访问时其值为非空并且值不为off。
+                                $_SERVER['REMOTE_ADDR']          访客地址。
+                                $_SERVER['REMOTE_HOST']          访客主机名。
+                                $_SERVER['REMOTE_PORT']          访客端口号。
+                                $_SERVER['REMOTE_USER']          已经验证过的用户。
+                                $_SERVER['REDIRECT_REMOTE_USER'] 重新定向的已经验证过的用户。
+                                $_SERVER['SERVER_ADMIN']         服务器配置文件中的 SERVER_ADMIN 参数。
+                                $_SERVER['SERVER_SIGNATURE']     服务器版本和虚拟主机名的字符串。
+                                $_SERVER['PATH_TRANSLATED']      当前脚本所在文件系统（非文档根目录）的基本路径。
+                                $_SERVER['SCRIPT_NAME']          当前脚本的路径。
+                                $_SERVER['PHP_AUTH_DIGEST']      HTTP Digest 认证的过程中客户端发送的“Authorization” HTTP头内容
+                                $_SERVER['PHP_AUTH_USER']        在Apache或IIS服务模式下,用户输入的用户名
+                                $_SERVER['PHP_AUTH_PW']          在Apache或IIS服务模式下,用户输入的密码
+                                $_SERVER['AUTH_TYPE']            在Apache服务模式下的认证类型
+                                $_SERVER['PATH_INFO']            真实脚本名称之后并且在查询语句之前的路径信息
+                                $_SERVER['ORIG_PATH_INFO']       $_SERVER['PATH_INFO'] 的原始值
+                            $_GET                 HTTP GET变量          由客户端提交的form表单method="get"
+                            $_POST                HTTP POST变量         由客户端提交的form表单method="post"
+                            $_REQUEST             HTTP GET或POST变量    由客户端提交的form表单method="post"或method="get"
+                            $_COOKIE              HTTP COOKIE变量       由客户端传递过来的cookie值
+                            $_FILES               HTTP 文件信息数组      由客户端提交的form表单method="post"且enctype="multipart/form-data"
+                            $_SESSION             SESSION变量
+                            $php_errormsg         前一个错误信息
+                            $HTTP_RAW_POST_DATA   原生POST数据
+                            $http_response_header HTTP响应头
+                            $_ENV                 环境变量
+************************************************************
+常量：
+******************************
+1、定义常量：函数define() 
+2、定义常量：const 常量名=值            
+        必须在最顶端的作用区域定义，不能在代码块中使用
+        常量名需要遵循php标识符的命名规则
+        值必须是int、float、string、bool、null、array中的一种类型
+3、获取常量：常量名          
+             获取常量：函数constant()    
+4、预定义常量 
+    PHP_OS          当前操作系统的名称,它有以下值 
+                        WINNT           表示Win10等
+                        Linux           表示centos等 
+                        WIN32
+                        Windows
+                        CYGWIN_NT-5.1
+                        Darwin
+                        FreeBSD
+                        HP-UX
+                        IRIX64
+                        NetBSD
+                        OpenBSD 
+                        SunOS
+                        Unix
+    PHP_SAPI        当前使用的接口类型,它有以下值
+                        cli                 命令行接口
+                        apache              apache环境接口
+                        apache2filter       apache环境接口
+                        apache2handler      apache环境接口
+                        cgi 
+                        cgi-fcgi 
+                        cli-server
+                        aolserver 
+                        caudium
+                        continuity
+                        embed
+                        fpm-fcgi
+                        isapi
+                        litespeed
+                        milter
+                        nsapi
+                        phttpd
+                        pi3web
+                        roxen
+                        thttpd
+                        tux 
+                        webjames 
+    DIRECTORY_SEPARATOR 文件分隔符 
+    TRUE            布尔值 true 
+    FALSE           布尔值 false 
+    NULL            空型值 null 
+    __LINE__        当前行号 
+    __FILE__        当前文件的路径 
+    __DIR__         当前目录 
+    __CLASS__       当前类名
+    __FUNCTION__    函数名
+    __CLASS__       类名
+    __TRAIT__       复用代码的名字
+    __METHOD__      类的方法名
+    __NAMESPACE__   当前名称空间
+    DATE_ATOM       时间格式"Y-m-d\TH:i:sP"，示例：2005-08-15T15:52:01+00:00
+    DATE_COOKIE     时间格式"l, d-M-Y H:i:s T"，示例：Monday, 15-Aug-2005 15:52:01 UTC
+    DATE_ISO8601    时间格式"Y-m-d\TH:i:sO"，示例：2005-08-15T15:52:01+0000
+    DATE_RFC822     时间格式"D, d M y H:i:s O" ，示例：Mon, 15 Aug 05 15:52:01 +0000
+    DATE_RFC850     时间格式"l, d-M-y H:i:s T"，示例：Monday, 15-Aug-05 15:52:01 UTC
+    DATE_RFC1036    时间格式"D, d M y H:i:s O"，示例：Mon, 15 Aug 05 15:52:01 +0000
+    DATE_RFC1123    时间格式"D, d M Y H:i:s O"，示例：Mon, 15 Aug 2005 15:52:01 +0000
+    DATE_RFC2822    时间格式"D, d M Y H:i:s O"，示例：Mon, 15 Aug 2005 15:52:01 +0000
+    DATE_RFC3339    时间格式"Y-m-d\TH:i:sP"，示例：2005-08-15T15:52:01+00:00
+    DATE_RFC3339_EXTENDED 时间格式"Y-m-d\TH:i:s.vP"，示例：2005-08-15T15:52:01.000+00:00
+    DATE_RSS        时间格式"D, d M Y H:i:s O"，示例：Mon, 15 Aug 2005 15:52:01 +0000
+    DATE_W3C        时间格式"Y-m-d\TH:i:sP"，示例：2005-08-15T15:52:01+00:00
+************************************************************
+变量和常量的作用范围：
+******************************
+预定义变量                 //可以在本文件中任何位置使用
+                           //作用范围：仅限本文件
+                           //作用周期：程序结束前
+全局变量                   //在类和函数外定义的变量即为全局变量；若在函数或类中欲声明全局变量，则应使用global关键字声明。
+                           //可以在本文件中的除函数和类的其他位置直接使用
+                           //若要在函数和类中使用，需使用global或使用$GLOBALS访问
+                           //若文件被包含，可以在包含此文件的代码之后的位置直接使用
+                           //若包含文件，且在包含其他文件前定义，则可以在包含的文件中被使用
+                           //作用范围：整个工程，工程中其他文件使用需要包含此文件
+                           //作用周期：程序结束前
+局部变量                   //在函数的声明的变量，不可以在此外的其他位置使用
+                           //作用范围：函数的代码块中
+                           //作用周期：函数结束前
+静态变量                   //作用范围：视定义的变量各类而定(全局或局部)，在函数中使用时，函数结束静态变量的内存不被释放，下次可以直接使用
+                           //作用周期：程序结束前
+************************************************************
+continue与break 
+******************************
+continue num            //当不指定num时，num默认为1。用于循环体中，结束本次循环，进入第num层的下一次循环。在switch语句中可替代break
+break    num            //当不指定num时，num默认为1。用于循环体中，结束本次循环，跳出第num层循环。在switch语句中跳出选择块 
+************************************************************
+包含语句：
+******************************
+include "路径"          //可以多次包含
+                        //若参数中没有包含路径，则在include_path目录下寻找，未找到则在当前目录下寻找，若还未找到则结束寻找。
+                        //参数中包含了路径，则按路径寻找，未找到则结束寻找。
+                        //包含失败时返回false，成功则返回1，除非在包含文件中返回了其他的值
+include_once "路径"     //只包含一次
+                        //若参数中没有包含路径，则在include_path目录下寻找，未找到则在当前目录下寻找，若还未找到则结束寻找。
+                        //参数中包含了路径，则按路径寻找，未找到则结束寻找。
+                        //包含失败时返回false，成功则返回1，除非在包含文件中返回了其他的值
+require "路径"          //可以多次包含
+                        //若参数中没有包含路径，则在include_path目录下寻找，未找到则在当前目录下寻找，若还未找到则产生致命错误，程序停止运行。
+                        //参数中包含了路径，则按路径寻找，未找到则产生致命错误，程序停止运行。
+                        //包含失败时返回false，成功则返回1，除非在包含文件中返回了其他的值
+require_once "路径"     //只包含一次
+                        //若参数中没有包含路径，则在include_path目录下寻找，未找到则在当前目录下寻找，若还未找到则产生致命错误，程序停止运行。
+                        //参数中包含了路径，则按路径寻找，未找到则产生致命错误，程序停止运行。
+                        //包含失败时返回false，成功则返回1，除非在包含文件中返回了其他的值
+************************************************************
+类：
+******************************
+self::                      //调用自身的静态函数或静态成员
+static::                    //优先调用子类的静态函数或静态成员
+$this->                     //优先调用子类的静态函数
+************************************************************
+数组(可以容纳所有的数据类型)：
+******************************
+1、索引数组:元素全部使用数字或者使用可以正确转换为数字的字符串作为键值的数组。在创建数组时,如果没有指定键值,则默认使用从数字0开始的键值,并自动递增。也可以使用array(数字=>元素值)的形式来指定键值;
+2、关联数组:至少有一个元素使用不能正确转换为数字的字符串作为键值的数组。创建关联数组时,键值需要使用'=>'符号指定。形式为:array(键值=>元素值);
+3、创建数组：使用函数:array()
+4、创建数组：使用函数:range()
+5、创建数组：使用[]运算符,形式为[键值=>元素值],若省略(键值=>),则默认键值从0开始递增;若此运算符中没有任何参数,则创建一个空数组。
+6、创建数组：直接赋值。形式为$name[键值]=元素值。若省略键值，则默认键值从0开始递增。 
+7、遍历数组:foreach循环语句                              //遍历关联数组或索引数组
+8、遍历数组:for循环语句                                  //遍历索引数组
+9、遍历数组:使用其他循环语句遍历数组
+************************************************************
+选择语句
+******************************
+1、if(){}  else if(){}   else{}
+2、#1  goto a        //将直接从第一行跳转到第三行运行
+   #2  echo 1;
+   #3  a:echo 2;
+3、switch($value)
+   {
+    case a:
+    ...
+        break;
+    case b:
+        ...
+        break;
+    case c:
+        ...
+        break;
+    default:
+        ...
+        break;
+   }
+   //在PHP中a、b、c的值为数值或字符串
+   //...表示要执行的语句
+   //在PHP中switch可以使用continue替换break,即在switch语句中break与continue的作用是相同的
+************************************************************
+循环语句
+******************************
+1、while(){}
+2、do{} while()
+3、for(){}
+4、foreach($arr as $temp){}     //遍历数组或对象,每项值赋值给$temp;$temp可以使用引用需这样写:$arr as &$temp;要使用键值时需要这样写:$arr as $key=>$temp
+                                //用于对象时,只能遍历仅公有成员
+************************************************************
+流程控制符(适用于if、while、for、foreach、switch)
+******************************
+1、'{'和'}'
+2、':'和'end流程语句关键词'
+
+例如foreach的使用：
+假设有一个数组$arr
+方法一：
+foreach($arr as &$temp)
+{
+    echo $temp;
+}
+
+方法二：
+foreach($arr as &$temp):
+    echo $temp;
+endforeach;
+************************************************************
+函数(function):
+******************************
+定义方法：
+function funName($arg1,&$arg2,...,$argN=0)
+{
+    ...;
+    ...;
+    return $ret;
+}
+function           //定义函数的关键字
+funName            //函数名,需遵循自定义标识符的命名规则
+$arg1              //按值传递的参数
+&$arg2             //按引用传递的参数
+$argN=0            //默认参数值,默认参数必须放在参数列表的末尾,调用时如果不填写默认参数值则按默认值调用函数
+...;               //函数体,自定义实现的函数功能语句
+return $ret;       //返回语句,返回函数的执行结果,如果不需要返回参数,可以省略$ret,或者不写返回语句
+******************************
+匿名函数(闭包函数、没有函数名的函数)：
+作用：
+1、把函数定义赋值给一个变量。不定义函数名，把函数赋值给一个变量，通过直接调用变量来传递参数
+2、作为回调函数使用。把匿名函数作为参数传递给另一个函数。作为回调函数使用时，若想传递参数可以使用use($arg,&$arg2)来传递。
+示例：
+1、把函数定义赋值给一个变量：
+    $functionName=function($arg="Yang")
+    {
+        echo $arg."\n";
+    };
+    $functionName();                                //输出：Yang
+    $functionName("Zhang");                         //输出：Zhang
+2、作为回调函数使用：
+    function callBack($backFunction)
+    {
+        $backFunction();
+    }
+    $arg1=50;
+    callBack(function() use($arg1){echo $arg1;});   //输出：50
+******************************
+递归函数(在函数内部可以调用自己)：
+示例：
+1、计算阶乘
+function calculateNumberPower(int $a=1)
+{
+    if($a<=1)return 1;
+    return $a*calculateNumberPower($a-1);
+}
+$num=5;
+echo "{$num}!=".calculateNumberPower($num);         //输出：5!=120
+
+2、计算杨辉三角行列值
+function yangHuiTriangle(int $row,int $col)
+{
+    static $storedData=array();
+    if(($col-$row/2)>=1)$col=$row+1-$col;
+    if(array_key_exists("{$row},{$col}",$storedData))return $storedData["{$row},{$col}"];
+    else
+    {
+        if($col>$row||$row<=0||$col<=0)return 0;
+        else if($row==1||$col==1)$storedData["{$row},{$col}"]=1;
+        else if($col==2)$storedData["{$row},{$col}"]=$row-1;
+        else $storedData["{$row},{$col}"]=yangHuiTriangle($row-1,$col)+yangHuiTriangle($row-1,$col-1);
+        return $storedData["{$row},{$col}"];
+    }
+}
+echo yangHuiTriangle(9,5);                          //输出：70
+******************************
+回调函数：
+定义方法：
+1、使用匿名函数定义，callBack的参数类型为Object(Closure)类型。调用时参数传递使用use()方式
+    function callBack($backFunction)
+    {
+        $backFunction();
+    }
+    $arg1=50;
+    callBack(function() use($arg1){echo $arg1;});   //输出：50
+2、使用已经定义好的函数，callBack的参数类型为string、array。调用时的参数传递使用数组形式
+    function callBack(string $backFunction,array $paramsList)
+    {
+        $backFunction($paramsList);
+    }
+    function funName(array $paramsList)
+    {
+        echo $paramsList[0];
+    }
+    callBack("funName",array(50));                  //输出：50
+************************************************************
+php时间与日期
+******************************
+1、世界标准时间：UTC(24小时制式)
+2、当地时间：UTC+时区(东为正，西为负)
+3、设置系统时区：
+    在php.ini文件中更改配置：date.timezone=时区     //详细选项见date_default_timezone_set函数(不含引号) 
+    date_default_timezone_set()函数 
+************************************************************
+会话：
+******************************
+1、会话形式：
+        客户端通过提交GET或POST表单传递会话保持数据；
+        客户端通过传递Cookie会话保持数据；
+        服务器通过Session保存会话保持数据。 
+2、session的使用：
+        session_start()              //启用会话并新建(打开)session文件(必须在向浏览器输出任何信息前启用)
+        $_SESSION[键]=变量;          //设置变量
+        unset($_SESSION[键]);        //销毁指定的$_SESSION变量
+        session_unset();             //销毁全部$_SESSION变量
+        $_SESSION=array()            //销毁全部$_SESSION变量
+        session_write_close()        //关闭会话并将$_SESSION变量写入session文件、关闭session文件。若在程序的执行过程中没有调用此函数，则在程序结束时自动调用此函数。
+        session_destroy()            //关闭会话并将当前会话的session文件删除。
+        session_name()               //会话名称
+        session_id()                 //会话id
+        session_set_cookie_params()  //设置cookie参数
+************************************************************
+PHP转义序列(转义字符)：
+******************************
+\$      美元符 
+\f      换页(FF)
+\n      换行(LF)
+\r      回车(CR)
+\t      水平制表(HT)
+\v      垂直制表(VT)
+\\      反斜杠
+\'      单引号字符(在''中才能被转义)
+\"      双引号字符(在""中才能被转义)
+\0      空字符(0x00)
+\ddd    1-3位八进制所代表的任意字符
+\xhh    1-2位十六进制所代表的任意字符 
+************************************************************
+php支持的字符编码参数：
+******************************
+ISO-8859-1    //西欧,Latin-1字符
+ISO-8859-5    //西里尔字符
+ISO-8859-15   //西欧,Latin-9字符
+UTF-8         //兼容ASCII字符的8字节变长Unicode
+CP866         //DOS西里尔编码
+CP1251        //Windows西里尔编码
+CP1252        //Windows西欧编码
+KOI8-R        //俄语
+BIG5          //中国台湾省繁体中文
+BIG5-HKSCS    //中国香港特别行政区繁体中文
+GB2312        //简体中文
+SHIFT_JIS     //日语
+EUC-JP        //日语
+MacRoman      //Mac字符集
+''            //空字符集 
+************************************************************
+错误级别设置：
+******************************
+1、每个错误级别都是一个32位的二进制位，不同的位的不同组合代表不同的错误类型。
+2、在php.ini文件中可以对error_reporting进行如下设置以设置错误级别：
+        !(~)  错误级别按位取反。&与~结合使用，如E_ALL & ~E_NOTICE，用于排除E_NOTICE错误级别
+        &     错误级别按位与。
+        |     错误级别按位或。
+        ^     错误级别按位异或。 
+3、错误级别： 
+        E_ALL               所有错误
+        E_ERROR             致命错误
+        E_WARNING           警告
+        E_PARSE             解析错误
+        E_NOTICE            通知
+        E_CORE_ERROR        php引擎中的致命错误
+        E_CORE_WARNING      php引擎中的警告
+        E_COMPILE_WARNING   编译警告
+        E_STRICT            修改建议
+        E_RECOVERABLE_ERROR 可恢复错误
+        E_DEPRECATED        错误预警(可能会在新的PHP版本中出现的错误)
+        E_USER_ERROR        用户自定义错误
+        E_USER_WARNING      用户自定义警告
+        E_USER_NOTICE       用户自定义通知
+        E_USER_DEPRECATED   用户自定义通知错误预警
+************************************************************************************************************************ 
+运算符优先级(从高到低)：
+******************************
+1、 clone和new                                               //clone和new运算符
+2、 []                                                       //数组符号
+3、 **                                                       //幂运算符
+4、 ++和--和~和(类型)和@                                     //自增、自减、类型转换、错误控制运算符
+5、 instanceof                                               //类型运算符
+6、 !                                                        //非
+7、 *和/和%                                                  //乘除取余
+8、 +和-和.                                                  //加减和字符串连接符
+9、 <<和>>                                                   //位运算符
+10、<和<=和>和>=                                             //比较运算符
+11、==和!=和===和!==和<>和<=>                                //比较运算符
+12、&                                                        //位运算符和引用符
+13、^                                                        //位运算符
+14、|                                                        //位运算符
+15、&&                                                       //逻辑运算符
+16、||                                                       //逻辑运算符
+17、??                                                       //比较运算符
+18、?:                                                       //三目运算
+19、=和+=和-=和*=和**=和/=和.=和%=和&=和|=和^=和<<=和>>=     //赋值运算符
+20、and                                                      //逻辑运算符
+21、xor                                                      //逻辑运算符
+22、or                                                       //逻辑运算符
+************************************************************************************************************************
+PDO(数据库连接)类
+************************************************************
+public PDO __construct(string $dsn,string $username,string $passwd,array $options=array()) 
+    功能        构造函数
+    返回值      PDO对象实例
+    $dsn        数据库连接信息,由"SQLDriverName:host=HOST;dbname=DBName;port=PORT"组成:
+                    SQLDriverName   数据库驱动名称mysql和MariaDB都为:mysql 
+                    HOST            主机IP或域名
+                    DBName          数据库名称 
+                    PORT            端口。如果配置的默认端口3306,此参数可以省略 
+    $username   数据库用户名
+    $passwd     数据库密码
+    $options    连接配置,有以下参数可以配置,使用array(OPTIONS=>bool,....)的形式配置,其中OPTIONS可取以下值:
+                    PDO::ATTR_PERSISTENT              持久连接,默认为非持久连接(false) 
+public int exec(string $statement)
+    功能        执行SQL语句(执行前不对语句进行安全检查) 
+    返回值      受影响的行数
+public PDOStatement query(string $statement)
+    功能        执行SQL查询语句,返回查询结果(执行前不对语句进行安全检查) 
+    返回值      语句对象PDOStatement(包含查询结果),查询结果是私有的,只有通过PDOStatement对象的方法fetchAll或fetch才能获取。亦可使用for循环遍历每一行数据(一维数组)
+    $statement  SQL语句 
+public string quote(string $string,int $parameter_type=PDO::PARAM_STR)
+    功能        对输入的字符串进行安全检查,并返回安全的且两边带单引号的字符串 
+    返回值      转换后的字符串 
+    $parameter_type 数据库驱动类型,一般无须设置
+public PDOStatement prepare(string $statement,array $driver_options=array())
+    功能        生成安全的SQL语句对象PDOStatement
+    返回值      语句对象PDOStatement(不含查询结果),想要包含查询结果,则可以使用返回的对象调用成员方法execute(),即可得到包含查询结果的PDOStatement对象
+    $statement  SQL语句
+    $driver_options 为PDOStatement对象设置属性。一般无须设置 
+public bool beginTransaction(void)
+    功能        启动事务,关闭自动提交。(关闭后通过PDO对象实例对数据库做出更改后直到调用PDO::commit()结束事务才被提交) 
+    返回值      关闭成功返回true,关闭失败返回false 
+public bool commit(void)
+    功能        提交事务。开启自动提交
+    返回值      提交成功返回true,提交失败返回false 
+public bool inTransaction(void) 
+    功能        检查事务当前是否处于激活状态。此方法仅对支持事务的数据库驱动起作用
+    返回值      如果处于激活状态则返回true,否则返回false 
+public bool rollBack(void)
+    功能        回滚已经启动的事务.如果没有事务激活,则抛出一个异常  
+    返回值      回滚成功返回true,回滚失败返回false 
+public string errorCode(void)
+    功能        获取上一次数据库操作的通用SQLSTATE状态码 
+    返回值      通用SQLSTATE状态码(ANSI SQL标准中定义的标识符) 
+public array errorInfo(void)
+    功能        获取上一次数据库操作的错误信息
+    返回值      数组。由三列组成:
+                    0   通用SQLSTATE代码
+                    1   特定的数据库的错误代码
+                    2   错误消息
+public mixed getAttribute(int $attribute)
+    功能        获取数据库连接属性 
+    返回值      调用成功返回数据库连接属性,调用失败返回NULL 
+    $attribute  可以取以下值:
+                    PDO::ATTR_AUTOCOMMIT
+                    PDO::ATTR_CASE
+                    PDO::ATTR_CLIENT_VERSION
+                    PDO::ATTR_CONNECTION_STATUS
+                    PDO::ATTR_DRIVER_NAME
+                    PDO::ATTR_ERRMODE
+                    PDO::ATTR_ORACLE_NULLS
+                    PDO::ATTR_PERSISTENT
+                    PDO::ATTR_PREFETCH
+                    PDO::ATTR_SERVER_INFO
+                    PDO::ATTR_SERVER_VERSION
+                    PDO::ATTR_TIMEOUT
+public bool setAttribute(int $attribute,mixed $value)
+    功能        设置连接属性
+    返回值      设置成功返回true,设置失败返回false 
+    $attribute  属性
+    $value      属性值。属性与属性值对应关系如下:
+                    PDO::ATTR_CASE                          指定大小写
+                        PDO::CASE_LOWER                     强制列名为小写
+                        PDO::CASE_UPPER                     强制列名为大写
+                        PDO::CASE_NATURAL                   保留数据库返回的列名
+                    PDO::ATTR_ERRMODE                       错误报告模式
+                        PDO::ERRMODE_SILENT                 错误代码
+                        PDO::ERRMODE_WARNING                警告消息
+                        PDO::ERRMODE_EXCEPTION              抛出异常
+                    PDO::ATTR_ORACLE_NULLS                  转换NULL和空字符串
+                        PDO::NULL_NATURAL                   不转换
+                        PDO::NULL_EMPTY_STRING              将空字符串转换成NULL
+                        PDO::NULL_TO_STRING                 将NULL转换成空字符串
+                    PDO::ATTR_STRINGIFY_FETCHES             是否把数值转换为字符串
+                        false                               不转换
+                        true                                转换
+                    PDO::ATTR_STATEMENT_CLASS               设置从PDOStatement派生类提供的语句类(不能用于持久连接)
+                        array(string $className,array(mixed $parames,...)) $className表示类名,$parames表示PDOStatement派生类的构造函数的参数列表
+                    PDO::ATTR_TIMEOUT                       超时时间(单位:秒)
+                        int                                 秒数
+                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY      是否使用缓冲查询。仅用于mysql和mariadb
+                        true                                使用
+                        false                               不使用 
+                    PDO::ATTR_DEFAULT_FETCH_MODE            默认的返回模式
+                        PDO::FETCH_ASSOC                    列名键数组
+                        PDO::FETCH_NUM                      数值键数组
+                        PDO::FETCH_BOTH                     数值键和列名键同时存在的数组(默认) 
+                        PDO::FETCH_OBJ                      列名对应值的匿名对象 
+                        PDO::FETCH_BOUND                    返回true,且将值传递给bindColumn中绑定的变量
+                        PDO::FETCH_CLASS                    
+                        PDO::FETCH_INTO
+                        PDO::FETCH_LAZY 
+public static array getAvailableDrivers(void) 
+    功能        查询受支持的数据库数组 
+    返回值      受支持的数据库数组  
+public string lastInsertId(string $name=NULL) 
+    功能        查询最后插入行的ID或序列值 
+    返回值      返回最后插入行的ID或序列值。不输入$name参数时,返回列名为id的最后插入行值或者自增字段的最后插入行值
+    $name       列名 
+************************************************************************************************************************
+PDOStatement(SQL语句与结果集类)
+************************************************************
+public bool bindParam(mixed $parameter,mixed &$variable,int $data_type=PDO::PARAM_STR,int $length=0,mixed $driver_options=array())
+    功能        绑定变量到SQL语句中,可以防止注入攻击
+    返回值      绑定成功返回true,绑定失败返回false
+    $parameter  使用?代替变量时,此时$parameter应该是?的序列号(从1开始);使用:name代替变量时,此时$parameter应该是:name 
+    $variable   要绑定到SQL语句中的变量
+    $data_type  绑定的数据类型,可以参照bindColumn的$type列出的数据类型
+    $length     数据长度。一般无须设置
+    $driver_options 数据库驱动参数。一般无须设置
+public bool bindValue(mixed $parameter,mixed $value,int $data_type = PDO::PARAM_STR)
+    功能        绑定值到SQL语句中,可以防止注入攻击
+    返回值      绑定成功返回true,绑定失败返回false
+    $parameter  使用?代替变量时,此时$parameter应该是?的序列号(从1开始);使用:name代替变量时,此时$parameter应该是:name 
+    $value      要绑定到SQL语句中的值
+    $data_type  绑定的数据类型,可以参照bindColumn的$type列出的数据类型
+public bool bindColumn(mixed $column,mixed &$param,int $type=PDO::PARAM_STR,int $maxlen=0,mixed $driverdata=array())
+    功能        把查询结果绑定到PHP变量中 
+                在prepaer之后且在execute之前绑定列到PHP变量,执行execute和fetch后结果对应一行数据到PHP变量中(由于只能对应一行数据到PHP变量中,因此fetchAll的结果只能对应最后一行数据)。
+    返回值      绑定成功返回true,绑定失败返回false 
+    $column     查询语句中的列序号(从1开始)或列名
+    $param      要绑定的php变量
+    $type       要绑定的列的数据类型,可以取以下值 
+                    PDO::PARAM_BOOL         布尔 
+                    PDO::PARAM_INT          整型 
+                    PDO::PARAM_STR          字符串型(默认) 
+                    PDO::PARAM_NULL         空值 
+                    PDO::PARAM_STR_NATL     地区字符集
+                    PDO::PARAM_STR_CHAR     常规字符集
+                    PDO::PARAM_LOB          大对象数据类型
+                    PDO::PARAM_STMT         记录集类型
+                    PDO::PARAM_INPUT_OUTPUT 存储过程的INOUT参数 
+    $maxlen     数据的最大长度。一般无须设置
+    $driverdata 数据库驱动参数。一般无须设置
+public bool execute(array $input_parameters=array())
+    功能        执行对象中的SQL语句 
+    返回值      执行成功返回true,执行失败返回false 
+    $input_parameters 绑定参数,绑定的值都被视为字符串。使用此参数可以省略bindParam或bindValue,绑定形式如:$key=>值,语句中使用?代替变量时,此时$key应该是?的序列号(从1开始);使用:name代替变量时,此时$key应该是:name。例:array(":id"=>1425,"2"=>"yang") 
+public mixed fetch(int $fetch_style=PDO::FETCH_BOTH,int $cursor_orientation=PDO::FETCH_ORI_NEXT,int $cursor_offset=0)
+    功能        获取结果集中的下一行数据
+    返回值      以数组形式返回一行数据
+    $fetch_style 返回形式,有以下形式:
+                    PDO::FETCH_ASSOC                    列名键数组
+                    PDO::FETCH_NUM                      数值键数组
+                    PDO::FETCH_BOTH                     数值键和列名键同时存在的数组(默认) 
+                    PDO::FETCH_OBJ                      列名对应值的匿名对象    
+                    PDO::FETCH_BOUND                    返回true,且将值传递给bindColumn中绑定的变量 
+                    PDO::FETCH_CLASS                    
+                    PDO::FETCH_INTO
+                    PDO::FETCH_LAZY
+    $cursor_orientation 可滚动游标,该值决定了哪一行将被返回,有以下值:
+                    PDO::FETCH_ORI_NEXT                 在结果集中获取下一行  
+                    PDO::FETCH_ORI_PRIOR                在结果集中获取上一行
+                    PDO::FETCH_ORI_FIRST                在结果集中获取第一行
+                    PDO::FETCH_ORI_LAST                 在结果集中获取最后一行
+                    PDO::FETCH_ORI_ABS                  根据行号从结果集中获取需要的行  
+                    PDO::FETCH_ORI_REL                  根据当前游标位置的相对位置从结果集中获取需要的行
+    $cursor_offset  当$cursor_orientation的值为PDO::FETCH_ORI_ABS或PDO::FETCH_ORI_REL,此参数表示行值
+public array fetchAll(int $fetch_style=PDO::FETCH_BOTH,mixed $fetch_argument=PDO::FETCH_COLUMN,$ctor_args=array())
+    功能        获取结果集中的所有行数据
+    返回值      以数组形式返回所有行数据
+    $fetch_style 返回形式,有以下形式 
+                    PDO::FETCH_COLUMN                               只抓取指定的列,参数由$fetch_argument指定,列数以0开始排序
+                    PDO::FETCH_GROUP|PDO::FETCH_COLUMN              以指定的列为键值返回,参数由$fetch_argument指定,列数以0开始排序
+                    PDO::FETCH_CLASS                                返回指定类的实例,映射每行的列到类中对应的属性名。实例类名由$fetch_argument指定,构造函数的参数由$ctor_args指定
+                    PDO::FETCH_FUNC                                 将每行的列作为参数传递给指定的函数,并返回调用函数后的结果。函数名由$fetch_argument指定 
+                    PDO::FETCH_ASSOC                                列名键数组
+                    PDO::FETCH_NUM                                  数值键数组
+                    PDO::FETCH_BOTH                                 数值键和列名键同时存在的数组(默认) 
+                    PDO::FETCH_OBJ                                  列名对应值的匿名对象    
+                    PDO::FETCH_BOUND                                返回true,且将值传递给bindColumn中绑定的变量 
+                    PDO::FETCH_INTO
+                    PDO::FETCH_LAZY 
+    $fetch_argument 当$fetch_style的值为PDO::FETCH_COLUMN或PDO::FETCH_GROUP|PDO::FETCH_COLUMN或PDO::FETCH_CLASS或PDO::FETCH_FUNC时,有不同的含义
+    $ctor_args      当$fetch_style的值为PDO::FETCH_CLASS时,构造函数的参数由$ctor_args指定
+public string fetchColumn(int $column_number=0)
+    功能        从结果集中的下一行获取指定的列
+    返回值      返回获取的数据 
+    $column_number  列的序号,列数以0开始排序
+public mixed fetchObject(string $class_name="stdClass",array $ctor_args=array())
+    功能        获取下一行并作为一个对象返回
+    返回值      获取数据成功时返回类实例,失败时返回false
+    $class_name 类名称
+    $ctor_args  类构造函数的参数
+public array getColumnMeta(int $column)
+    功能        获取结果集中一列的元数据 
+    返回值      以数组形式返回结果集中一列的元数据
+    $column     列的序号,列数以0开始排序
+public int columnCount(void)
+    功能        获取结果集中的列数  
+    返回值      返回结果集中的列数
+public int rowCount(void )
+    功能        获取结果集的行数
+    返回值      返回结果集的行数
+public void debugDumpParams(void)
+    功能        打印语句执行的过程及调试信息
+    返回值      无返回值
+public string errorCode(void)
+    功能        获取上一次数据库操作的通用SQLSTATE状态码 
+    返回值      通用SQLSTATE状态码(ANSI SQL标准中定义的标识符) 
+public array errorInfo(void)
+    功能        获取上一次数据库操作的错误信息
+    返回值      数组。由三列组成:
+                    0   通用SQLSTATE代码
+                    1   特定的数据库的错误代码
+                    2   错误消息
+public bool setFetchMode(int $fetch_style,string $fetch_argument,array $ctor_args) 
+    功能        设置默认的获取数据的模式  
+    返回值      设置成功返回true,设置失败返回false  
+    $fetch_style 详见PDO::fetchAll()的同名参数
+    $fetch_argument 详见PDO::fetchAll()的同名参数
+    $ctor_args      详见PDO::fetchAll()的同名参数
+public mixed getAttribute(int $attribute)
+    功能        获取数据库连接属性 
+    返回值      调用成功返回数据库连接属性,调用失败返回NULL 
+    $attribute  可以取的值详见PDO::getAttribute
+public bool setAttribute(int $attribute,mixed $value)
+    功能        设置连接属性
+    返回值      设置成功返回true,设置失败返回false 
+    $attribute  属性
+    $value      属性值。属性与属性值对应关系详见PDO::getAttribute 
+public bool nextRowset(void)
+    功能        在一个多行集语句句柄中推进到下一个行集
+    返回值      成功时返回true,或者在失败时返回false
+public bool closeCursor(void)
+    功能        关闭游标,使语句能再次被执行
+    返回值      关闭成功返回true,关闭失败返回false 
+************************************************************************************************************************
+内置函数：
+************************************************************
+类型转换函数、取整函数：
+****************************** 
+bool settype(mixed &$var,string $type)       
+        功能        类型转换
+        返回值      转换成功返回true,否则返回false
+        $var        引用类型。要转换类型的变量
+        $type       将要成为的类型，可取值： 
+                        "bool"或"boolean"   布尔型
+                        "int"或“integer"    整型
+                        "float"             浮点型
+                        "string"            字符串型
+                        "array"             数组型
+                        "object"            对象型
+                        "null"              空类型
+float ceil(float $value)
+        功能        向上取整
+        返回值      返回不小于$value的整数
+        $value      要取整的数
+float floor(float $value)
+        功能        向下取整
+        返回值      返回不大于$value的整数
+        $value      要取整的数
+float round(float $val,int $precision=0,int $mode=PHP_ROUND_HALF_UP)
+        功能        四舍五入
+        返回值      四舍五入后的值
+        $val        要处理的值
+        $precision  保留的小数位数，默认为0(整数)
+        $mode       有以下几种模式：
+                        PHP_ROUND_HALF_UP   默认    遇到5向上舍入
+                        PHP_ROUND_HALF_DOWN         遇到5向下舍入
+                        PHP_ROUND_HALF_EVEN         遇到5向偶数值舍入
+                        PHP_ROUND_HALF_ODD          遇到5向奇数值舍入
+int intval(mixed $var,int $base=10)
+        功能        提取一个数的整数部分/数制转换
+        返回值      返回提取的整数
+        $var        要取整的数
+        $base       数制0表自动识别数制,2表二进制,8表八进制数,10表返回十进制数,16表十六进制数
+************************************************************
+正则函数：
+****************************** 
+int preg_match(string $pattern,string $str,array &$matches=null,int $flag=0,int $offset=0)
+        功能        使用正则表达式对字符串执行一次匹配
+        返回值      没有匹配到时返回0,匹配到时返回1
+        $pattern    正则表达式(含包裹符)
+        $str        要匹配的原始字符串
+        $matches    保存匹配结果
+        $flag       保存标志,有以下几种标志:
+                    0                 默认  $matches[0]整体匹配 
+                                            $matches[1]第一个括号的匹配
+                                            $matches[2]第二个括号的匹配
+                                            $matches[3]第三个括号的匹配
+                                            以此类推
+                    PREG_OFFSET_CAPTURE     $matches[0][0]整体匹配 
+                                            $matches[0][1]整体匹配的偏移位置
+                                            $matches[1][0]第一个括号的匹配
+                                            $matches[1][1]第一个括号的匹配的位移位置
+                                            $matches[2][0]第二个括号的匹配
+                                            $matches[2][1]第二个括号的匹配的位移位置
+                                            $matches[3][0]第三个括号的匹配
+                                            $matches[3][1]第三个括号的匹配的位移位置
+        $offset     从$str偏移$offset位置处开始进行匹配。偏移量的单位为字节 
+int preg_match_all(string $pattern,string $str,array &$matches=null,int $flag=PREG_PATTERN_ORDER ,int $offset=0)
+        功能        使用正则表达式对字符串执行所有匹配
+        返回值      没有匹配到时返回0,匹配到时返回匹配的次数
+        $pattern    正则表达式(含包裹符)
+        $str        要匹配的原始字符串
+        $matches    保存匹配结果
+        $flag       保存标志,有以下几种标志:
+                    PREG_PATTERN_ORDER   默认   $matches[0][0]保存整体第一次匹配的结果
+                                                $matches[0][1]保存整体第二次匹配的结果
+                                                $matches[0][2]保存整体第三次匹配的结果
+                                                $matches[1][0]保存第一个括号的第一次匹配
+                                                $matches[1][1]保存第一个括号的第二次匹配
+                                                $matches[1][2]保存第一个括号的第三次匹配
+                                                $matches[2][0]保存第二个括号的第一次匹配
+                                                $matches[2][1]保存第二个括号的第二次匹配
+                                                $matches[2][2]保存第二个括号的第三次匹配
+                                                以此类推
+                    PREG_OFFSET_CAPTURE         $matches[0][0][0]保存整体第一次匹配的结果
+                                                $matches[0][0][1]保存整体第一次匹配的偏移位置
+                                                $matches[0][1][0]保存整体第二次匹配的结果
+                                                $matches[0][1][1]保存整体第二次匹配的偏移位置
+                                                $matches[0][2][0]保存整体第三次匹配的结果
+                                                $matches[0][2][1]保存整体第三次匹配的偏移位置
+                                                $matches[1][0][0]保存第一个括号的第一次匹配
+                                                $matches[1][0][1]保存第一个括号的第一次匹配的偏移位置
+                                                $matches[1][1][0]保存第一个括号的第二次匹配
+                                                $matches[1][1][1]保存第一个括号的第二次匹配的偏移位置
+                                                $matches[1][2][0]保存第一个括号的第三次匹配
+                                                $matches[1][2][1]保存第一个括号的第三次匹配的偏移位置
+                                                $matches[2][0][0]保存第二个括号的第一次匹配
+                                                $matches[2][0][1]保存第二个括号的第一次匹配的偏移位置
+                                                $matches[2][1][0]保存第二个括号的第二次匹配
+                                                $matches[2][1][1]保存第二个括号的第二次匹配的偏移位置
+                                                $matches[2][2][0]保存第二个括号的第三次匹配
+                                                $matches[2][2][1]保存第二个括号的第三次匹配的偏移位置
+                                                以此类推
+                    PREG_SET_ORDER              $matches[0][0]保存第一次整体匹配
+                                                $matches[0][1]保存第一次第一个括号的匹配
+                                                $matches[0][2]保存第一次第二个括号的匹配
+                                                $matches[0][3]保存第一次第三个括号的匹配
+                                                $matches[1][0]保存第二次整体匹配
+                                                $matches[1][1]保存第二次第一个括号的匹配
+                                                $matches[1][2]保存第二次第二个括号的匹配
+                                                $matches[1][3]保存第二次第三个括号的匹配
+                                                以此类推
+        $offset     从$str偏移$offset位置处开始进行匹配。偏移量的单位为字节
+array preg_grep(string $pattern,array $input,int $flag=0)
+        功能        使用正则表达式匹配数组中的元素
+        返回值      返回符合匹配的数组
+        $pattern    正则表达式(含包裹符) 
+        $input      要过滤的数组
+        $flag       如果设置为PREG_GREP_INVERT,则返回不匹配的数组 
+mixed preg_replace(mixed $pattern,mixed $replacement,mixed $subject,int $limit=-1,int $&count=null)
+        功能        正则替换函数
+        返回值      如果$subject是数组,则返回替换成功和替换未成功的元素组成的数组;如果$subject是一个字符串,则返回替换成功的字符串或原字符串。
+        $pattern    正则表达式(含包裹符),一个字符串或者一个数组
+        $replacement要替换的内容。如果$pattern是一个字符串,此变量也应是一个字符串;如果$pattern是一个数组,此变量也应该是一个数组
+                    如果要在replacement 中使用反斜线，必须使用4个("\\\\"，译注：因为这首先是php的字符串，经过转义后，是两个，再经过 正则表达式引擎后才被认为是一个原文反斜线)
+        $subject    要进行正则替换的原始字符串或数组。
+        $limit      替换的最大次数。默认全部替换
+        $count      存储替换的次数
+mixed preg_replace_callback(mixed $pattern,object $callback,mixed $subject,int $limit=-1,int &$count=null) 
+        功能        正则替换函数 
+        返回值      如果$subject是一个数组,则返回数组;如果$subject是一个字符串,则返回字符串
+        $pattern    正则表达式(含包裹符),一个字符串或者一个数组
+        $callback   回调函数,用于处理$pattern匹配到的结果。
+                    同时传递一个匹配的结果数组$matches。
+                    其中$matches[0]是整体匹配,匹配matches[1]是第一个括号的匹配,以此类推。
+                    当$pattern是数组时,将会多次传入参数每个$pattern元素的匹配结果;当$pattern是字符串时,则只传入一次匹配结果。
+                    此回调函数的返回值应是一个字符串,此字符串将用于preg_replace_callback函数对匹配的结果进行替换。 
+        $subject    要进行正则替换的原始字符串或数组。
+        $limit      替换的最大次数。默认全部替换
+        $count      存储替换的次数
+mixed preg_replace_callback_array(array $patterns_and_callbacks,mixed $subject,int $limit=-1,int &$count=null) 
+        功能        正则替换函数
+        返回值      如果$subject是一个数组,则返回数组;如果$subject是一个字符串,则返回字符串
+        $patterns_and_callbacks 正则表达式(含包裹符)与回调函数组成的键(正则表达式)值(回调函数)数组。
+                    回调函数传入的参数是当前的键(正则表达式)匹配的内容,其中$result[0]是整体匹配,result[1]是对应的捕获组的匹配内容，应返回一个字符串用于preg_replace_callback_array匹配的结果进行替换。
+                    例如:
+                    array("/[a-zA-Z0-9]+/"=>function($result)
+                                            {
+                                                return "SUCCESS";
+                                            })
+        $pattern    正则表达式(含包裹符),一个字符串或者一个数组 
+        $limit      替换的最大次数。默认全部替换
+        $count      存储替换的次数
+mixed preg_filter(mixed $pattern,mixed $replacement,mixed $subject,int $limit=-1,int $&count=null)
+        功能        使用正则表达式进行搜索和替换 
+        返回值      如果subject是数组则返回由替换成功的元素组成的数组,否则返回匹配替换成功的字符串。(出错时返回空数组或NULL)    
+        $pattern    正则表达式(含包裹符),一个字符串或者一个数组
+        $replacement要替换的内容。如果$pattern是一个字符串,此变量也应是一个字符串;如果$pattern是一个数组,此变量也应该是一个数组
+                    如果要在replacement 中使用反斜线，必须使用4个("\\\\"，译注：因为这首先是php的字符串，经过转义后，是两个，再经过 正则表达式引擎后才被认为是一个原文反斜线)
+        $subject    要进行正则替换的原始字符串或数组。$pattern中的第一条正则将会应用于此对象中的任何一个元素或字符串
+        $limit      替换的最大次数。默认全部替换 
+        $count      存储替换的次数 
+array preg_split(string $pattern,string $subject,int $limit=-1,int $flag=0)
+        功能        正则字符串分割函数
+        返回值      返回分隔好的数组
+        $pattern    正则表达式(含包裹符)
+        $subject    要进行分割的字符串
+        $limit      分割的数组的最大长度。最后一个元素将包含未分割的部分 
+        $flag       分割标志,可以有以下的几个标志组合,设返回结果存储在$arr中
+                        0                    默认 正常返回分割结果
+                                                    $arr[0]分割的第一个元素
+                                                    $arr[1]分割的第二个元素
+                                                    $arr[2]分割的第三个元素
+                                                    以此类推
+                        PREG_SPLIT_NO_EMPTY       仅返回分割后的非空部分
+                                                    $arr[0]分割的第一个元素
+                                                    $arr[1]分割的第二个元素
+                                                    $arr[2]分割的第三个元素
+                                                    以此类推
+                        PREG_SPLIT_DELIM_CAPTURE  括号匹配将被返回
+                                                    $arr[0]分割的第一个元素
+                                                    $arr[1]正则的括号匹配部分
+                                                    $arr[2]分割的第二个元素
+                                                    $arr[3]正则的括号匹配部分
+                                                    $arr[4]分割的第三个元素
+                                                    $arr[5]正则的括号匹配部分
+                                                    以此类推
+                        PREG_SPLIT_OFFSET_CAPTURE 返回偏移量
+                                                    $arr[0][0]分割的第一个元素
+                                                    $arr[0][1]分割的第一个元素的偏移位置
+                                                    $arr[1][0]分割的第二个元素
+                                                    $arr[1][1]分割的第二个元素的偏移位置
+                                                    $arr[2][0]分割的第三个元素
+                                                    $arr[2][1]分割的第三个元素的偏移位置
+                                                    以此类推 
+array mb_split(string $pattern,string $subject,int $limit=-1) 
+        功能        正则字符串分割函数
+        返回值      返回分隔好的数组
+        $pattern    正则表达式(不含包裹符,自动使用u参数)   
+        $subject    要进行分割的字符串
+        $limit      分割的数组的最大长度。最后一个元素将包含未分割的部分 
+string preg_quote(string $str,string $delimite=null)
+        功能        在正则表达式的特殊字符前加入反斜线(\),正则的特殊字符有:
+                        .
+                        \
+                        +
+                        *
+                        ?
+                        [
+                        ^
+                        ]
+                        (
+                        $
+                        )
+                        {
+                        }
+                        =
+                        !
+                        <
+                        >
+                        |
+                        :
+                        -
+        返回值      返回处理完成的字符串
+        $str        要处理的字符串
+        $delimite   使用的正则包裹符。通常是`/`。如果使用的正则包裹符为`{}`，则不填写此参数
+int preg_last_error()
+        功能        返回最后一次正则执行的错误码
+        返回值      int枚举值,它有以下值:
+                    PREG_NO_ERROR                   无错误
+                    PREG_INTERNAL_ERROR             PCRE内部错误
+                    PREG_BACKTRACK_LIMIT_ERROR      超出回溯限制
+                    PREG_RECURSION_LIMIT_ERROR      超出递归限制
+                    PREG_BAD_UTF8_ERROR             UTF8编码异常
+                    PREG_BAD_UTF8_OFFSET_ERROR      偏移量与合法的UTF8编码不匹配
+                    PREG_JIT_STACKLIMIT_ERROR       JIT栈空间限制 
+************************************************************
+类型判断、文件(夹)存在判断函数 
+****************************** 
+bool is_bool(mixed $var)
+        功能        是否为布尔型
+        返回值      如果是则返回true，否则返回false
+        $var        要检测的变量
+bool is_string(mixed $var)
+        功能        是否为字符串型      
+        返回值      如果是则返回true，否则返回false
+        $var        要检测的变量
+bool is_float(mixed $var)、is_double(mixed $var)、is_real(mixed $var)
+        功能        是否为实型
+        返回值      如果是则返回true，否则返回false
+        $var        要检测的变量
+bool is_int(mixed $var)、is_integer(mixed $var)
+        功能        是否为整型
+        返回值      如果是则返回true，否则返回false
+        $var        要检测的变量
+bool is_null(mixed $var)
+        功能        是否为空型
+        返回值      如果是则返回true，否则返回false
+        $var        要检测的变量
+bool is_array(mixed $var)
+        功能        是否为数组
+        返回值      如果是则返回true，否则返回false
+        $var        要检测的变量
+bool is_object(mixed $var)
+        功能        是否为对象
+        返回值      如果是则返回true，否则返回false
+        $var        要检测的变量
+bool is_numeric(mixed $var)
+        功能        是否为数字或是由数字组成的字符串
+        返回值      如果是则返回true，否则返回false
+        $var        要检测的变量
+bool is_dir(string $filename)
+        功能        判断文件(夹)是否存在
+        返回值      如果存在则返回true,否则返回false
+        $filename   要检测的文件(夹)
+************************************************************
+常量相关函数 
+****************************** 
+bool define(string $name,mixed $value,bool $case_insensitive=false) 
+        功能        常量定义
+        返回值      定义成功返回true，否则返回false 
+        $name       常量名,遵循php标识符的命名规则
+        $value      常量值,必须是int、float、string、bool、null、array中的一种类型
+        $case_insensitive 常量大小写敏感标志,默认对大小写敏感(false),如果设置为true则对大小写不敏感 
+mixed constant(string $name)
+        功能        获取常量
+        返回值      返回需要获取的常量
+        $name       要获取值的常量名
+string php_sapi_name(void)  
+        功能        返回当前使用的接口类型,
+        返回值      返回代表当前php环境的字符串:
+                        cli                 命令行接口
+                        apache              apache环境接口
+                        apache2filter       apache环境接口
+                        apache2handler      apache环境接口
+                        cgi 
+                        cgi-fcgi 
+                        cli-server
+                        aolserver 
+                        caudium
+                        continuity
+                        embed
+                        fpm-fcgi
+                        isapi
+                        litespeed
+                        milter
+                        nsapi
+                        phttpd
+                        pi3web
+                        roxen
+                        thttpd
+                        tux 
+                        webjames 
+************************************************************
+字符串处理函数 
+****************************** 
+string trim(string $str,string $charlist=" \t\n\r\0\x0B");
+        功能        去除字符串左右两边的空白字符。
+        返回值      处理完成的字符串
+        $str        要处理的字符串
+        $charlist   要去除的字符，默认为空白字符。若要去除的字符为一个范围，可以使用".."作为连接符。例如，去除a-f的字符，第二个参数可以这样写:"a..f";
+string ltrim(string $str,string $charlist=" \t\n\r\0\x0B");
+        功能        去除字符串左边的空白字符。
+        返回值      处理完成的字符串
+        $str        要处理的字符串
+        $charlist   要去除的字符，默认为空白字符。若要去除的字符为一个范围，可以使用".."作为连接符。例如，去除a-f的字符，第二个参数可以这样写:"a..f";
+string rtrim(string $str,string $charlist=" \t\n\r\0\x0B");
+        功能        去除字符串右边的空白字符。
+        返回值      处理完成的字符串
+        $str        要处理的字符串
+        $charlist   要去除的字符，默认为空白字符。若要去除的字符为一个范围，可以使用".."作为连接符。例如，去除a-f的字符，第二个参数可以这样写:"a..f";
+string addslashes(string $str)
+        功能        在('、"、\、null)字符前加上反斜杠(\)，通常用于处理插入数据库前的字符串
+        返回值      处理完成的字符串
+        $str        要处理的字符串
+string stripslashes(string $str)
+        功能        去除字符前的反斜杠(\)，通常用于处理从数据库获得的字符串
+        返回值      处理完成的字符串
+        $str        要处理的字符串
+string addcslashes(string $str,string $charlist)
+        功能        在指定的字符前加上反斜杠(\)
+        返回值      处理完成的字符串
+        $str        要处理的字符串
+        $charlist   要加上反斜杠(\)的字符列表
+string stripcslashes(string $str,string $charlist)
+        功能        去除指定的字符前的反斜杠(\)
+        返回值      处理完成的字符串
+        $str        要处理的字符串
+        $charlist   要去除反斜杠(\)的字符列表
+int strlen(string $str)
+        功能        获取字符串$str的字节数(8位一个字节)
+        返回值      返回字符串的字节数
+        $str        要计算字节数的字符串
+string mb_convert_encoding(string $str,string $to_encoding,mixed $from_encoding=mb_internal_encoding())
+        功能        字符编码转换
+        返回值      返回转换好编码的字符串
+        $str        要转换编码的字符串
+        $to_encoding 要转换成的编码,编码可用以下字符串: 
+                    UCS-4
+                    UCS-4BE
+                    UCS-4LE
+                    UCS-2
+                    UCS-2BE
+                    UCS-2LE
+                    UTF-32
+                    UTF-32BE
+                    UTF-32LE
+                    UTF-16
+                    UTF-16BE
+                    UTF-16LE
+                    UTF-7
+                    UTF7-IMAP
+                    UTF-8
+                    ASCII
+                    EUC-JP
+                    SJIS
+                    eucJP-win
+                    SJIS-win
+                    ISO-2022-JP
+                    ISO-2022-JP-MS
+                    CP932
+                    CP51932
+                    SJIS-mac 或 MacJapanese
+                    SJIS-Mobile#DOCOMO 或 SJIS-DOCOMO
+                    SJIS-Mobile#KDDI 或 SJIS-KDDI
+                    SJIS-Mobile#SOFTBANK 或 SJIS-SOFTBANK
+                    UTF-8-Mobile#DOCOMO 或 UTF-8-DOCOMO
+                    UTF-8-Mobile#KDDI-A
+                    UTF-8-Mobile#KDDI-B 或 UTF-8-KDDI
+                    UTF-8-Mobile#SOFTBANK 或 UTF-8-SOFTBANK
+                    ISO-2022-JP-MOBILE#KDDI 或 ISO-2022-JP-KDDI
+                    JIS
+                    JIS-ms
+                    CP50220
+                    CP50220raw
+                    CP50221
+                    CP50222
+                    ISO-8859-1
+                    ISO-8859-2
+                    ISO-8859-3
+                    ISO-8859-4
+                    ISO-8859-5
+                    ISO-8859-6
+                    ISO-8859-7
+                    ISO-8859-8
+                    ISO-8859-9
+                    ISO-8859-10
+                    ISO-8859-13
+                    ISO-8859-14
+                    ISO-8859-15
+                    ISO-8859-16
+                    byte2be
+                    byte2le
+                    byte4be
+                    byte4le
+                    BASE64
+                    HTML-ENTITIES
+                    7bit
+                    8bit
+                    EUC-CN
+                    CP936
+                    GB18030
+                    HZ
+                    EUC-TW
+                    CP950
+                    BIG-5
+                    EUC-KR
+                    UHC 或 CP949
+                    ISO-2022-KR
+                    Windows-1251 或 CP1251
+                    Windows-1252 或 CP1252
+                    CP866 或 IBM866
+                    KOI8-R
+                    KOI8-U
+                    ArmSCII-8 或 ArmSCII8 
+        $from_encoding 原始编码。可用编码详见$to_encoding 
+mixed mb_internal_encoding(string $encoding=mb_internal_encoding())
+        功能        设置/获取内部编码
+        返回值      设置成功返回true,设置失败返回false;获取内部编码时返回内部编码编码名称  
+        $encoding   省略此参数时获取内部编码名称。
+                    设置编码时参数应该使用可用编码,详见mb_convert_encoding中$to_encoding变量所列的字符编码列表。
+int mb_strlen(string $str,string $encode='')
+        功能        获取(UTF8编码)字符串$str的长度  
+        返回值      返回字符串的长度
+        $str        要计算长度的字符串
+        $encode     字符编码,若要处理中英混合字符,需要指定$encode='UTF8'
+string substr(string $str,int $start,int $length=strlen($str)-$start,$encode='auto')
+        功能        在字符串$str中从$start字节开始截取$length个字节的字符
+        返回值      截取的字符串
+        $start      开始截取的位置，如果为负数，则从字符串尾部算起
+        $length     截取的字节数
+        $encode     字符编码,若要处理中英混合字符,需要指定$encode='UTF8'
+string mb_substr(string $str,int $start,int $length=strlen($str)-$start)
+        功能        在(UTF8编码)字符串$str中从$start长度位置开始截取$length个字符
+        返回值      截取的字符串
+        $start      开始截取的位置，如果为负数，则从字符串尾部算起
+        $length     截取的长度
+int strcmp(string $str1,string $str2)
+        功能        字符串比较(按ASCII比较)函数，区别大小写。
+        返回值      $str1>$str2返回值大于0;$str1<$str2返回值小于0;$str1==$str2返回值等于0
+        $str1       要比较的第一个字符串
+        $str2       要比较的第二个字符串
+int strcasecmp(string $str1,string $str2)
+        功能        字符串比较(按ASCII比较)函数，不区别大小写。
+        返回值      $str1>$str2返回值大于0;$str1<$str2返回值小于0;$str1==$str2返回值等于0
+        $str1       要比较的第一个字符串
+        $str2       要比较的第二个字符串
+int strnatcmp(string $str1,string $str2)
+        功能        字符串比较(字符串中的数字按自然数大小比较)函数，区别大小写
+        返回值      $str1>$str2返回值大于0;$str1<$str2返回值小于0;$str1==$str2返回值等于0
+        $str1       要比较的第一个字符串
+        $str2       要比较的第二个字符串
+int strncmp(string $str1,string $str2,int $len)
+        功能        字符串比较(按长度比较)函数，区别大小写
+        返回值      $str1>$str2返回值大于0;$str1<$str2返回值小于0;$str1==$str2返回值等于0
+        $str1       要比较的第一个字符串
+        $str2       要比较的第二个字符串
+        $len        要比较的最大长度
+string strstr(string $str,string $searchStr,bool $retSearchBefore=false)
+        功能        字符串查找函数,区别大小写。
+        返回值      未查找到返回false。查找成功根据$retSearchBefore值返回字符串
+        $str        原始字符串
+        $searchStr  要查找的字符串
+        $retSearchBefore   字符串查找返回标志。$retSearchBefore值为false时，返回查找成功位置及之后的字符串；$retSearchBefore值为true时，返回查找成功位置之前的字符串
+string stristr(string $str,string $searchStr,bool $retSearchBefore=false)
+        功能        字符串查找函数,不区别大小写。
+        返回值      未查找到返回false。查找成功根据$retSearchBefore值返回字符串
+        $str        原始字符串
+        $searchStr  要查找的字符串
+        $retSearchBefore   字符串查找返回标志。$retSearchBefore值为false时，返回查找成功位置及之后的字符串；$retSearchBefore值为true时，返回查找成功位置之前的字符串
+string strrchr(string $str,string $charList)
+        功能        字符查找函数,区别大小写。
+        返回值      未查找到返回false。查找成功返回查找成功位置处之后的字符串
+        $str        原始字符串
+        $charList   要查找的字符列表，若查找到字符中的任何一个则查找成功
+int substr_count(string $str,string $searchStr,int offset=0,int length=strlen($str)-$offset)
+        功能        统计子字符串出现的次数。
+        返回值      返回要查找的字符串出现的次数
+        $str        原始字符串
+        $searchStr  要查找的字符串
+        $offset     开始查找的偏移位置
+        $length     最大搜索长度
+string str_replace(mixed $search,mixed $replace,mixed $strObject,int &$count=null)
+        功能        字符串替换函数
+                        如果$search和$replace为数组且count($search)==count($replace),那么$replace映射替换$search;
+                        如果$search和$replace为数组且count($search)<count($replace),$replace与$search长度相同的部分映射替换,$replace比$search长的部分不会被替换;
+                        如果$search和$replace为数组且count($search)>count($replace),$replace与$search长度相同的部分映射替换,$replace比$search短的部分替换为空字符;
+                        如果$search是数组$replace是字符串,则$search中每个元素的替换始终使用$replace字符串;
+        返回值      返回替换完成的字符串。如果$strObject是一个字符串数组，则返回值也是一个替换完成的字符串数组 
+        $search     要被替换的字符串
+        $replace    将要替换的值
+        $strObject  原始字符串
+        $count      已经完成替换的次数,用于返回值。 
+string str_ireplace(string $search,string $replace,string $strObject,int &$count=null)
+        功能        字符串替换函数，不区分大小写
+        返回值      返回替换完成的字符串。如果$strObject是一个字符串数组，则返回值也是一个替换完成的字符串数组
+        $search     要被替换的字符串
+        $replace    将要替换的值
+        $strObject  原始字符串或字符串数组。
+        $count      已经完成替换的次数,用于返回值。
+string substr_replace(string $str,string $replace,int $start,int $length=strlen($str))
+        功能        字符串替换函数
+        返回值      返回替换完成的字符串。
+        $str        原始字符串
+        $replace    将要替换的值
+        $start      替换的起始位置
+        $length     替换的长度
+string nl2br(string $str)
+        功能        HTML格式化函数,将"\n"符号前插入"<br />"
+        返回值      HTML格式化后的字符串
+        $str        要进行HTML格式化的字符串
+string strtoupper(string $str)
+        功能        字符串大写转换函数
+        返回值      转换后的字符串
+        $str        要转换的字符串
+string strtolower(string $str)
+        功能        字符串小写转换函数
+        返回值      转换后的字符串
+        $str        要转换的字符串
+string ucfirst(string $str)
+        功能        字符串首字母大写转换函数
+        返回值      转换后的字符串
+        $str        要转换的字符串
+string ucwords(string $str)
+        功能        单词首字母大写转换函数
+        返回值      转换后的字符串
+        $str        要转换的字符串 
+string number_format(mixed $number,int $decimals=0,string $dec_point='.',string $thousands_sep=',')
+        功能        数字格式化函数
+        返回值      返回经过格式化的数字
+        $number     数字
+        $decimals   小数位数
+        $dec_point  小数点的符号
+        $thousands_sep 千位分隔符
+array explode(string $delimiter,string $str,int $limit=count(array))
+        功能        字符串分割函数
+        返回值      分割好的数组
+        $delimiter  分割符
+        $str        要分割的字符串
+        $limit      要分割的数量。正数则最多返回长度为$limit的数组;0会被重置为1;负数则会返回去除数组末尾-$limit个的数组。默认全部返回
+string implode(string $delimiter,array $pieces)
+        功能        字符串合成函数
+        返回值      返回合成后的字符串
+        $delimiter  分隔符。此参数可以省略，省略后即分隔符为空($delimiter='')
+        $pieces     单词数组
+array str_split(string $string,int $split_length=1)
+        功能        按字节数分割字符串并存入数组中
+        返回值      返回分割后的数组
+        $string     要进行分割的字符串
+        $split_length   分割的长度,即每隔$split_length进行一次分割 
+mixed parse_url(string $url,int $component=-1) 
+        功能        网址解析函数 
+        返回值      返回解析完成的数组或,其键值如下:
+                        scheme      协议(如果解析到,则返回此键值) 
+                        host        域名(如果解析到,则返回此键值) 
+                        port        端口号(如果解析到,则返回此键值) 
+                        user        用户名(如果解析到,则返回此键值) 
+                        pass        密码(如果解析到,则返回此键值) 
+                        path        路径(如果解析到,则返回此键值) 
+                        query       问号(?)之后的参数(如果解析到,则返回此键值) 
+                        fragment    锚记(如果解析到,则返回此键值) 
+        $url        要解析的网址 
+        $component  要解析的参数。默认全部解析,它可取以下值:
+                        PHP_URL_SCHEME      协议
+                        PHP_URL_HOST        域名
+                        PHP_URL_PORT        端口号
+                        PHP_URL_USER        用户名
+                        PHP_URL_PASS        密码
+                        PHP_URL_PATH        路径
+                        PHP_URL_QUERY       问号(?)之后的参数
+                        PHP_URL_FRAGMENT    锚记 
+mixed pathinfo(string $path,int $options=null)
+        功能        解析文件路径 
+        返回值      返回一个数组或者一个字符串。数组键值如下:
+                        dirname             文件夹路径
+                        basename            文件名(含后缀)
+                        extension           文件后缀(如果没有文件后缀,则项不存在)
+                        filename            文件名(不含后缀) 
+        $path       要解析的文件路径 
+        $options    指定要返回的参数,默认全部返回。若只指定了一个参数则只返回一个字符串,指定多个参数则返回一个数组
+                        PATHINFO_DIRNAME    文件夹路径
+                        PATHINFO_BASENAME   文件名(含后缀)
+                        PATHINFO_EXTENSION  文件后缀(如果没有文件后缀,则项不存在)
+                        PATHINFO_FILENAME   文件名(不含后缀) 
+string dirname(string $path) 
+        功能        解析文件路径中的文件夹路径
+        返回值      文件夹路径
+        $path       要解析的文件路径 
+string basename(string $path,string $suffix='') 
+        功能        解析文件路径中的文件名 
+        返回值      文件名(含后缀) 
+        $path       要解析的文件路径 
+        $suffix     要去除的末尾字符串,默认为空字符串,即不去除末尾字符串 
+string htmlspecialchars(string $str,int $flags=ENT_COMPAT|ENT_HTML401,string $encoding=ini_get("default_charset"),bool $double_encode=TRUE)
+        功能        把预定义特殊字符转换为html实体字符,预定义字符包括:
+                        &  &amp;
+                        "  &quot;
+                        '  &apos;
+                        <  &lt;
+                        >  &gt;
+        返回值      返回转换完成的字符串
+        $str        要转换的字符串
+        $flag       由多个值或而成,它们包括:
+                        ENT_COMPAT     转换双引号而不转换单引号
+                        ENT_QUOTES     双引号与单引号都要转换
+                        ENT_NOQUOTES   双引号与单引号都不转换
+                        ENT_IGNORE     舍弃无效的代码单元序列
+                        ENT_SUBSTITUTE 替换无效的代码单元序列为Unicode代替符
+                        ENT_DISALLOWED 替换无效的代码单元序列为Unicode代替符
+                        ENT_HTML401    以html4.01文档标准处理
+                        ENT_XML1       以XML1文档标准处理
+                        ENT_XHTML      以XHTML文档标准处理
+                        ENT_HTML5      以HTML5文档标准处理
+        $encoding   字符编码
+        $double_encode 是否对已经是html编码的字符进行二次转换,默认转换
+string htmlspecialchars_decode(string $str,int $flags=ENT_COMPAT|ENT_HTML401)
+        功能        把html实体字符转换为普通字符
+        返回值      返回转换后的字符串
+        $str        要转换的字符串
+        $flag       由多个值或而成,它们包括:
+                        ENT_COMPAT     转换双引号而不转换单引号
+                        ENT_QUOTES     双引号与单引号都要转换
+                        ENT_NOQUOTES   双引号与单引号都不转换
+                        ENT_HTML401    以html4.01文档标准处理
+                        ENT_XML1       以XML1文档标准处理
+                        ENT_XHTML      以XHTML文档标准处理
+                        ENT_HTML5      以HTML5文档标准处理
+string htmlentities(string $str,int $flags=ENT_COMPAT|ENT_HTML401,string $encoding=ini_get("default_charset"),bool $double_encode=TRUE)
+        功能        把所有特殊字符转换为html字符
+        返回值      返回转换完成的字符串
+        $str        要转换的字符串
+        $flag       由多个值或而成,它们包括:
+                        ENT_COMPAT     转换双引号而不转换单引号
+                        ENT_QUOTES     双引号与单引号都要转换
+                        ENT_NOQUOTES   双引号与单引号都不转换
+                        ENT_IGNORE     舍弃无效的代码单元序列
+                        ENT_SUBSTITUTE 替换无效的代码单元序列为Unicode代替符
+                        ENT_DISALLOWED 替换无效的代码单元序列为Unicode代替符
+                        ENT_HTML401    以html4.01文档标准处理
+                        ENT_XML1       以XML1文档标准处理
+                        ENT_XHTML      以XHTML文档标准处理
+                        ENT_HTML5      以HTML5文档标准处理
+        $encoding   字符编码
+        $double_encode 是否对已经是html编码的字符进行二次转换,默认转换 
+string html_entity_decode($string $str,int $flags=ENT_COMPAT|ENT_HTML401,string $encoding=ini_get("default_charset"))
+        功能        html特殊字符转换为实际字(htmlentities与htmlspecialchars函数的反向函数)
+        返回值      返回转换完成的字符串
+        $str        要转换的字符串
+        $flag       由多个值或而成,它们包括:
+                        ENT_COMPAT     转换双引号而不转换单引号
+                        ENT_QUOTES     双引号与单引号都要转换
+                        ENT_NOQUOTES   双引号与单引号都不转换
+                        ENT_IGNORE     舍弃无效的代码单元序列
+                        ENT_SUBSTITUTE 替换无效的代码单元序列为Unicode代替符
+                        ENT_DISALLOWED 替换无效的代码单元序列为Unicode代替符
+                        ENT_HTML401    以html4.01文档标准处理
+                        ENT_XML1       以XML1文档标准处理
+                        ENT_XHTML      以XHTML文档标准处理
+                        ENT_HTML5      以HTML5文档标准处理
+        $encode     字符编码
+string quotemeta(string $str)
+        功能        在php元字符前加入反斜杠(\),元字符包括:
+                        .
+                        \
+                        +
+                        *
+                        ?
+                        [
+                        ^
+                        ]
+                        (
+                        $
+                        )
+        返回值      返回处理完成的字符串
+        $str        要处理的字符串 
+string mysql_real_escape_string(string $str,resource $link_identifier=null)
+        功能        在SQL特殊字符前加入反斜杠(\),SQL中的特殊字符包括:
+                        空字符(null)
+                        回车
+                        换行
+                        单引号
+                        双引号
+                        终止符号(EOF)
+        $str        要处理的字符串 
+        $link_identifier 数据库连接,使用此连接的字符集。
+string strip_tags($string $str,string $allowable_tags='')
+        功能        去除HTML标签
+        返回值      返回处理完成的字符串
+        $str        要处理的字符串
+        $allowable_tags 允许存在的HTML标签
+string json_encode(mixed $value,int $options=0,int $depth=512)
+        功能        转换为json字符串
+        返回值      返回编码好的json字符串
+        $value      待编码的变量(不能为resource类型)
+        $options    转换设置有以下几种设置参数：
+                        0   默认                        自动设置
+                        JSON_HEX_QUOT                   所有的 " 转换成 \u0022
+                        JSON_HEX_TAG                    所有的 < 和 > 转换成 \u003C 和 \u003E
+                        JSON_HEX_AMP                    所有的 & 转换成 \u0026
+                        JSON_HEX_APOS                   所有的 ' 转换成 \u0027
+                        JSON_NUMERIC_CHECK              将所有数字字符串编码成数字
+                        JSON_PRETTY_PRINT               用空白字符格式化返回的数据
+                        JSON_UNESCAPED_SLASHES          不编码
+                        JSON_FORCE_OBJECT               使一个非关联数组输出一个类（Object）而非数组
+                        JSON_PRESERVE_ZERO_FRACTION     浮点值始终编码为浮点值
+                        JSON_UNESCAPED_UNICODE          以字面编码多字节 Unicode 字符
+                        JSON_PARTIAL_OUTPUT_ON_ERROR    当出错时替换一些不可编码的值
+        $depth      最大深度
+mixed json_decode(string $json,bool $assoc=false,int $depth=512,int $options=0)
+        功能        把json字符串转换为数组或对象
+        返回值      返回转换好的数组或对象
+        $json       json字符串
+        $assoc      数组设置。true表示转换为数组，false表示转换为对象
+        $depth      最大深度
+        $options    转换设置有以下几种设置参数：
+                        JSON_BIGINT_AS_STRING           将大整数转换为字符串
+                        JSON_OBJECT_AS_ARRAY            转换为数组,与$assoc=true有相同的效果
+************************************************************
+输出函数
+******************************
+int print(mixed $var)
+        功能        输出字符串或数字
+        返回值      总是1
+        $var        要输出的变量
+void echo(mixed $var)
+        功能        输出字符串或数字
+        返回值      无返回值
+        $var        要输出的变量
+mixed print_r(mixed $var,$return=false)
+        功能        以人类便于阅读的方式输出数组、数字、字符串、对象等变量
+        返回值      直接输出或返回结构化的字符串
+        $var        要输出的变量
+        $return     是否输出。false表明直接输出,true表明返回结构化的字符串
+void var_dump(mixed $var1,mixed $var2...)
+        功能        输出变量的结构信息
+        返回值      无返回值
+        $var1      要输出的变量的结构信息。如果有多个变量的结构信息要输出,则使用逗号(,)隔开各个变量
+int printf(string $format,$mixed $var...)
+        功能        格式化输出函数
+        返回值      格式化输出的字符串的长度
+        $format     输出格式 一般为"%-0(数据精度)(数据类型)"
+                        %          格式控制的必要符号。如果想要打印符号(%),则应使用(%%)
+                        -          左对齐。没有此符号表右对齐
+                        0          用0填充空白。没有此符号默认使用空格填充
+                        (数据精度)  显示的数据的宽度与精度。没有此符号则不进行精度控制。
+                                    m 一个整数,表示要输出的数据的宽度。当宽度不够时,按实际宽度显示
+                                    m.n 表示宽度为m,小数位n位(或字符串长度为n)
+                                    .n 表示要输出的数据的小数位数(或字符串长度为)
+                        (数据类型)  要输出的数据的数据类型
+                                    d  整型
+                                    ld 长整型
+                                    o  八进制整型
+                                    lo 八进制长整型
+                                    x  十六开整型,小写字母输出
+                                    lx 十六进制长整型,小写字母输出
+                                    X  十六开整型,大写字母输出
+                                    lX 十六进制长整型,大写字母输出
+                                    u  无符号整型
+                                    lu 无符号长整型
+                                    b  二进制整型
+                                    lb  二进制长整型
+                                    f  实型
+                                    lf 双精度实型
+                                    e  指数型
+                                    le 双精度指数型
+                                    g  自动选择实数的显示格式
+                                    lg 双精度实型
+                                    c  一个字符
+                                    s  字符串型
+        $var        要输出的变量,如果有多个变量要输出,则应使用逗号(,)隔开
+string sprintf(string $format,$mixed $var...)
+        功能        格式化输出函数
+        返回值      格式化后的字符串
+        $format     输出格式。详见printf函数输出格式。
+        $var        要输出的变量,如果有多个变量要输出,则应使用逗号(,)隔开
+string urlencode(string $str)
+        功能        对网址进行编码。html表单form会自动对提交的数据自动进行一次编码。编码规则：
+                        -     不变
+                        _     不变
+                        .     不变
+                        数字  不变
+                        字母  不变
+                        空格  +
+                        其他  %两位十六进制数 
+        返回值      编码后的字符串
+        $str        要进行编码的字符串
+string urldecode(string $str)
+        功能        解码已编码的网址字符串。服务器会对$_GET、$_POST、$_REQUEST自动进行一次解码
+        返回值      返回解码后的字符串
+        $str        要进行解码的字符串
+************************************************************
+数组处理函数
+******************************
+array array(mixed $value)
+        功能        创建数组
+        返回值      返回创建好的数组
+        $value      形式为array(键值=>元素值),若省略(键值=>),则默认键值从0开始递增;若省略此参数,则创建一个空数组
+array range(mixed $start,mixed $end,number $step=1)
+        功能        创建一个范围数组
+        返回值      返回创建好的数组
+        $start      开始值,需与结束值连续
+        $end        结束值,需与开始值连续
+        $step       步长
+int count(miexed $arr,int $mode=COUNT_NORMAL)
+        功能        计算变量的元素个数
+        返回值      返回元素的个数
+        $arr        要计算元素个数的变量。如果此变量为null返回0;如果此变量内没有可数的元素返回1
+        $mode       计算模式:
+                        COUNT_NORMAL    普通模式,计算$arr变量中的元素个数
+                        COUNT_RECURSIVE 递归模式,计算$arr变量中的元素个数和$arr中容纳的数组(一直递归)中的元素个数的和。
+array list(mixed &$var1,mixed &$var2,...)
+        功能        获取由其他数组赋值给变量$var1、$var2...的值。应该使用组数对此函数赋值。如：list($a,$b,$c)=array('a',1,3) 
+        返回值      返回由$var1、$var2...组成的数组
+        注意        在PHP7.1.0之前的版本list()仅能用于数组中键值为数字的元素,PHP7.1.0之后的版本亦可用于用于键值为非数字的元素
+                    在PHP5里,list()从最右边的参数开始赋值,PHP7里,list()从最左边的参数开始赋值。 
+        $var1、$var2...   记录数组赋值的值的变量
+bool sort(array &$array,int $sort_flag=SORT_REGULAR)
+        功能        数组按值升序排序函数，将重置键值成为索引数组
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+        $sort_flags 排序标志,有以下几种标志:
+                        SORT_REGULAR       自动判断类型再进行排序。如果是不同的数据类型，可能会出现意想不到的结果。
+                        SORT_NUMERIC       按数字排序
+                        SORT_STRING        按字符串排序
+                        SORT_NATURAL       按自然顺序字符串排序
+                        SORT_LOCALE_STRING 按本地字符集字符串排序,可以使用setlocale()函数来改变本地字符集
+                        SORT_FLAG_CASE     不分区大小写排序。仅可以和SORT_STRING与SORT_NATURAL进行按位或运算同时使用
+bool rsort(array &$array,int $sort_flag=SORT_REGULAR)
+        功能        数组按值降序排序函数，将重置键值成为索引数组
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+        $sort_flags 排序标志,有以下几种标志:
+                        SORT_REGULAR       自动判断类型再进行排序。如果是不同的数据类型，可能会出现意想不到的结果。
+                        SORT_NUMERIC       按数字排序
+                        SORT_STRING        按字符串排序
+                        SORT_NATURAL       按自然顺序字符串排序
+                        SORT_LOCALE_STRING 按本地字符集字符串排序,可以使用setlocale()函数来改变本地字符集
+                        SORT_FLAG_CASE     不分区大小写排序。仅可以和SORT_STRING与SORT_NATURAL进行按位或运算同时使用
+bool asort(array &$array,int $sort_flag=SORT_REGULAR)
+        功能        数组按值升序排序且保持键值
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+        $sort_flags 排序标志,有以下几种标志:
+                        SORT_REGULAR       自动判断类型再进行排序。如果是不同的数据类型，可能会出现意想不到的结果。
+                        SORT_NUMERIC       按数字排序
+                        SORT_STRING        按字符串排序
+                        SORT_NATURAL       按自然顺序字符串排序
+                        SORT_LOCALE_STRING 按本地字符集字符串排序,可以使用setlocale()函数来改变本地字符集
+                        SORT_FLAG_CASE     不分区大小写排序。仅可以和SORT_STRING与SORT_NATURAL进行按位或运算同时使用
+bool arsort(array &$array,int $sort_flag=SORT_REGULAR)
+        功能        数组按值降序排序且保持键值
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+        $sort_flags 排序标志,有以下几种标志:
+                        SORT_REGULAR       自动判断类型再进行排序。如果是不同的数据类型，可能会出现意想不到的结果。
+                        SORT_NUMERIC       按数字排序
+                        SORT_STRING        按字符串排序
+                        SORT_NATURAL       按自然顺序字符串排序
+                        SORT_LOCALE_STRING 按本地字符集字符串排序,可以使用setlocale()函数来改变本地字符集
+                        SORT_FLAG_CASE     不分区大小写排序。仅可以和SORT_STRING与SORT_NATURAL进行按位或运算同时使用
+bool ksort(array &$array,int $sort_flag=SORT_REGULAR)
+        功能        数组按键值升序排序且保持键值
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+        $sort_flags 排序标志,有以下几种标志:
+                        SORT_REGULAR       自动判断类型再进行排序。如果是不同的数据类型，可能会出现意想不到的结果。
+                        SORT_NUMERIC       按数字排序
+                        SORT_STRING        按字符串排序
+                        SORT_NATURAL       按自然顺序字符串排序
+                        SORT_LOCALE_STRING 按本地字符集字符串排序,可以使用setlocale()函数来改变本地字符集
+                        SORT_FLAG_CASE     不分区大小写排序。仅可以和SORT_STRING与SORT_NATURAL进行按位或运算同时使用
+bool krsort(array &$array,int $sort_flag=SORT_REGULAR)
+        功能        数组按键值降序排序且保持键值
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+        $sort_flags 排序标志,有以下几种标志:
+                        SORT_REGULAR       自动判断类型再进行排序。如果是不同的数据类型，可能会出现意想不到的结果。
+                        SORT_NUMERIC       按数字排序
+                        SORT_STRING        按字符串排序
+                        SORT_NATURAL       按自然顺序字符串排序
+                        SORT_LOCALE_STRING 按本地字符集字符串排序,可以使用setlocale()函数来改变本地字符集
+                        SORT_FLAG_CASE     不分区大小写排序。仅可以和SORT_STRING与SORT_NATURAL进行按位或运算同时使用
+bool usort(array &$array,callable $callback)
+        功能        按自定义函数对值进行排序，将重置键值成为索引数组
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+        $callback   自定义回调比较函数
+bool uasort(array &$array,callable $callback)
+        功能        按自定义函数对值进行排序且保持键值
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+        $callback   自定义回调比较函数
+bool uksort(array &$array,callable $callback)
+        功能        按自定义函数对键值进行排序且保持键值
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+        $callback   自定义回调比较函数
+bool natsort(array &$array)
+        功能        数组值按自然顺序字符串升序排序且保持键值
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+bool natcasesort(array &$array)
+        功能        数组值按自然顺序字符串不区分大小写升序排序且保持键值
+        返回值      排序成功时返回true,失败返回false
+        $array      要排序的数组
+mixed current(array &$array)
+        功能        返回数组中当前位置的元素值
+        返回值      当前元素值。若当前位置不在数组内，则返回false
+        $array      要取值的数组
+mixed key(array &$array)
+        功能        返回数组中当前位置的键值
+        返回值      当前键值。若当前位置不在数组内，则返回null
+        $array      要取键值的数组
+mixed next(array &$array)
+        功能        把数组的当前位置向后调整一个位置,返回当前位置的元素值
+        返回值      当前元素值。若当前位置不在数组内，则返回false
+        $array      要取值的数组
+mixed prev(array &$array)
+        功能        把数组的当前位置向前调整一个位置,返回当前位置的元素值
+        返回值      当前元素值。若当前位置不在数组内，则返回false
+        $array      要取值的数组
+mixed reset(array &$array)
+        功能        把数组的当前位置调整到第一个位置,返回当前位置的元素值
+        返回值      当前元素值。若当前位置不在数组内，则返回false
+        $array      要取值的数组
+mixed end(array &$array)
+        功能        把数组的当前位置调整到最后一个位置,返回当前位置的元素值
+        返回值      当前元素值。若当前位置不在数组内，则返回false
+        $array      要取值的数组
+array array_reverse(array $array,bool $preserve_keys=false)
+        功能        数组反序 
+        返回值      反序后的数组  
+        $array      要进行反序的数组   
+        $preserve_keys  对于索引数组是否保留键值,默认为false不保留;关联数组则始终保留不受影响 
+int array_unshift(array &$array,mixed $value1,mixed $value2...)
+        功能        在数组的前部前入元素，如果元素的键值为索引类型，则所有的索引都将会重置。键值为关联类型的则保持原样
+        返回值      插入元素后数组的元素个数
+        $array      要插入元素的数组
+        $value1     要插入的元素。如果有多个元素要插入，则使用逗号(,)隔开。
+int array_push(array &$array,mixed $value1,mixed $value2...)
+        功能        在数组的末尾添加一个元素，元素的键值为索引类型，且自动增加
+        返回值      添加元素后数组的元素个数
+        $array      要添加元素的数组
+        $value1     要添加的元素，若有多个元素则应使用逗号(,)隔开
+mixed array_shift(array &$array)
+        功能        删除第一个元素。如果元素的键值为索引类型，则所有的索引都将会重置。键值为关联类型的则保持原样
+        返回值      被删除的值。若删除失败则返回null
+        $array      要删除元素的数组
+mixed array_pop(array &$array)
+        功能        删除最后一个元素
+        返回值      被删除的值。若删除失败则返回null
+        $array      要删除元素的数组
+array array_splice(array &$input,int $offset,int $length=count($input),mixed $replacement=array())
+        功能        在数组中删除元素并在此位置之后插入其他元素。如果元素的键值为索引类型，则所有的索引都将会重置。键值为关联类型的则保持原样
+        返回值      返回被删除的元素组成的数组
+        $input      被操作的数组
+        $offset     要删除元素的位置
+        $length     要删除的元素的个数。默认全部删除;如果为正数，则从$offset位置开始删除$length个元素;若为负数，则删除$offset位置开始到count($input+$length)位置上的值
+        $replacement 要插入的元素组成的数组
+array array_unique(array $array,int $sort_flags=SORT_STRING)
+        功能        过滤数组中重复的元素。仅保留第一个键值上的元素。
+        返回值      过滤重复元素后的数组
+        $array      要过滤重复元素的数组
+        $sort_flags 过滤标志,有以下几种标志：
+                        SORT_REGULAR        自动判断类型再进行过滤。
+                        SORT_NUMERIC        按数字过滤
+                        SORT_STRING         按字符串过滤
+                        SORT_LOCALE_STRING  按本地字符集字符串过滤
+mixed array_search(mixed $needle,array $haystack,bool $strict=false)
+        功能        在数组中搜索指定的值
+        返回值      返回搜索到的键值，若失败则返回null
+        $needle     要搜索的值
+        $haystack   被搜索的数组
+        $strict     严格模式,如果此值为true，则搜索时还要检查数据类型；否则不检查数据类型
+array array_column(array $input,mixed $column_key,mixed $index_key=null)
+        功能        返回数组中指定的一列。php>=5.5.0 
+        返回值      返回指定的列组成的数组
+        $input      原始数组
+        $column_key 返回的数组的值的列。数字或字符串
+        $index_key  返回的数组的键值的列。数字或字符串
+array array_flip(array $array)
+        功能        交换数组中的键和值
+        返回值      返回交换键和值之后的数组
+        $array      要交换键和值的数组 
+mixed array_keys(array $array,mixed $search_value=null,bool $strict=false)
+        功能        返回数组中的所有键值
+        返回值      当$search_value的值未指定时，返回所有的键值。当$search_value的值为指定的值时，则返回指定的值的键值。
+        $array      要提取键值的数组
+        $search_value 要获得键值的对应的值
+        $strict     是否使用'==='来断定$search_value 
+
+bool array_key_exists(mixed $key,array $array)
+        功能        检测数组中是否存在指定的键值
+        返回值      如果存在则返回true，否则返回false
+        $key        要检测的键值
+        $array      要检测的数组 
+mixed array_key_first(array $array)
+        功能        获取数组中的第一个键。php>=7.3.0 
+        返回值      返回数组中的第一个键
+        $array      要返回第一个键的数组 
+mixed array_key_last(array $array) 
+        功能        获取数组中的最后一个键。php>=7.3.0 
+        返回值      返回数组中的最后一个键
+        $array      要返回最后一个键的数组  
+array array_merge(array $array1,array $array2,...)
+        功能        合并数组。所有数字索引元素全部保留但是数字键值重新索引;关联键值如果有相同的键值,则后一个值覆盖前一个值 
+        返回值      返回合并后的数组 
+        $array1     要合并的数组1
+        $array2     要合并的数组2
+        ...         更多要合并的数组,参数依次添加在后 
+number array_sum(array $array)
+        功能        一维数值数组求和  
+        返回值      返回求和的结果
+        $array      一维数值数 
+array array_count_values($array)
+        功能        统计一维数组中值出现的次数 
+        返回值      以 原数组值=>次数 形式的数组 返回统计的次数
+        $array      要统计值出现次数的数组 
+array array_combine(array $keys,array $values)
+        功能        把$keys数组中的值作为键值,把$values数组中的值作为值合并为一个形式为key=>value形式的数组  
+                        注：两个数组的元素个数要相同
+                            $keys数组中的元素值须为number或string 
+                            如果在$keys中有元素转换为string后的值相同,则合并后的数组中只会保存后一个 
+        返回值      返回合并的后的数组 
+        $keys       要作为键值部分的数组 
+        $values     要作为值部分的数组 
+bool array_multisort(array &$array1[,int $array1_sort_order=SORT_ASC][,int $array1_sort_flags=SORT_REGULAR],array &$arrayN...)
+        功能        多个数组排序,先按第一个数组的排序规则进行排序,对于第一次排序后次序不确定的元素再使用第二个数组的排序规则排序,依次进行到所有元素的次序确定或最后一个数组按排序规则排序完成。所有的数组将会同步变动次序
+        返回值      排序成功返回true,否则返回false 
+        $array1     要作为映射参照排序的数组,将对此数组进行排序(推荐为一维数组；若为多维数组，则取多维数组的第一列(第一列的键值要相同,如果不相同则该数组的排序规则结果未定义)),该数组有以下两个参数,依次排列在这个数组的后面：
+                        $array1_sort_order 排序规则之顺序,可以取以下值:
+                                        SORT_ASC        升序(省略此参数时默认值) 
+                                        SORT_DESC       降序
+                        $array1_sort_flags 排序规则之依据,可以取以下值:
+                                        SORT_REGULAR       自动判断类型再进行排序(省略此参数时默认值)。如果是不同的数据类型，可能会出现意想不到的结果。 
+                                        SORT_NUMERIC       按数字排序
+                                        SORT_STRING        按字符串排序 
+                                        SORT_NATURAL       按自然顺序字符串排序
+                                        SORT_LOCALE_STRING 按本地字符集字符串排序,可以使用setlocale()函数来改变本地字符集
+                                        SORT_FLAG_CASE     不分区大小写排序。仅可以和SORT_STRING与SORT_NATURAL进行按位或运算同时使用
+        $arrayN     同$array1
+************************************************************
+变量检测函数
+******************************
+bool isset(mixed $var1,mixed $var2...)
+        功能        检测变量是否为NULL、未定义
+        返回值      是则返回true；否则返回false 
+        $var1       要检测的变量。如果要检测的变量多于一个，则应使用逗号(,)隔开 
+bool empty(mixed $var)
+        功能        检测变量值是否为0、0.0、false、"0"、""、null、array()、未定义
+        返回值      是则返回true；否则返回false  
+        $var        要检测的变量。
+************************************************************
+时间处理函数
+******************************
+bool date_default_timezone_set(string $timezone_identifier)
+        功能        时区设置
+        返回值      参数无效返回false,否则返回true
+        $timezone_identifier 时区字符串，中国的时区可取：
+                        "PRC"               中华人民共和国
+                        "Asia/Shanghai"     中国上海
+                        "Asia/Chongqing"    中国重庆
+                        "Asia/Urumqi"       中国乌鲁木齐 
+                        "Asia/Macao"        中国澳门
+                        "Asia/Hong_Kong"    中国香港
+                        "Asia/TaiPei"       中国台湾台北
+string gmdate(string $format,int $timestamp=time())
+        功能        世界标准时间(GMT/UTC)格式化 
+        返回值      返回格式化后中的时间
+        $format     格式字符串，一般由以下的字母组合而成：例如"Ymd" 
+                        时区： 
+                        e          时区类型，UTC，GMT，Atlantic，Azores
+                        I          是否为夏令时(夏令时为1否则为0)
+                        O          当前GMT时区时间与GMT0时区相隔的小时数
+                        P          当前GMT时区时间与GMT0时区相隔的小时数和分钟数
+                        T          本机时区
+                        Z          当前时区时间与UTC0相差的秒数
+                        完整时间格式： 
+                        c          ISO8601格式
+                        r          RFC822格式
+                        U          Unix时间戳
+                        年：  
+                        Y          四位数字年
+                        y          两位数字年
+                        o          ISO-8601格式年份数字(如果ISO的星期数属于前一年或下一年，则用那一年)
+                        L          闰年标志(闰年为1，平年为0)
+                        月：
+                        m          最少两位月份
+                        n          最少一位月份
+                        F          完整英文月份
+                        M          缩写英文月份
+                        t          当月的天数(28~31)
+                        星期：
+                        N          数字星期几(周一开始，1-7)
+                        w          数字星期几(周天开始，0-6)
+                        l          完整英文星期几
+                        D          缩写英文星期几
+                        W          ISO-8601格式周，最少一位，一年中的第几周(周一为一周的开始)
+                        日：
+                        d          最少两位天数
+                        j          最少一位天数
+                        S          当天的英文后缀，可以和j一起使用，如3th，表示3号
+                        z          年份中的第几天，最少一位
+                        时：
+                        H          24制式时，最少两位
+                        G          24制式时，最少一位
+                        h          12制式时，最少两位
+                        g          12制式时，最少一位
+                        A          大写上午和下午字母(AM、PM)
+                        a          小写上午和下午字母(am、pm)
+                        B          英特网时间，000-999，三位
+                        分：
+                        i          两位分钟数
+                        秒：
+                        s          两位秒
+                        u          纳秒，六位
+        $timestamp  时间戳
+string date(string $format,int $timestamp=time())
+        功能        本地时间格式化
+        返回值      返回格式化后中的时间 
+        $format     格式字符串。详见gmdate函数 
+        $timestamp 时间戳
+array getdate(int $timestamp = time())
+        功能        获得日期和时间信息
+        返回值      返回关于时间和日期的数组，包含以下信息：
+                        seconds   秒
+                        minutes   分
+                        hours     时
+                        mday      日
+                        wday      星期
+                        mon       月
+                        year      年
+                        yday      一年中的第几天，从0开始计数
+                        weekday   星期的英文单词
+                        month     月份的英文单词
+                        0         Unix时间戳
+        $timestamp  要返回时间信息的Unix时间戳
+int time(void)
+        功能        返回当前时间的Unix时间戳(秒为单位)
+        返回值      当前时间的Unix时间戳
+int mktime(int $hour,int $minute=date("i"),int $second=date("s"),int $month=date("n"),int $day=date("j"),int $year=date("Y"),int $is_dst=-1)
+        功能        根据参数返回Unix时间戳
+        返回值      Unix时间戳
+        $hour       时
+        $minute     分
+        $second     秒
+        $month      月
+        $day        日
+        $year       年
+        $is_dst     夏令时，1表启用夏令时,0表不启用夏令时,-1表自动设置是否启用夏令时
+int strtotime(string $time,int $now=time())
+        功能        将使用英文描述的时间与日期转换为Unix时间戳
+        返回值      返回Unix时间戳，否则返回false
+        $time       时间或日期的字符串 
+                        如果分隔符使用的(/),则会被这样解析m/d/y
+                        如果分隔符使用的(-或.),则会被这样解析d-m-y、Y-m-d或d.m.y
+        $now        参照时间戳。用于计算当$time为类似"+1 day"或"next day"这样的字符串时的参照时间
+        示例        date("Y-m-d",strtotime("first day of 2020-02-02"))          2020-02-01
+                    date("Y-m-d",strtotime("last day of 2020-02-02"))           2020-02-29
+                    date("Y-m-d",strtotime("2020-02-02 + 35 day"))              2020-03-08 
+                    date("Y-m-d",strtotime("2020-03-31 -1 month"))              2020-03-02 
+                    date("Y-m-d",strtotime("first day of 2020-03-31 -1 month")) 2020-02-01 
+                    date("Y-m-d",strtotime("last day of 2020-03-31 -1 month"))  2020-02-29 
+                    date("Y-m-d",strtotime("first day of"))                     当月第一天
+                    date("Y-m-d",strtotime("last day of"))                      当月最后一天
+bool checkdate(int $month,int $day,int $year) 
+        功能        检查由参数构成的日期的合法性 
+        返回值      合法返回true，否则返回false 
+        $month      月
+        $day        日
+        $year       年
+string setlocale(int $category,string $locale...)或string setlocale(int $category,array $locale)
+        功能        设置区域信息
+        返回值      返回设置好的语言环境。如果运行平台没有语言环境的功能，返回false
+        $category   受此区域设置所影响的功能，有如下选项：
+                        LC_ALL     所有功能
+                        LC_COLLATE 字符串比较功能
+                        LC_CTYPE   字符串的分类与转换功能
+                        LC_MESSAGES 系统响应功能
+                        LC_MONETARY 数字格式
+                        LC_NUMERIC  小数点的分隔格式
+                        LC_TIME    时间格式
+        $locale     区域名称,可以有多个参数,各个参数之间使用逗号(,)隔开或者使用数组,有以下几种情况：
+                        NULL或""(空字符串)  自动设置一个可用的区域
+                        "0"                不设置区域,仅返回当前区域设置
+                        数组或多个参数      从第一个字符串开始尝试，直到设置成功为止
+string strftime(string $format,int $timestamp=time())
+        功能        根据区域设置格式化本地时间和日期语言
+        返回值      返回$format格式化后的字符串
+        $format     格式信息 有以下几种格式：
+                        日：
+                        %a  当前区域星期几的简写
+                        %A  当前区域星期几的全称
+                        %d  月份中的第几天，十进制数字（范围从 01 到 31）
+                        %e  月份中的第几天，十进制数字，一位的数字前会加上一个空格（范围从 ' 1' 到 '31'）
+                        %j  年份中的第几天，带前导零的三位十进制数（范围从 001 到 366）
+                        %u  符合 ISO-8601 星期几的十进制数表达 [1,7]，1 表示星期一
+                        %w  星期中的第几天，星期天为 0
+                        周：
+                        %U  本年的第几周，从第一周的第一个星期天作为第一天开始
+                        %V  %V - 本年第几周的 ISO-8601:1988 格式，范围从 01 到 53，第 1 周是本年第一个至少还有 4 天的星期，星期一作为每周的第一天
+                        %W  本年的第几周数，从第一周的第一个星期一作为第一天开始
+                        月：
+                        %b  当前区域月份的简写
+                        %B  当前区域月份的全称
+                        %h  当前区域月份的简写（%b 的别名）
+                        %m  两位数的月份
+                        %C  两位数显示世纪（年份除以 100，截成整数）
+                        %g  2 位数的年份，符合 ISO-8601:1988 星期数（参见 %V）。和 %V 的格式和值一样，只除了如果 ISO 星期数属于前一年或者后一年，则使用那一年
+                        %G  %g 的完整四位数版本
+                        %y  两位数显示年份
+                        时间:
+                        %H  以 24 小时格式显示两位小时数
+                        %I  以 12 小时格式显示两位小时数
+                        %l  以 12 小时格式显示小时数，单个数字前含空格
+                        %M  两位的分钟数
+                        %p  指定时间的大写 “AM” 或 “PM”
+                        %P  指定时间的小写 “am” 或 “pm”
+                        %r  和 "%I:%M:%S %p" 一样
+                        %R  和 "%H:%M" 一样
+                        %S  两位数字表示秒
+                        %T  和 "%H:%M:%S" 一样
+                        %X  当前区域首选的时间表示法，不包括日期
+                        %z  从 UTC 的时区偏移 或 简写（由操作系统决定）
+                        %Z  %z 没有给出的 UTC 的时区偏移 或 简写（由操作系统决定）
+                        时间和日期戳:
+                        %c  当前区域首选的日期时间表达
+                        %D  和"%m/%d/%y" 一样
+                        %F  和"%Y-%m-%d" 一样
+                        %s  Unix时间戳
+                        %x  当前区域首选的时间表示法，不包括时间
+                        其他：
+                        %n  换行符("\n")
+                        %t  Tab 字符("\t")
+                        %%  文字上的百分字符("%")
+        $timestamp  要处理的时间
+mixed microtime(bool $get_as_float=false)
+        功能        返回Unix时间戳和微秒数
+        返回值      字符串("微秒 Unix时间戳")或浮点数(Unix时间戳.微秒数)，返回形式由$get_as_float决定
+        $get_as_float 返回值形式。false时返回字符串("微秒 Unix时间戳"),true时返回浮点数(Unix时间戳.微秒数)。
+************************************************************
+会话处理函数
+******************************
+bool setcookie(string $name,string $value="",int $expires=0,string $path="",string $domain="",bool $secure=FALSE,bool $httponly=FALSE)
+        功能        在支持cookie的客户端浏览器中创建cookie
+        返回值      创建成功返回true，否则返回false
+        $name       cookie名称
+        $value      cookie值
+        $expires    cookie有效截止时间戳。如果值为0，则默认当前页面关闭后即失效。如果值小于当前时间的时间戳，则删除cookie。
+        $path       服务器可以使用此cookie的路径,默认是当前路径下
+        $domain     可以使用此cookie的域名
+        $secure     仅使用HTTPS安全传输协议来传输cookie
+        $httponly   仅使用http传递cookie
+bool setcookie(string $name,string $value="",array $options=[])     //php7.3开始可用
+        功能        在支持cookie的客户端浏览器中创建cookie
+        返回值      创建成功返回true，否则返回false
+        $name       cookie名称
+        $value      cookie值
+        $options    cookie设置数组，有以下几种设置
+                        expires   cookie有效截止时间戳。如果值为0，则默认当前页面关闭后即失效。如果值小于当前时间的时间戳，则删除cookie。
+                        path      服务器可以使用此cookie的路径,默认是当前路径下
+                        domain    可以使用此cookie的域名
+                        secure    仅使用HTTPS安全传输协议来传输cookie 
+                        httponly  仅使用http传递cookie 
+bool session_start(array $options=array())
+        功能        新建或启用现有的会话(根据会话ID)。开启session文件的读写、初始化$_SESSION预定义变量(未初始化前,$_SESSION为未定义) 
+        返回值      新建或启用成功返回true，失败则返回false
+        $options    操作参数，有以下选项可以配置
+                        use_only_cookies         默认值为true。true表示只使用cookie来传递会话ID。设置此选择为true时，不使用POST或者GET传递会话ID。设置为false时可以使用COOKIE、GET或POST来传递会话ID
+                        use_cookies              默认值为true。true表示使用cookie来传递会话ID。flase表示不使用cookie传递会话ID
+                        name                     默认值为"PHPSESSID"。会话名称。
+                        cookie_lifetime          默认值为0，单位为秒。发送到浏览器的cookie键值为文件的"PHPSESSID"的生命周期。0表示会话结束即生命周期结束
+                        cookie_path              默认值为"/"。cookie路径
+                        cookie_domain            默认值为""。cookie域名
+                        cookie_secure            默认值为false。true表示使用HTTPS安全传输协议来传输cookie
+                        cookie_httponly          默认值为false。true表示仅使用http传递cookie。
+                        gc_probability           默认值为1。gc_probability/gc_divisor=垃圾回收机制启动的概率。在启动session时按概率启动垃圾收回机制
+                        gc_divisor               默认值为100。gc_probability/gc_divisor=垃圾回收机制启动的概率。在启动session时按概率启动垃圾收回机制
+                        gc_maxlifetime           默认值1440，单位为秒"。sessiion文件的最大生命周期。超过生命周期的文件将会被垃圾回收机制清除
+                        save_path                默认值为""，使用php.ini中的值。session文件保存路径。如果指定其值，其形式为"N;MODE;path"，N表示路径深度，MODE表示文件权限(参数Linux中的文件权限的数字设置方式，此处应填写三位八进制数)，path表示路径。三个参数可以任意省略,';'须保留
+                        save_handler             默认值文件方式"files"。存储方式。
+                        auto_start               默认值为false。自动启动会话，false表示不自动启动，true表示自动启动。
+                        serialize_handler        默认值为"php"，使用php进行序列化。序列化的方式。
+                        use_strict_mode          默认值为false。true表示不接受未初始化的会话ID。
+                        referer_check            默认值为""。检查referer信息的有效性
+                        entropy_file             默认值为""，即一个文件的路径。熵值资源
+                        entropy_length           默认值为0，单位为字节。读取熵值资源的字节数
+                        cache_limiter            默认值为"nocache"。缓存大小，可以取值如下：
+                                                    "nocache"             不缓存
+                                                    "public"              使用pbulic方法计算缓存大小
+                                                    "private_no_expire"   使用private_no_expire方法计算缓存大小
+                                                    "private"             使用private方法计算缓存大小
+                        cache_expire             默认值为180，单位分钟。 缓冲页面的存活期。
+                        use_trans_sid            默认值为false。true表示启用透明SID
+                        bug_compat_42            默认值为true。在register_globals被禁用的情况下在全局范围内初始化一个会话变量，在启用了session.bug_compat_warn的情况下会发出警告。true表示允许初始化。
+                        bug_compat_warn          默认值为true。在register_globals被禁用的情况下在全局范围内初始化一个会话变量，在启用了session.bug_compat_42 和 session.bug_compat_warn的情况下会发出警告。true表示允许初始化。
+                        hash_function            默认值为0。指定生成会话 ID 的散列算法，可取以下值:
+                                                0          128位MD5
+                                                1          160位SHA-1
+                        hash_bits_per_character  默认值为4。将二进制散列数据转换为可读的格式时每个字符占用多少个比特，可取以下值：
+                                                4          可取字符[0-9a-f]
+                                                5          可取字符[0-9a-v]
+                                                6          可取字符[0-9a-zA-Z\-,]
+                        tags                     默认值为"a=href,area=href,frame=src,form=,fieldset="。使用透明SID支持时哪些HTML标记会被修改以加入会话ID
+                        upload_progress.enabled  默认值为true。true表示启用上载进度跟踪
+                        upload_progress.cleanup  默认值为true。true表示读取了所有POST数据（即上传完成），立即清除进度信息
+                        upload_progress.name     默认值为"upload_progress_"。存储进度信息的$_SESSION中使用的键的名称。
+                        upload_progress.freq     默认值为"1%"。更新上载进度信息的频率。当使用数字定义时，表示多少字节后更新进度信息。当使用%时，表示接收到文件的总大小的百分之多少后进行更新
+                        upload_progress.min_freq 默认值为1，单位为秒。更新之间的最小延迟时间
+                        lazy_write               默认值为true。true表示会话数据只有在更改时才会被重写。
+void session_unset(void)
+        功能        销毁全部$_SESSION变量
+        返回值      无
+bool session_write_close(void)
+        功能        关闭会话并将$_SESSION变量写入session文件、关闭session文件。若在程序的执行过程中没有调用此函数，则在程序结束时自动调用此函数。
+        返回值      关闭会话且写入变量成功、关闭文件成功返回true，反之
+bool session_destroy(void)
+        功能        关闭会话并将当前会话的session文件删除
+        返回值      关闭会话成功且删除session文件成功返回true，反之
+string session_id(string $id="")
+        功能        获取或设置当前的会话id
+        返回值      返回当前会话id或返回设置好的会话id
+        $id         将要设置的会话id，其值由[a-zA-Z0-9,-]组成
+string session_name(string $name="")
+        功能        获取或设置当前的会话名。如果要设置会话名称，一定要在调用session_start()函数之前调用此函数
+        返回值      返回当前会话名称或返回设置好的会话名称
+        $name       将要设置的会话名称
+bool session_set_cookie_params(int $lifetime,string $path,string $domain,bool $secure=false,bool $httponly=false)
+        功能        设置cookie参数。应在session_start()之前调用此函数
+        返回值      设置成功返回true，失败返回false
+        $lifetime   从现在起cookie的有效时间，单位为秒
+        $path       设置cookie的有效路径
+        $domain     设置cookie的作用域
+        $secure     设置仅使用https链接。false表示不使用https链接，true表示使用https链接
+        $httponly   设置仅使用http链接。false表示可以使用https链接，true表示只能使用http链接
+void header(string $string, bool $replace=true,int $http_response_code=null) 
+        功能        发送原生http头。该函数必须在向浏览器发送任何一个字符前调用。
+        返回值      无
+        $string     头字符串,它有以下几种形式： 
+                    "location:http://src.com"                               重新定向到src.com网址
+                    "Refresh:10;url=http://www.example.org/"                10秒后重新定向到www.example.org网址 
+                    "Content-Type:text/html;charset=utf-8"                  设置字符编码为UTF8
+                    "Content-type:image/gif"                                内容为gif格式图片
+                    "Content-type:image/jpeg"                               内容为jpeg格式图片 
+                    "Content-type:application/pdf"                          内容为pdf
+                    "Content-type:application/json"                         内容为json
+                    "Content-type:text/javascript"                          内容为javascript
+                    "Content-type:text/css"                                 内容为css
+                    "Content-type:text/xml"                                 内容为xml
+                    "Content-Type:application/rss+xml;charset=ISO-8859-1"   内容为rss+xml，文字编码为ISO-8859-1
+                    "Last-Modified:".gmdate('D, d M Y H:i:s',time())." GMT' 网站最后修改时间为time()(时间戳) 
+                    "HTTP/1.1 304 Not Modified"                             网站内容没有发生修改 
+                    "Content-Length:1234"                                   文本长度    
+                    "Content-language:en"                                   文体语言为英语
+                    "HTTP/1.1 301 Moved Permanently"                        状态码301。网址已经被重定向                      
+                    "HTTP/1.1 404 Not Found"                                状态码404。发生错误 
+        $replace    相同的项是否由后一个http替换，true为替换，false为不替换 
+        $http_response_code 强制指定HTTP响应的值。只有当$string不为空的情况下才有效  
+************************************************************
+BCMath高精度处理函数(BCMath扩展)
+******************************
+安装    ubuntu  sudo apt install php-bcmath 
+******************************
+bool bcscale(int $scale)
+        功能            设置BCMath所有函数的$scale默认值
+        返回值          设置成功返回true,否则返回false 
+        $scale          小数位数
+string bcadd(string $left_operand,string $right_operand,int $scale=0)
+        功能            任意精度数字加法
+        返回值          字符串,和 
+        $left_operand   加数
+        $right_operand  被加数
+        $scale          计算结果保留的小数位数
+string bcsub(string $left_operand,string $right_operand,int $scale=0)
+        功能            任意精度数字减法
+        返回值          字符串,差
+        $left_operand   被减数
+        $right_operand  减数
+        $scale          计算结果保留的小数位数 
+string bcmul(string $left_operand,string $right_operand,int $scale=0)
+        功能            任意精度数字乘法 
+        返回值          字符串,积
+        $left_operand   被乘数
+        $right_operand  乘数
+        $scale          计算结果保留的小数位数
+string bcdiv(string $left_operand,string $right_operand,int $scale=0)
+        功能            任意精度数字除法
+        返回值          字符串,商。$right_operand为0时返回null
+        $left_operand   被除数
+        $right_operand  除数
+        $scale          计算结果保留的小数位数
+string bcsqrt(string $operand,int $scale=0)
+        功能            任意精度数字开平方根
+        返回值          平方根
+        $operand        被开方数 
+        $scale          计算结果保留的小数位数 
+int bccomp(string $left_operand,string $right_operand,int $scale=0)
+        功能            比较任意精度数字的大小
+        返回值          相等时返回0,$left_operand更大时返回1,$right_operand更大时返回-1
+        $left_operand   左比较数
+        $right_operand  右比较数
+        $scale          比较的小数精确度,默认为0,即只比较整数部分
+string bcmod(string $left_operand,string $modulus) 
+        功能            任意大整数取模
+        返回值          字符串,取模结果。如果模为0,则返回null
+        $left_operand   被取模数 
+        $modulus        模(整数的绝对值)
+string bcpow(string $left_operand,string $right_operand,int $scale=0)
+        功能            幂运算 
+        返回值          字符串,幂
+        $left_operand   底数
+        $right_operand  指数
+        $scale          计算结果保留的小数位数 
+string bcpowmod(string $left_operand,string $right_operand,string $modulus,int $scale=0)
+        功能            先进行幂运算,再进行取模运算
+        返回值          字符串,取模结果。如果模为0,则返回null
+        $left_operand   底数
+        $right_operand  指数
+        $modulus        模(整数的绝对值)
+        $scale          计算结果保留的小数位数 
+************************************************************
+GD图像处理函数(GD2php内置扩展) 
+******************************
+resource imagecreate(int $width ,int $height)
+        功能        创建画布
+        返回值      返回创建好的画布。失败时返回false
+        $width      图像宽度
+        $height     图像高度
+resource imagecreatetruecolor(int $width ,int $height) 
+        功能        创建真彩画布。背景色为黑色 
+        返回值      返回创建好的画布。失败时返回false 
+        $width      图像宽度
+        $height     图像高度
+resource imagecreatefromjpeg(string $filename)
+        功能        从jpeg文件创建画布
+        返回值      返回创建好的画布。失败时返回false
+        $filename   jpeg图像的路径 
+resource imagecreatefromgif(string $filename)
+        功能        从gif文件创建画布
+        返回值      返回创建好的画布。失败时返回false
+        $filename   gif图像的路径  
+resource imagecreatefrombmp(string $filename)
+        功能        从bmp文件创建画布
+        返回值      返回创建好的画布。失败时返回false
+        $filename   bmp图像的路径  
+resource imagecreatefromwbmp(string $filename)
+        功能        从wbmp文件创建画布
+        返回值      返回创建好的画布。失败时返回false
+        $filename   wbmp图像的路径   
+resource imagecreatefrompng(string $filename)
+        功能        从png文件创建画布 
+        返回值      返回创建好的画布。失败时返回false 
+        $filename   png图像的路径   
+int imagecolorallocate(resource &$image,int $red,int $green,int $blue)
+        功能        同一个$image第一次调用时为画布填充背景色。如果已经存在背景色，则仅返回一个可供$image使用的颜色值。
+        返回值      失败返回-1,成功返回代表该颜色的一个整数值。该整数只能用于$image 
+        $image      画布
+        $red        RGB中的R(0-255) 
+        $green      RGB中的G(0-255)
+        $blue       RGB中的B(0-255)
+int imageloadfont(string $fontFileStr)
+        功能        加载位图字体，成功返回代表该字体的一个整数值
+        返回值      加载成功则返回大于5的代表该字体的一个整数值，失败则返回false
+        $fontFileStr 字体文件路径。字体的文件后缀应为.gdf 
+bool imageline(resource &$image,int $x1,int $y1,int $x2,int $y2,int $color)
+        功能        在画布上画一条直线
+        返回值      成功返回true,失败返回false
+        $image      画布
+        $x1         起点x坐标
+        $y1         起点y坐标
+        $x2         终点x坐标
+        $y2         终点y坐标
+        $color      由imagecolorallocate函数生成的颜色 
+bool imagearc(resource $image,int $cx,int $cy,int $width,int $height,int $start,int $end,int $color)
+        功能        画椭圆弧
+        返回值      成功返回true,失败返回false 
+        $image      画布
+        $cx         椭圆的中心x坐标
+        $cy         椭圆的中心y坐标
+        $width      椭圆横向直径 
+        $height     椭圆纵向直径 
+        $start      起点角度。以3点钟方向为0度方向，顺时针转动为正 
+        $end        终点角度。以3点钟方向为0度方向，顺时针转动为正 
+        $color      画笔颜色(由imagecolorallocate函数生成的颜色) 
+bool imagerectangle(resource $image,int $x1,int $y1,int $x2,int $y2,int $color)  
+        功能        创建矩形  
+        返回值      成功返回true,失败返回false  
+        $image      画布
+        $x1         左上角x坐标
+        $y1         左上角y坐标
+        $x2         右下角x坐标
+        $y2         右下角y坐标
+        $color      画笔颜色(由imagecolorallocate函数生成的颜色) 
+bool imagefill(resource $image,int $x,int $y,int $col)
+        功能        使用颜色$col对与x,y处颜色相同且相邻的位置进行填充 
+        返回值      填充成功返回true，否则返回false
+        $x          要填充的区域内的任意一点x坐标
+        $y          要填充的区域内的任意一点y坐标 
+        $col        要填充的颜色 
+bool imagefilledarc(resource $image,int $cx,int $cy,int $width,int $height,int $start,int $end,int $color,int $style)
+        功能        在$image上绘制椭圆弧并进行填充
+        返回值      成功返回true，否则返回false
+        $image      画布
+        $cx         椭圆的中心x坐标
+        $cy         椭圆的中心y坐标
+        $width      椭圆横向直径 
+        $height     椭圆纵向直径 
+        $start      起点角度。以3点钟方向为0度方向，顺时针转动为正 
+        $end        终点角度。以3点钟方向为0度方向，顺时针转动为正 
+        $color      画笔颜色(由imagecolorallocate函数生成的颜色) 
+        $style      样式，有以下几种值可选(可以使用|(按位或)进行组合,互斥的值不可组合)：
+                        IMG_ARC_PIE     用弧线连接起点与终止点(与IMG_ARC_CHORD互斥)             
+                        IMG_ARC_CHORD   用直线连接起点与终止点(与IMG_ARC_PIE互斥)             
+                        IMG_ARC_NOFILL  只有轮廓，不填充
+                        IMG_ARC_EDGED   用直线将中心点与起始点和终止点连接起来 
+bool imagefilledellipse(resource $image,int $cx,int $cy,int $width,int $height,int $start,int $end,int $color) 
+        功能        在$image上绘制椭圆并进行填充
+        返回值      成功返回true，否则返回false 
+        $image      画布
+        $cx         椭圆的中心x坐标
+        $cy         椭圆的中心y坐标
+        $width      椭圆横向直径 
+        $height     椭圆纵向直径 
+        $color      画笔颜色(由imagecolorallocate函数生成的颜色) 
+bool imagefilledpolygon(resource $image,array $points,int $num_points,int $color)
+        功能        在$image上绘制多边形并进行填充
+        返回值      成功返回true，否则返回false
+        $image      画布
+        $points     多边形各顶点坐标组成的数组。形式为(x1,y1,x2,y2,x3,y3)，其中x1,y1作为第一个顶点、x2,y2作为第二个顶点 
+        $num_points 顶点总数(>0)。如果$num_points小于$points中指定的顶点个数，则只取$points中前$num_points个顶点作为多边形的顶点进行绘制并填充。
+        $color      画笔颜色(由imagecolorallocate函数生成的颜色) 
+bool imagefilledrectangle(resource $image,int $x1,int $y1,int $x2,int $y2,int $color)
+        功能        在$image上绘制矩形并进行填充
+        返回值      成功返回true，否则返回false 
+        $image      画布
+        $x1         左上角x坐标
+        $y1         左上角y坐标
+        $x2         右下角x坐标
+        $y2         右下角y坐标
+        $color      画笔颜色(由imagecolorallocate函数生成的颜色) 
+bool imagefilltoborder(resource $image,int $x,int $y,int $borderColor,int $color)
+        功能        在$image上使用$color填充颜色直到遇到颜色边界为$borderColor时停止
+        返回值      成功返回true，否则返回false 
+        $image      画布
+        $x1         填充起始点x坐标 
+        $y1         填充起始点y坐标  
+        $borderColor 边界颜色 
+        $color      填充颜色(由imagecolorallocate函数生成的颜色) 
+bool imagestring(resource $image,int $font,int $x,int $y,string $string,int $color)
+        功能        在$image上使用$color绘制$string文字。仅支持Ascii字符 
+        返回值      成功返回true，否则返回false 
+        $image      画布
+        $font       字体。由imageloadfont(string $fontFileStr)生成的代表字体的值。当$font的值为1、2、3、4、5时使用内置字体  
+        $x          文字的左上角x坐标
+        $y          文字的左上角y坐标
+        $string     要绘制的文字
+        $color      文字颜色(由imagecolorallocate函数生成的颜色) 
+array imagettftext(resource $image,float $size,float $angle,int $x,int $y,int $color,string $fontfile,string $text)
+        功能        在$image上使用$color绘制$text文字。
+        返回值      返回含有8个元素的数组,它们表示文本正立时的四个角，顺序为左下角，右下角，右上角，左上角。 
+        $image      画布
+        $size       字体大小。GD1为像素尺寸、GD2为磅尺寸。 
+        $angle      文字旋转角度，角度制。 
+        $x          文字的左下角x坐标
+        $y          文字的左下角y坐标 
+        $color      文字颜色
+        $fontfile   字体文件的路径及字体文件的名称。例如"C:\Windows\Fonts\STXINGKA.TTF"
+        $text       要绘制的文字(UTF-8编码)
+bool imagecopy(resource $dst_im,resource $src_im,int $dst_x,int $dst_y,int $src_x,int $src_y,int $src_w int $src_h)
+        功能        将$src_im图像中坐标从($src_x,$src_y)开始,宽度为$src_w,高度为$src_h的一部分拷贝到$dst_im图像中坐标为($dst_x,$dst_y)的位置上
+        返回值      成功返回true,失败返回false 
+        $dst_im     目标图像 
+        $src_im     源图像(被拷贝的图像) 
+        $dst_x      目标图像的x坐标
+        $dst_y      目标图像的y坐标 
+        $src_x      源图像的x坐标
+        $src_y      源图像的y坐标  
+        $src_w      源图像的被拷贝的宽度
+        $src_h      源图像的被拷贝的高度   
+bool imagecopyresampled(resource $dst_im,resource $src_im,int $dst_x,int $dst_y,int $src_x,int $src_y,int $dst_w,int $dst_h,int $src_w,int $src_h)
+        功能        将$src_im图像中坐标从($src_x,$src_y)开始,宽度为$src_w,高度为$src_h的一部分拷贝到$dst_im图像中坐标为($dst_x,$dst_y),宽度为$dst_w,高度为$dst_h的位置上
+        返回值      成功返回true,失败返回false 
+        $dst_im     目标图像 
+        $src_im     源图像(被拷贝的图像) 
+        $dst_x      目标图像的x坐标
+        $dst_y      目标图像的y坐标 
+        $src_x      源图像的x坐标
+        $src_y      源图像的y坐标  
+        $dst_w      目标图像粘贴位置的宽度 
+        $dst_h      目标图像粘贴位置的高度  
+        $src_w      源图像的被拷贝的宽度
+        $src_h      源图像的被拷贝的高度    
+bool imagegif(resource $image,string $filename=null)
+        功能        输出gif图象到流或文件 
+        返回值      成功返回true,失败返回false
+        $image      画布
+        $filename   文件名，若其值为null则不生成文件而是直接输出到浏览器。否则生成文件 
+bool imagepng(resource $image,string $filename=null) 
+        功能        输出png图象到流或文件  
+        返回值      成功返回true,失败返回false
+        $image      画布
+        $filename   文件名，若其值为null则不生成文件而是直接输出到浏览器。否则生成文件 
+bool imagebmp(resource $image,string $filename=null,bool $compressed=true) 
+        功能        输出gif图象到流或文件。php>=7.2.0
+        返回值      成功返回true,失败返回false
+        $image      画布
+        $filename   文件名，若其值为null则不生成文件而是直接输出到浏览器。否则生成文件  
+        $compressed bmp文件是否使用REL压缩 
+bool imagejpeg(resource $image,string $filename=null,int $quality=-1) 
+        功能        输出jpeg图象到流或文件 
+        返回值      成功返回true,失败返回false
+        $image      画布
+        $filename   文件名，若其值为null则不生成文件而是直接输出到浏览器。否则生成文件 
+        $quality    图像质量(0-100)。100画质最佳。不设置此值时(-1),默认质量为75左右
+bool imagedestroy(resource $image) 
+        功能        销毁画布
+        返回值      成功返回true,失败返回false  
+        $image      要销毁的画布  
+array getimagesize(string $filename,array &$imageinfo)
+        功能        获取图像大小
+        返回值      返回由六个元素组成的数组。
+                    键值0       数字,图像宽度
+                    键值1       数字,图像高度
+                    键值2       数字,表示图像后缀，对应关系如下：  
+                                1=GIF
+                                2=JPG
+                                3=PNG
+                                4=SWF
+                                5=PSD
+                                6=BMP
+                                7=TIFF(intel byte order)
+                                8=TIFF(motorola byte order)
+                                9=JPC
+                                10=JP2
+                                11=JPX
+                                12=JB2
+                                13=SWC
+                                14=IFF
+                                15=WBMP
+                                16=XBM 
+                    键值3       字符串，"height='yyy' width='xxx'"。其中yyy表示图像高度，xxx表示图像宽度 
+                    键值"bits"  数字,图像色位
+                    键值"mime"  字符串，"image/png" 
+            $filename 图像文件路径。例如"d:\\desktop\\123.png" 
+            $imageinfo  获取更多的图像参数信息。此参数仅支持JFIF文件  
+************************************************************************************************************************
+php-fpm(Fastcgi配置)
+************************************************************
+安装:
+*******************************
+ubuntu                          sudo apt install php-fpm 
+************************************************************ 
+说明:
+*******************************
+配置文件：                      php-fpm.conf、www.conf(此文件由php-fpm.conf文件中的include语句包含)   
+配置语句                        每个配置语句独立一行,语句没有结束符号   
+注释                            ;(分号),语句前 
+include = FILE                  将其他文件中的配置语句包含进来 
+                                    FILE        文件路径 
+配置项参数类型                  字符串,无需使用双引号包裹 
+                                    示例        listen = /tmp/php-fpm.sock
+************************************************************ 
+php-fpm.conf,[global]配置
+*******************************
+log_level = ERROE_LEVE          非必须。错误级别。ERROE_LEVE表示错误级别,可取以下值：alert, error, warning, notice, debug, 错误级别依次降低。默认为：notice
+error_log = LOG_FILE_PATH       必须。错误日志文件。LOG_FILE_PATH表示错误日志文件 
+*******************************
+www.conf,[www]配置
+*******************************
+user = USERNAME                 必须。php-fpm服务进程运行时的所属用户。以A用户启动且A没有root权限时，user设置为A
+                                    USERNAME    用户名 
+group = GROUPNAME               非必须。运行php-fpm服务进程的所属用户组。不设置时默认为user所在的用户组
+                                    GROUPNAME   组名 
+listen = {IP:PORT|UNIX_SOCKET}  必须。监听设置
+                                    IP          对本机IP进行监听
+                                    PORT        对本机PORT进行监听 
+                                    UNIX_SOCKET SOCKET文件将要存放的路径。使用SOCKET文件进行监听。设置此项后，还可设置以下项：
+                                                    listen.owner = USERNAME         非必须。监听文件的所属用户。仅当listen选用UNIX_SOCKET时有效。默认值为启动该进程的用户。 
+                                                                                        USERNAME    用户名 
+                                                                                        注意：      应满足listen.owner=监听UNIX_SOCKET的进程(例如nginx)的所属用户或listen.group=监听UNIX_SOCKET进程所在的组，否则监听此文件的进程无权限访问此文件
+                                                    listen.group = GROUPNAME        非必须。监听文件的所属用户组。仅当listen选用UNIX_SOCKET时有效。省略此项默认为listen.owner所在组 
+                                                                                        GROUPNAME   组名 
+                                                    listen.mode = MODE              非必须。监听文件的权限。仅当listen选用UNIX_SOCKET时有效，省略此项默认设置为:0660 
+                                                                                        MODE        权限数字,三位数字或四位数字  
+                                    示例        listen = 127.0.0.1:9006 
+                                    示例        listen = /tmp/php-fpm.sock
+pm = RUN_MODE                   必须。进程运行模式。RUN_MODE可取以下值 
+                                    dynamic     由php-fpm自动管理进程数量。适用于普通大小内存的服务器，适用于普通并发状况。设置此项后还可以设置以下配置，其中NUM表示整数
+                                                    pm.max_children = NUM           必须。子进程最大数 
+                                                    pm.min_spare_servers = NUM      必须。处于空闲状态的最少子进程。如果空闲进程数量小于这个值，那么相应的子进程会被创建 
+                                                    pm.max_spare_servers = NUM      必须。最大空闲子进程数量。空闲子进程数量超过这个值，那么相应的子进程会被杀掉 
+                                                    pm.start_servers = NUM          非必须。启动时php-fpm主进程时将会启动的子进程数量。应介于pm.min_spare_servers与pm.max_spare_servers之间，不设置时默认为(pm.min_spare_servers+pm.max_spare_servers)/2 
+                                    ondemand    空闲进程为0，当有请求访问时才创建子进程。适用于小内存服务器，不适用于高并发状况。其中NUM表示整数 
+                                                    pm.max_children = NUM           必须。子进程最大数 
+                                                    pm.process_idle_timeout = NUM   必须。子进程空闲NUM秒后被杀死 
+                                    static      固定数量的子进程。适用于大内存服务器，适用于高并发状况。
+                                                    pm.max_children = NUM           必须。固定的子进程数量，其中NUM表示整数 
+pm.max_requests = NUM           非必须。每个子进程处理的最大请求数量，其中NUM表示整数。指定为0则不限制。不指定时默认为0
+request_slowlog_timeout = NUM   非必须。当php脚本执行时间超过NUM秒后记录慢日志。NUM取0表示关闭慢日志，默认为0
+pm.max_requests = NUM           非必须。当请求次数超过NUM次后重启php-fpm服务。NUM取0表示不自动重启，默认为0
+slowlog = LOG_SLOW_FILE_PATH    如果request_slowlog_timeout开启，则此项必须配置。慢日志文件路径。 
+************************************************************************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************
+************************************************************

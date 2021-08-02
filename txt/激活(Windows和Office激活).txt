@@ -1,0 +1,122 @@
+********************************************************************************************************
+查看Windows激活的过期时间
+slmgr.vbs -xpr
+*********************************
+Windows激活：(在命令行中直接运行)
+Windows (Business)VL版激活(联网)：
+用管理员帐户运行CMD窗口执行以下命令：
+slmgr /skms 激活地址
+slmgr /ipk 安装密钥
+slmgr /ato
+*********************************
+专业版示例：
+激活地址为：kms.03k.org
+安装密钥为：W269N-WFGWX-YVC9B-4J6C9-T83GX
+
+@echo off
+slmgr /skms kms.03k.org
+slmgr /ipk W269N-WFGWX-YVC9B-4J6C9-T83GX
+slmgr /ato
+*********************************
+2016LTSB示例：
+激活地址为：kms.03k.org
+安装密钥为：DCPHK-NFMTC-H88MJ-PFHPY-QJ4BJ
+
+@echo off
+slmgr /skms kms.03k.org
+slmgr /ipk DCPHK-NFMTC-H88MJ-PFHPY-QJ4BJ
+slmgr /ato
+*********************************
+2019LTSC示例：
+激活地址为：kms.03k.org
+安装密钥为：M7XTQ-FN8P6-TTKYV-9D4CC-J462D
+
+@echo off
+slmgr /skms kms.03k.org
+slmgr /ipk M7XTQ-FN8P6-TTKYV-9D4CC-J462D
+slmgr /ato
+*********************************
+EnterpriseG版示例：
+激活地址为：kms.03k.org
+安装密钥为：YYVX9-NTFWV-6MDM3-9PT4T-4M68B
+
+@echo off
+slmgr /skms kms.03k.org
+slmgr /ipk YYVX9-NTFWV-6MDM3-9PT4T-4M68B
+slmgr /ato
+slmgr /skms 127.0.0.1
+*********************************
+Windows7企业版示例：(若出现错误或激活失败的提示，则使用Win7激活工具)
+激活地址为：kms.03k.org
+安装密钥为：33PXH-7Y6KF-2VJC9-XBBR8-HVTHH
+
+@echo off
+slmgr /skms kms.03k.org
+slmgr /ipk 33PXH-7Y6KF-2VJC9-XBBR8-HVTHH
+echo 若激活失败，请使用Win7激活工具激活系统
+slmgr /ato
+*********************************
+查看Windows的KMS激活密钥的网址为：https://docs.microsoft.com/zh-cn/windows-server/get-started/kmsclientkeys
+Win10专业版的安装密钥为：W269N-WFGWX-YVC9B-4J6C9-T83GX
+Win10_2016LTSB版的安装密钥为：DCPHK-NFMTC-H88MJ-PFHPY-QJ4BJ
+Win10_2019LTSC版的安装密钥为：M7XTQ-FN8P6-TTKYV-9D4CC-J462D 
+Win7企业版的安装密钥为：33PXH-7Y6KF-2VJC9-XBBR8-HVTHH
+Win10_EnterpriseG版的安装密钥为：YYVX9-NTFWV-6MDM3-9PT4T-4M68B
+截止到2019年6月30号仍然可以使用的激活服务器为：kms.03k.org
+*********************************
+其他关于激活的指令：
+清除KMS激活信息：（Win+X A）
+slmgr /upk
+slmgr /ckms
+slmgr /rearm
+查看激活状态：
+slmgr.vbs -xpr
+查看激活信息：
+slmgr.vbs /dlv
+********************************************************************************************************
+OFFICE VL版激活(联网或使用手机APP小付KMS开热点并将电脑连接到该热点进行激活)：
+用管理员帐户运行CMD窗口执行以下命令：
+cd office安装路径下OSPP.VBS文件的路径
+cscript ospp.vbs /sethst:激活地址
+cscript ospp.vbs /inpkey:安装密钥
+cscript ospp.vbs /act
+*****************************************
+Office2010：
+OSPP.VBS路径为：C:\Program\Microsoft Office\Office14
+激活地址为：kms.03k.org
+安装密钥为：VYBBJ-TRJPB-QFQRF-QFT4D-H3GVB
+
+激活命令：
+cd C:\Program\Microsoft Office\Office14
+cscript ospp.vbs /sethst:kms.03k.org
+cscript ospp.vbs /inpkey:VYBBJ-TRJPB-QFQRF-QFT4D-H3GVB
+cscript ospp.vbs /act
+*****************************************
+Office2016:
+OSPP.VBS路径为：C:\Program\Microsoft Office\Office16
+激活地址为：kms.03k.org
+安装密钥为：XQNVK-8JYDB-WJ9W3-YJ8YR-WFG99
+
+激活命令：
+cd C:\Program\Microsoft Office\Office16
+cscript ospp.vbs /sethst:kms.03k.org
+cscript ospp.vbs /inpkey:XQNVK-8JYDB-WJ9W3-YJ8YR-WFG99
+cscript ospp.vbs /act
+*****************************************
+Office2019:
+OSPP.VBS路径为：C:\Program Files\Microsoft Office\Office16
+激活地址为：kms.03k.org
+安装密钥为：NMMKJ-6RK4F-KMJVX-8D9MJ-6MWKP 
+
+激活命令：
+cd C:\Program Files\Microsoft Office\Office16
+cscript ospp.vbs /sethst:kms.03k.org
+cscript ospp.vbs /inpkey:NMMKJ-6RK4F-KMJVX-8D9MJ-6MWKP
+cscript ospp.vbs /act 
+*****************************************
+查看Office的KMS激活密钥的网址为：https://technet.microsoft.com/zh-cn/library/dn385360(v=office.16).aspx
+office2010专业增强版的安装密钥为：VYBBJ-TRJPB-QFQRF-QFT4D-H3GVB
+office2016专业增强版的安装密钥为：XQNVK-8JYDB-WJ9W3-YJ8YR-WFG99
+office2019专业增强版的安装密钥为：NMMKJ-6RK4F-KMJVX-8D9MJ-6MWKP 
+截止到2019年6月30号仍然可以使用的激活服务器为：kms.03k.org 
+****************************************************************************************

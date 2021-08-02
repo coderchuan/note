@@ -1,0 +1,6 @@
+官网下载Windows镜像：
+1、更改浏览器标识，让微软的官网网站认为当前设备运行的是比较古老的Winodws系统版本或者不是Windows系统(Chrome浏览器可以使用更改浏览器标识的插件来更改浏览器标识；亦可使用Android、IOS、MAC系统下载)；
+2、打开https://www.microsoft.com/zh-cn/software-download网站，选择需要的Windows镜像即可下载ISO镜像。
+
+其他网站下载Windows原版镜像：
+https://msdn.itellyou.cn/

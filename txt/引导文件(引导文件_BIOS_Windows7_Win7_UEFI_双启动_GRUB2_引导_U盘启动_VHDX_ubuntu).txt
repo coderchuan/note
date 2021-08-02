@@ -1,0 +1,195 @@
+﻿************************************************************************************
+************************************
+Ubuntu引导文件：
+************************************
+BIOS_UEFI引导文件定制：
+在GRUB2官网：ftp://ftp.gnu.org/gnu/grub下载GRUB2的相关文件：grub2forWindows.zip(GRUB2定制工具)，解压。
+
+可以使用默认的定制内容，如果有需要修改，则修改的内容应为：
+* GRUB2操作目录：             /efi/grub
+* GRUB2库目录：               /efi/grub/sources
+* GRUB2默认配置文件路径：     /efi/grub/grub.cfg
+* 生成的引导BOIS启动的文件名：grub
+* 生成的引导UEFI启动的文件名：grub.efi
+* grub.cfg引导项的内容：默认引导项、默认等待时间、默认iso文件路径、默认卷标。
+
+1、在解压后的有许多文件的目录下建立用于Bios启动的文件creatBIOS.bat，文件内容为：
+::修改项为：第一行的GRUB2库路径：/EFI/grub/sources、第三行的将要生成的引导BOIS启动的文件(硬盘镜像文件)名：grub
+grub-mkimage.exe -d i386-pc -c initiaGrub.cfg -p /EFI/grub/sources -o z_core.img -O i386-pc part_gpt part_msdos biosdisk disk fat exfat ext2 ntfs xfs hfs iso9660 normal search_fs_file search_fs_uuid search_label search configfile linux linux16 chain loopback echo video_bochs video_cirrus file gfxmenu gfxterm gfxterm_background gfxterm_menu halt reboot help jpeg ls png true
+copy i386-pc\boot.img z_boot.img
+copy /b z_boot.img+z_core.img grub
+del /f z_boot.img z_core.img
+pause
+
+   在同一目录建立用于UEFI启动的文件creatUEFI.bat，文件内容为：
+::修改项为：第一行的GRUB2库路径：/EFI/grub/sources，第一行的生成的引导UEFI启动的文件名：grub.efi
+grub-mkimage.exe -d x86_64-efi -c initiaGrub.cfg -p /efi/grub/sources -o grub.efi -O x86_64-efi part_gpt part_msdos disk fat exfat ext2 ntfs xfs appleldr hfs iso9660 normal search_fs_file search_fs_uuid search_label search configfile linux linux16 chain loopback echo efi_gop efi_uga video_bochs video_cirrus file gfxmenu gfxterm gfxterm_background gfxterm_menu halt reboot help jpeg ls png true
+pause
+
+
+2、在同一目录建立用于初始化GRUB2的引导文件initiaGrub.cfg，文件内容为：
+#修改项为：第一行的配置文件路径：/efi/grub/grub.cfg、第二行的GRUB2操作目录：/efi/grub、第三行的默认配置文件路径：/efi/grub/grub.cfg
+search.file /efi/grub/grub.cfg root
+set prefix=($root)/efi/grub
+configfile ($root)/efi/grub/grub.cfg
+
+
+3、双击运行creatBIOS.bat、creatUEFI.bat，同一个目录下将会生成引导文件grub，grub.efi(如果自定义，则为自定义的文件名)。
+
+4、制作默认配置文件grub.cfg，文件内容如下：
+#以下两句法语句是用于设置默认启动项(从0开始计数)和等待时间(秒)的。修改项为：第一行的数字0、第二行的数字0
+set default=0
+set timeout=0
+#以下的这个菜单用于引导Ubuntu系统的光盘文件*.iso。修改项为：第二行的卷标："Install"、第三行的iso文件路径：/ubuntu.iso、第四行的iso文件路径：/ubuntu.iso、第四行的内核路径(Ubuntu的ISO镜像文件中的路径/casper/vmlinuz)
+menuentry "Start Install"{
+search.fs_label "Install" root
+loopback loop /ubuntu.iso
+linux (loop)/casper/vmlinuz boot=casper iso-scan/filename=/ubuntu.iso quiet splash
+initrd (loop)/casper/initrd.lz
+boot
+}
+#以下的这个菜单用于引导Ubuntu系统。修改项为：第二行的卷标"Ubuntu"、第三行的卷标"Ubuntu"
+menuentry "Start Ubuntu"{
+search.fs_label "Ubuntu" root
+linux  /vmlinuz ro quiet splash rhgb root=LABEL="Ubuntu"
+initrd /initrd.img
+boot
+}
+#注意：在使用这个默认的配置文件时，对于不需要的启动项，应该使用'#'(不含'')注释掉所有相关语句
+
+5、
+根据修改的内容项：
+在桌面建立一个文件夹:           efi；
+在efi文件夹下建立GRUB2操作目录：grub；
+在grub目录下建立GRUB2库目录：   sources；
+把生成引导文件的目录下的1386-pc、locale、themes、x86-64-efi文件夹和ascii.pf2、euro.pf2、unicode.pf2文件复制到GRUB2库目录/efi/grub/sources下；
+把生成的两个引导文件grub，grub.efi复制到GRUB2操作目录/efi/grub下；
+把制作的默认配置文件grub.cfg复制到GRUB2操作目录/efi/grub下。
+
+定制完成后，把桌面的efi文件夹复制到ESP(EFI)分区中，使用GRUB2引导Ubuntu和Ubuntu的安装镜像文件iso时，只需要修改默认配置文件中的卷标、默认iso文件路径和内核路径(Ubuntu的ISO镜像文件中的路径/casper/vmlinuz)。
+**************************************
+使用GRUB2引导Ubuntu和Ubuntu的安装镜像文件iso时，只需要修改默认配置文件中的卷标、默认iso文件路径和内核路径(Ubuntu的ISO镜像文件中的路径/casper/vmlinuz)。
+
+直接使用已经定制好的GRUB2引导UEFI下的Ubuntu系统或Ubuntu镜像文件ISO:
+
+与UEFI相关：
+grub.cfg        //放在/efi/grub目录，默认配置文件
+grub.efi        //放在/efi/grub目录(读取/efi/grub/grub.cfg)
+sources文件夹   //放在/efi/grub目录下，作为GRUB2库目录
+
+使用xorboot添加grub.efi为启动项目即可启动ubuntu系统。如果无法启动ubuntu，则需要修改grub.cfg中的卷标信息。
+卷标信息的获取：打开PartitionGurn或者DiskGenius，找到安装Linux系统的对应的分区，显示的即是卷标信息，亦可修改卷标为自定义的卷标名。
+grubx64.efi文件可以从ubuntu的iso镜像文件中的EFI文件夹下获得。
+grub.cfg文件可以以文本文件方式编写，编写方式如上定制内容的第4步。
+***************
+直接使用已经定制好的GRUB2引导BIOS下的Ubuntu系统或Ubuntu镜像文件ISO：
+
+与BIOS相关：
+grub.cfg        //放在/efi/grub目录
+grub            //放在/efi/grub目录(读取/efi/grub/grub.cfg)
+sources文件夹   //放在/efi/grub目录下，作为GRUB2库目录
+
+*************************************************************************************
+Windows引导文件：
+***********************************
+BIOS引导文件BOOTMGR定制：
+解压BOOTMGR定制工具：
+需要修改的内容为：
+* BOOTMGR默认读取路径：     Bxxt(Boot)
+* BOOTMGR默认的配置文件名： BCD(dcb)
+
+1、编辑“双击运行.bat”文件，在“rem 修改处”将所有Bxxt修改为想要的路径，仅限于修改四个字母，例如修改为WIND；
+2、在“rem 修改处”dcb，仅限于dcb三个字母可以修改，例如修改为W10；
+3、运行成功后将会在当前目录下生成“MGR”(BOOTMGR)文件，它就是已经修改默认BCD路径和默认BCD名称的BOOTMGR文件；
+4、使用BootICE在桌面建立一个新的BCD文件，文件名为定制的BCD名称，如(W10)。建立后智能编辑以添加启动项目；
+5、
+根据修改的内容：
+在桌面建立一个文件夹，文件夹的名称为自定义的BOOTMGR默认读取路径，如WIND；
+把新建的BCD文件(文件名为自定义的BOOTMGR默认的配置文件名)复制到BOOTMGR默认读取路径；
+把生成的MGR文件提制到Fat32(ESP、EFI)分区中，文件名可以更改。
+***********************************
+直接使用定制好的BOOTMGR作为BIOS引导文件启动系统：
+与BIOS相关：
+BCD(MBR)    //放在\Boot目录，使用时需要改名为BCD或WN7、WN8、W10、WPE，启动目录，
+Boot.sdi    //放在\Boot目录，启动WIM文件作为RAMOS时使用
+Bootvhd.dll //放在\Boot目录，启动VHD(X)文件时使用
+BOOTMGR     //放在引导分区下，引导BCD文件
+WN7MGR      //放在引导分区下，引导WN7文件
+WN8MGR      //放在引导分区下，引导WN8文件
+W10MGR      //放在引导分区下，引导W10文件
+WPEMGR      //放在引导分区下，引导WPE文件
+BOOTMGR文件可以从Windows的iso镜像文件中的根目录下获得。
+BCD文件可以从Windows的iso镜像文件中的boot或efi\microsoft\boot下获得。
+Boot.sdi文件可以从Windows的iso镜像文件中的boot目录下获得。
+************************************
+与UEFI相关：
+Bootx64.efi //放在\EFI\Microsoft\Boot目录(这个文件其实是由bootmgfw.efi更名，优先读取同一个目录下的BCD文件，若同一目录下没有BCD文件则读取\EFI\Microsoft\Boot\BCD)
+BCD(UEFI)   //放在\EFI\Microsoft\Boot目录，使用时需要改名为BCD
+Boot.sdi    //放在\Boot目录，启动WIM文件作为RAMOS时使用
+bootx64.efi文件可以从Windows的iso镜像文件中的efi\boot文件夹下获得。
+BCD文件可以从Windows的iso镜像文件中的efi\microsoft\boot文件夹下获得，编辑BCD文件，可以使用BOOTICE.exe工具。
+Boot.sdi文件可以从Windows的iso镜像文件中的boot目录下获得。
+***********************************
+使用Windows引导文件制作WindowsPE系统：
+1、BIOS中打开对USB启动选项的支持。
+2、关闭UEFI的安全启动选项。
+3、打开CSM(对不标准的UEFI设备提供兼容性支持)。
+
+U盘BIOS启动：
+1、BCD（MBR）、Boot.sdi放在\Boot文件夹下；
+2、boot.wim放在\Sources文件夹下；
+3、BOOTMGR直接放在ESP分区下；
+
+U盘UEFI启动：
+1、boot.wim放在\Sources文件夹下；
+2、bootx64.efi放在\EFI\Boot文件夹下；
+3、Boot.sdi放在\Boot文件夹下；
+3、BCD（UEFI）放在\EFI\Microsoft\Boot文件夹下。
+
+U盘UEFI与BIOS双启动：
+1、BCD（MBR）、Boot.sdi放在\Boot文件夹下；
+2、boot.wim放在\Sources文件夹下；
+3、BOOTMGR直接放在ESP分区下；
+4、bootx64.efi放在\EFI\Boot文件夹下；
+5、BCD（UEFI）放在\EFI\Microsoft\Boot文件夹下。
+
+
+Windows下的UEFI启动的必要条件：
+分区启动：存在一个FAT16分区，其中有EFI\Boot\Bootx64.efi、EFI\Microsoft\Boot\BCD两个文件，用BOOTICE在BCD文件中指定了系统所在的NTFS分区。
+RAMOS启动：存在一个FAT16分区，其中有EFI\Boot\Bootx64.efi、EFI\Microsoft\Boot\BCD、Boot\Boot.sdi(与Bootx64.efi在同一个分区，由BOOTICE指定)三个文件，用BOOTICE在BCD文件中指定了.WIM或.VHD(X)系统镜像所在的位置。
+VHD(X)启动：存在一个FAT16分区，其中有EFI\Boot\Bootx64.efi、EFI\Microsoft\Boot\BCD两个文件，用BOOTICE在BCD文件中指定了.VHD(X)系统镜像所在的位置。
+特别地：在安装系统时，系统和引导文件所在磁盘要使用GUID分区表格式，并且引导文件使用EFI分区，否则会出现“无法在该配置的计算机上安装系统”而使系统安装失败。
+特别地：系统安装成功后，引导文件和系统所在的磁盘不是必须为GUID分区表格式，它可以是MBR或GUID分区表格式，引导文件也不是必须使用EFI分区，可以使用FAT16分区。
+特别地：以上启动方式涉及三个文件，其中EFI\Boot\Bootx64.efi通用，Boot\Boot.sdi在多数时候通用，EFI\Microsoft\Boot\BCD不一定通用。
+
+
+Windows下的BIOS启动必要的条件：
+分区启动：存在一个MBR分区表格式的FAT16或NTFS分区，其中有BOOTMGR、Boot\BCD两个文件，用BOOTICE在BCD文件中指定了系统所在的NTFS分区、重建了主引导记录(WindowsVista之前为NT5，WindowsVista及其之后为NT6)或没有有效的主引导记录的情况下重建了分区引导记录(WindowsVista及其之后为BOOTMGR，WindowsVista之前为NTLDR)。
+RAMOS启动：存在一个MBR分区表格式的FAT16或NTFS分区，其中有BOOTMGR、Boot\BCD、Boot\Boot.sdi(与BOOTMGR在同一个分区，由BOOTICE指定)三个文件，用BOOTICE在BCD文件中指定了.WIM或.VHD(X)系统镜像所在的位置、重建了主引导记录(Windows NT)和分区引导记录(BOOTMGR)。
+VHD(X)启动：存在一个MBR分区表格式的FAT16或NTFS分区，其中有BOOTMGR、Boot\BCD、Boot\Bootvhd.dll三个文件，用BOOTICE在BCD文件中指定了.VHDX系统镜像所在的位置、重建了主引导记录(Windows NT)或分区引导记录(BOOTMGR)。
+特别地：一般是建立主引导记录，如果没有主引导记录或主引导记录无效，那么才能执行分区引导记录。
+特别地：在安装系统时，系统和引导文件所在磁盘要要使用MBR分区表格式，否则会出现“无法在该配置的计算机上安装系统”而使系统安装失败。
+特别地：系统安装成功后，系统所在的磁盘不是必须为MBR分区表格式，它可以是MBR或GUID分区表格式，但是引导文件必须在MBR磁盘中。
+特别地：以上启动方式涉及四个文件，其中BOOTMGR通用，Boot\Bootvhd.dll通用，Boot\Boot.sdi在多数时候通用，Boot\BCD不一定通用。
+
+UEFI启动：Windows8及以上系统可以使用UEFI安装并启动。
+VHDX启动：Windows7只有旗舰版和企业版可以使用VHD启动，Windows8及以上系统可以使用VHD(VHDX)启动。
+
+特别地：有两种方法可以使用UEFI安装并启动Windows7(X64),如下：
+一：（仅适用于BIOS中有CSM选项的电脑）
+1、在电脑BIOS中关闭了安全启动选项；
+2、BIOS中开启了CSM选项，可以用UEFI安装并引导Windows7(x64)。
+二：（通用）
+1、在电脑BIOS中关闭了安全启动选项；
+2、在用Dism++释放原版Windows7(x64)镜像后，用Dism++为其安装了从本机导出的Windows7(Windows8、Windows8.1、Windows10)集成显卡驱动；
+3、在\Windows\System32\drivers下删除了vga.sys文件，
+4、修改了\Windows\System32\config目录下SYSTEM下的ControlSet001\services\vga的star值为4，修改了\Windows\System32\config目录下SYSTEM下的ControlSet001\services\VgaSave的star值为4
+
+
+使用UEFI方式安装的Windows7企业版的激活方法：
+Windows7企业版可以运行以下命令：(若出现错误或激活失败的提示，则使用Win7激活工具)
+@echo off
+slmgr /skms kms.03k.org
+slmgr /ipk 33PXH-7Y6KF-2VJC9-XBBR8-HVTHH
+echo 若激活失败，请使用Win7激活工具激活系统
+slmgr /ato

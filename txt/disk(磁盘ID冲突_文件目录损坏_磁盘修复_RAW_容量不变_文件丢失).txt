@@ -1,0 +1,12 @@
+磁盘ID冲突不能分配盘符时，使用diskpart命令修改ID即可，打开CMD，输入代码如下：
+diskpart
+list disk
+sel disk 3  ::此处为不能分配盘符的磁盘序号
+uniqueid disk
+uniqueid disk id=CAD4EBEB  ::此处可以随意输入8位16进制数修改
+
+磁盘变为RAW无法读取可以在CMD中使用chkdsk命令修复：
+chkdsk D:/f   ::其中D表示D盘无法读取，可以更换为实际出问题的磁盘的盘符
+
+如果某个盘符出现了文件丢失，但是容量却未变小的话，可以在CMD中使用以下命令将隐藏的文件显示出来，通过改变文件的后缀名将文件找回：
+attrib -h -s -r /s /d

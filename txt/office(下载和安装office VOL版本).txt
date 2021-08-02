@@ -1,0 +1,15 @@
+********************************************************
+1、下载OFFICE部署工具：
+     https://go.microsoft.com/fwlink/p/?LinkID=626065
+  或 https://www.microsoft.com/en-us/download/details.aspx?id=49117
+2、双击OFFICE部署工具，勾选同意许可协议，选择一个释放工具文件的路径
+3、释放成功后到释放工具文件的路径删除除setup.exe外的所有文件
+4、到 https://config.office.com/deploymentsettings 配置要下载和安装的office版本，点击导出，保存配置文件到释放工具文件的路径
+5、在cmd中进入释放工具文件的路径，执行以下命令并等待下载完成
+    setup.exe /download 配置文件
+    例如：setup.exe /download configuration.xml
+6、在cmd中进入释放工具文件的路径，执行以下命令并等待安装完成
+    setup.exe /configure 配置文件
+    例如：setup.exe /configure configuration.xml
+7、激活：参照OFFICE激活方法
+******************************************************** 

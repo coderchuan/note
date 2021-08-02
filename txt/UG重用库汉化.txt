@@ -1,0 +1,1 @@
+重用库国标零件名汉化 将文件（GB Standard Parts）复制到路径Program Files\Siemens\NX 10.0\LOCALIZATION\prc 把原文件（GB Standard Parts）删除替换原有的同名文件即可

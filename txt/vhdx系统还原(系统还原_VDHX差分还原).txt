@@ -1,0 +1,53 @@
+笔记本系统还原：
+   启动自动还原(EFI实现)：
+1、用dism++安装system.vhdx系统，安装好所有软件，用bootice差分为system_base.vhdx、system_temp.vhdx；
+2、把system.vhdx、system_base.vhdx、system_temp.vhdx这三个文件放入硬盘的第一个NTFS分区的system文件夹；
+3、把EFI文件复制到ESP分区；
+4、如果系统无法启动，则用xorboot把efi文件夹中的efi\xorboot\recovery.xor启动项改为efi\recovery.wim，再把efi文件夹中的efi\xorboot\recovery.xor启动项改为硬盘的第一个NTFS分区的system\system_temp.vhdx。
+   启动自动还原(系统本身实现)：
+使用环境为Windows8.1专业版、Windows10专业版。
+1、安装好文件名为“Winsows10.vhdx”的VHDX系统，安装好常用软件；
+2、将Recovery_System.exe放入C:\Programs文件夹；
+3、创建计划任务程序使得每次用户登录都会自动执行C:\Programs\Recovery_System.exe；
+4、用DiskGenius将ESP分区复制到一个指定文件夹，将ESP分区删除；
+5、用Windows磁盘管理将步骤4中删除的未分配空间格式化为FAT32格式，指定驱动器号为A；
+6、将步骤4中指定文件夹下的所有文件复制到A:\；
+7、打开cmd窗口，输入gpedit.msc进入组策略-用户配置-Windows组件-文件资源管理器,选择“隐藏我的电脑中的这些指定的驱动器”，将A盘隐藏；
+8、重启进入PE，将“Winsows10.vhdx”放入D:\映像，用BOOTICE将“Windows10.vhdx”差分为“Windows10_0.vhdx”、“Windows10_1.vhdx”、“Windows10_2.vhdx”目录同为D:\映像；
+9、在A:\EFI\Microsoft\Boot目录下创建三个启动文件，BCD、BCD1、BCD2，启动内容分别为“Windows10_1.vhdx”、“Windows10_1.vhdx”、“Windows10_2.vhdx”；
+10、系统保护卡制作完成，退出PE系统，重新启动电脑即可。
+   手动还原备份：
+1、用dism++释放系统到system.vhdx，不要忘记添加引导(并创建1000MB的ESP分区)，放在硬盘的第一个NTFS分区下的system目录中，完成系统安装，安装软件调试到最佳状态；
+2、用bootice创建两个差分系统，分别名为system_base.vhdx、system_temp.vhdx，并放在硬盘的第一个NTFS分区下的system目录中；
+3、把EFI文件夹放入系统硬盘的ESP分区；
+4、如果系统无法启动，则用xorboot修改EFI目录中的启动信息，对应为，"启动Winsows"关联到"system\system.vhdx"，"备份当前系统"关联到"EFI\backup.wim"，"恢复到上次备份"关联到"EFI\recovery.wim"；
+5、重启计算机。
+
+通用系统还原：
+   启动自动还原(EFI实现)：
+1、用dism++安装system.vhdx系统，安装好所有软件，用bootice差分为system_base.vhdx、system_temp.vhdx；
+2、把system.vhdx、system_base.vhdx、system_temp.vhdx这三个文件放入硬盘的第一个NTFS分区的system文件夹；
+3、把EFI文件复制到ESP分区；
+4、如果系统无法启动，则用xorboot把efi文件夹中的efi\xorboot\recovery.xor启动项改为efi\recovery.wim，再把efi文件夹中的efi\xorboot\recovery.xor启动项改为硬盘的第一个NTFS分区的system\system_temp.vhdx
+    启动自动还原(系统本身实现)：
+使用环境为Windows8.1专业版、Windows10专业版。
+1、安装好文件名为“Winsows10.vhdx”的VHDX系统，安装好常用软件；
+2、将Recovery_System.exe放入C:\Programs文件夹；
+3、创建计划任务程序使得每次用户登录都会自动执行C:\Programs\Recovery_System.exe；
+4、用DiskGenius将ESP分区复制到一个指定文件夹，将ESP分区删除；
+5、用Windows磁盘管理将步骤4中删除的未分配空间格式化为FAT32格式，指定驱动器号为A；
+6、将步骤4中指定文件夹下的所有文件复制到A:\；
+7、打开cmd窗口，输入gpedit.msc进入组策略-用户配置-Windows组件-文件资源管理器,选择“隐藏我的电脑中的这些指定的驱动器”，将A盘隐藏；
+8、重启进入PE，将“Winsows10.vhdx”放入D:\映像，用BOOTICE将“Windows10.vhdx”差分为“Windows10_0.vhdx”、“Windows10_1.vhdx”、“Windows10_2.vhdx”目录同为D:\映像；
+9、在A:\EFI\Microsoft\Boot目录下创建三个启动文件，BCD、BCD1、BCD2，启动内容分别为“Windows10_1.vhdx”、“Windows10_1.vhdx”、“Windows10_2.vhdx”；
+10、系统保护卡制作完成，退出PE系统，重新启动电脑即可。
+
+    手动还原备份：
+1、用dism++释放系统到system.vhdx，不要忘记添加引导(并创建1000MB的ESP分区)，放在硬盘的第一个NTFS分区下的system目录中，完成系统安装，安装软件调试到最佳状态；
+2、用bootice创建两个差分系统，分别名为system_base.vhdx、system_temp.vhdx，并放在硬盘的第一个NTFS分区下的system目录中；
+3、把EFI文件夹放入系统硬盘的ESP分区；
+4、如果系统无法启动，则用xorboot修改EFI目录中的启动信息，对应为，"启动Winsows"关联到"system\system.vhdx"，"备份当前系统"关联到"EFI\backup.wim"，"恢复到上次备份"关联到"EFI\recovery.wim"；
+5、重启计算机。
+
+
+    
