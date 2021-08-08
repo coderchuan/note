@@ -1,13 +1,14 @@
 ## ntpd
+* 功能:渐近地从网络更新时间
 * 配置
     * 配置文件:`/etc/ntp.conf`
         * `driftfile PATH`
-            * 含义:记录CPU时钟频率的历史偏差,用于对时钟进行调整。一般无须调整
+            * 含义:记录CPU时钟频率的历史偏差,用于对时钟进行调整。一般无须修改
             * PATH:记录CPU时钟频率的历史偏差的文件路径。默认值:/var/lib/ntp/drift
             * 示例:`driftfile /var/lib/ntp/drift`
         * `restrict [IP_VERSION] IP [mask MASK_CODE] PARAMS`
             * 含义:对客户端请求时间同步和对服务端时间修改进行权限控制
-            * IP_VERSION:IP协议版本,可取以下值
+            * IP_VERSION:IP协议版本,可取以下值 
                 * `-6`:ipv6
                 * `-4`:ipv4。默认
             * IP:该条规则限定指定的IP地址客户端,可取以下值
@@ -25,8 +26,8 @@
             * 示例
                 * restrict default kod nomodify notrap nopeer noquery
                 * restrict -6 default kod nomodify notrap nopeer noquery
-                * restrict 127.0.0.1
-                * restrict -6 ::1
+                * restrict 127.0.0.1    #本机时间亦同步为本机从服务器获取的时间,最大权限
+                * restrict -6 ::1       #本机时间亦同步为本机从服务器获取的时间,最大权限
         * `server IP OPTION`
             * 含义:指定ntp的上层服务器
             * IP:上层ntp服务器的IP地址或域名
@@ -41,3 +42,4 @@
                 * yes,同步到硬件时间
                 * no,不同步到硬件时间。默认
             * 示例:`SYNC_HWCLOCK=yes`
+    * 查看是否处于同步状态:执行`ntpq -c asso`,若`condition`的值为`sys.peer`则表示已经处于同步状态了 
