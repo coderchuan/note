@@ -12,7 +12,7 @@
         * PATH:记录CPU时钟频率的历史偏差的文件路径。默认值:/var/lib/ntp/drift
         * 示例:`driftfile /var/lib/ntp/drift`
     * `restrict [IP_VERSION] IP [mask MASK_CODE] PARAMS`
-        * 含义:对客户端请求时间同步和对服务端时间修改进行权限控制
+        * 含义:对连接到本机ntpd服务的ip进行权限控制。连接到ntpd服务可以查询当前系统时间,修改系统时间等。当本机从上层服务器获取到时间后,需要将获取到的时间写入到本机系统时间,这时本地的ntpd也会连接到本地的ntpd服务,对当前系统时间进行改写,因此必须对本地ip赋予最大权限。
         * IP_VERSION:IP协议版本,可取以下值 
             * `-6`:ipv6
             * `-4`:ipv4。默认
@@ -29,15 +29,17 @@
             * `notrap`:不接受远程登录请求。不指定默认允许
             * `nopeer`:不与同一层次的其他ntp服务器进行时间同步。不指定默认允许
         * 示例
-            * restrict default kod nomodify notrap nopeer noquery
-            * restrict -6 default kod nomodify notrap nopeer noquery
-            * restrict 127.0.0.1    #本机时间亦同步为本机从服务器获取的时间,最大权限
-            * restrict -6 ::1       #本机时间亦同步为本机从服务器获取的时间,最大权限
+            * restrict default kod nomodify notrap nopeer noquery       #禁止ipv4地址将本机作为时间同步服务器
+            * restrict -6 default kod nomodify notrap nopeer noquery    #禁止ipv6地址将本机作为时间同步服务器
+            * restrict default kod nomodify notrap nopeer               #允许ipv4地址将本机作为时间同步服务器
+            * restrict -6 default kod nomodify notrap nopeer            #允许ipv6地址将本机作为时间同步服务器
+            * restrict 127.0.0.1                                        #本机IPV4地址,最大权限
+            * restrict -6 ::1                                           #本机IPV4地址,最大权限 
     * `server IP OPTION`
         * 含义:指定ntp的上层服务器
         * IP:上层ntp服务器的IP地址或域名
         * OPTION:上层服务器的参数
             * `prefer`:当配置了多个上层服务器时,使用此参数的将被优先被使用。同一个优先级的将按顺序依次使用
             * `burst`:当服务器可以被访问时,发送8个短促的数据包而不是一个普通的数据包。每个数据包的间隔为2秒。不推荐使用
-            * `iburst`:当服务器不可以被访问时,发送8个短促的数据包而不是一个普通的数据包。每个数据包的间隔为2秒,推荐使用
+            * `iburst`:当服务器不可以被访问时,发送8个短促的数据包而不是一个普通的数据包。每个数据包的间隔为2秒,推荐使用 
 * 查看是否处于同步状态:执行`ntpq -c asso`,若`condition`的值为`sys.peer`则表示已经处于同步状态了 
