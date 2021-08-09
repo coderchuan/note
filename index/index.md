@@ -1,5 +1,6 @@
 ## 我的笔记
 1. docker
+    * [创建容器的步骤](./index.html?title=/md/docker/创建容器的步骤)
     * [安装](./index.html?title=/md/docker/安装)
     * [容器间通讯](./index.html?title=/md/docker/容器间通讯)
     * [镜像与容器](./index.html?title=/md/docker/镜像与容器)
@@ -10,8 +11,6 @@
     * [github_pages](./index.html?title=/md/git与markdown/github_pages)
     * [markdown](./index.html?title=/md/git与markdown/markdown)
 1. linux
-    * [vim](./index.html?title=/md/linux/vim)
-    * [wget_curl](./index.html?title=/md/linux/wget_curl)
     * [区域与时间](./index.html?title=/md/linux/区域与时间)
     * [压缩解压缩](./index.html?title=/md/linux/压缩解压缩)
     * [文件管理](./index.html?title=/md/linux/文件管理)
@@ -26,6 +25,25 @@
     * [计划任务](./index.html?title=/md/linux/计划任务)
     * [软件安装与软件](./index.html?title=/md/linux/软件安装与软件)
     * [运行级别](./index.html?title=/md/linux/运行级别)
+1. linux知识库
+    * [linux](./index.html?title=/md/linux知识库/linux)
+    * 文件
+        * [文件下载常用](./index.html?title=/md/linux知识库/文件/文件下载常用)
+        * [文件下载详细](./index.html?title=/md/linux知识库/文件/文件下载详细)
+        * [文件分割与合并](./index.html?title=/md/linux知识库/文件/文件分割与合并)
+        * [统计文件数量](./index.html?title=/md/linux知识库/文件/统计文件数量)
+    * 文本编辑
+        * [vim](./index.html?title=/md/linux知识库/文本编辑/vim)
+    * 时间与日期
+        * 硬件时间
+            * [修改硬件时间](./index.html?title=/md/linux知识库/时间与日期/硬件时间/修改硬件时间)
+        * 系统时间
+            * 时间同步
+                * [ntpdate命令](./index.html?title=/md/linux知识库/时间与日期/系统时间/时间同步/ntpdate命令)
+                * [ntpd服务](./index.html?title=/md/linux知识库/时间与日期/系统时间/时间同步/ntpd服务)
+            * [查看时间和日历](./index.html?title=/md/linux知识库/时间与日期/系统时间/查看时间和日历)
+            * [设置时区](./index.html?title=/md/linux知识库/时间与日期/系统时间/设置时区)
+            * [设置时间与日期](./index.html?title=/md/linux知识库/时间与日期/系统时间/设置时间与日期)
 1. lnmp
     * nginx配置
         * 文档
@@ -80,8 +98,8 @@
 1. python
     * 函数
         * [内置函数](./index.html?title=/md/python/函数/内置函数)
-    * [安装](./index.html?title=/md/python/安装)
-    * [数据类型](./index.html?title=/md/python/数据类型)
+    * [基本数据类型](./index.html?title=/md/python/基本数据类型)
+    * [安装与运行](./index.html?title=/md/python/安装与运行)
 1. ssh
     * [ssh](./index.html?title=/md/ssh/ssh)
 1. web
@@ -142,7 +160,8 @@
     * [发送邮件](./index.html?title=/md/yii2/发送邮件)
     * [安装部署](./index.html?title=/md/yii2/安装部署)
     * [应用程序配置](./index.html?title=/md/yii2/应用程序配置)
-    * [数据库连接](./index.html?title=/md/yii2/数据库连接)
+    * 数据库
+        * [数据库连接配置](./index.html?title=/md/yii2/数据库/数据库连接配置)
     * [模型](./index.html?title=/md/yii2/模型)
     * [登录与注册](./index.html?title=/md/yii2/登录与注册)
     * 视图
@@ -162,8 +181,6 @@
         * [frp](./index.html?title=/md/内网穿透/文档/frp)
 1. 正则
     * [regex_pcre](./index.html?title=/md/正则/regex_pcre)
-1. 知识库
-    * [linux](./index.html?title=/md/知识库/linux)
 1. 虚拟机
     * [termux](./index.html?title=/md/虚拟机/termux)
     * [vmware](./index.html?title=/md/虚拟机/vmware)
