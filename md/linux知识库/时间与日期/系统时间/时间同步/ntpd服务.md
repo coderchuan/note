@@ -52,3 +52,39 @@
     * `keys KEY_FILE`:身份验证用的文件。`KEY_FILE`表示此文件的绝对路径
     * `trustedkey IDS`:身份验证文件中的可以信任的ID值。IDS表示ID值,多个ID需要用空格分隔
 * 查看是否处于同步状态:执行`ntpq -c asso`,若`condition`的值为`sys.peer`则表示已经处于同步状态了 
+* 生成身份验证文件
+    1. `cd ~ && ntp-keygen -M`
+    1. `cp ntpkey_M* KEY_FILE`,`KEY_FILE`表示ntp的身份验证文件的路径,应和`keys`项指定的路径完全相同,且`ntp`用户具有读权限 
+    1. `rm -rf ~/ntpkey_*`
+* 配置示例(设服务端IP为`192.168.2.65`,客户端IP为`192.168.2.63`) 
+    * 服务端
+    ```shell
+    driftfile /var/lib/ntp/drift                              #记录CPU时钟频率的历史偏差的文件绝对路径
+
+    restrict 192.168.2.63 kod notrap nomodify nopeer notrust  #提供时间同步服务并对客户端进行身份验证
+    #restrict 192.168.2.63 kod notrap nomodify nopeer         #提供时间同步服务并对客户端不进行身份验证
+    #restrict default kod notrap nomodify nopeer              #开放此时间服务器的同步服务
+    restrict -6 default kod nomodify notrap nopeer noquery    #关闭来自ipv6的客户端的同步服务
+    restrict localhost                                        #从上层服务器获取时间并定入本机。当上层服务器失效时,从本地读取时间
+    restrict -6 ::1                                           #从上层服务器获取时间并定入本机。当上层服务器失效时,从本地读取时间
+
+    server ntp.ntsc.ac.cn iburst                              #当上层服务器
+    server localhost iburst                                   #当上层服务器失效时,使用本地时间作为客户端的同步时间源
+
+    keys /etc/ntp/keys                                        #身份验证文件,客户端与服务端需要验证的那一条应该要一致
+    trustedkey 1 2                                            #身份验证文件中可信的KEY ID
+    ```
+    * 客户端
+    ```shell
+    driftfile /var/lib/ntp/ntp.drift                          #记录CPU时钟频率的历史偏差的文件绝对路径
+    
+    restrict localhost                                        #从上层服务器获取时间并定入本机
+    restrict -6 ::1                                           #从上层服务器获取时间并定入本机
+
+    server 192.168.2.65 key 1 iburst                          #设置服务器并进行身份验证
+    #server 192.168.2.65 iburst                               #设置服务器并不进行身份验证
+    #server 192.168.2.65 iburst prefer                        #设置优先服务器并不进行身份验证
+
+    keys /etc/ntp/keys                                        #身份验证文件,客户端与服务端需要验证的那一条应该要一致
+    trustedkey 1 2                                            #身份验证文件中可信的KEY ID
+    ```
