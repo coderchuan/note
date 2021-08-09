@@ -1,11 +1,13 @@
 ## ntpd
-* 渐近地从网络更新时间
-    * 命令(服务的形式运行)
-        * ubuntu:`service ntp start`
-        * centos:`service ntpd start`
-* 立即从网络更新时间
-    * 命令:`ntpd -gq`
-    * 权限:root 
+* 前提:开放机器的UDP的123端口
+* 同步时间
+    * 渐近地从网络更新时间
+        * 命令(服务的形式运行)
+            * ubuntu:`service ntp start`
+            * centos:`service ntpd start`
+    * 立即从网络更新时间
+        * 命令:`ntpd -gq`
+        * 权限:root 
 * 配置文件:`/etc/ntp.conf`
     * `driftfile PATH`
         * 含义:记录CPU时钟频率的历史偏差,用于对时钟进行调整。一般无须修改
