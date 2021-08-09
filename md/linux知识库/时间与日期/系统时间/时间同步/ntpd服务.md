@@ -27,7 +27,7 @@
             * `nomodify`:禁止客户端修改服务器时间。不指定默认允许
             * `noquery`:不提供ntp校时服务。不指定默认允许
             * `notrap`:不接受远程登录请求。不指定默认允许
-            * `notrust`:当对方(上层服务端和客户端)未经过身份验证时,拒绝连接。不指定默认不进行身份验证
+            * `notrust`:当对方(上层服务端和客户端)未经过身份验证时,拒绝通信。不指定默认不进行身份验证
             * `nopeer`:不与同一层次的其他ntp服务器进行时间同步。不指定默认允许
         * 示例
             * restrict default kod nomodify notrap nopeer noquery       #禁止ipv4地址将本机作为时间同步服务器
