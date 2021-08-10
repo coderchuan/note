@@ -100,7 +100,7 @@
     * 管道文件的内容多次使用:`` echo release|xargs -i sh -c 'echo {} `cat /etc/*{}*`' ``
 
 ## 更改主机名(root权限) 
-* `ubuntu`(设`NEW_NAME`是新主机名,`OLD_NAME`是旧主机名) 
+* `ubuntu`(设`NEW_NAME`是新主机名) 
     * 步骤
         1. 修改`/etc/hosts`中的旧主机名为新的主机名
         1. 修改`/etc/hostname`中的旧主机名为新的主机名
