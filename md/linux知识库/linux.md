@@ -99,11 +99,18 @@
     * 管道文件的内容多次使用:`echo 123 | xargs -i echo {} {}`。最终输出`123 123`
     * 管道文件的内容多次使用:`` echo release|xargs -i sh -c 'echo {} `cat /etc/*{}*`' ``
 
-## 更改主机名
+## 更改主机名(root权限) 
 * `ubuntu`(设`NEW_NAME`是新主机名,`OLD_NAME`是旧主机名) 
-    1. `cp /etc/hostname /etc/hostname.bak && cp /etc/hosts /etc/hosts.bak`
-    1. `echo 'NEW_NAME' > /etc/hostname && hostname 'NEW_NAME'`
-    1. `sed -i 's/[\t ]\+OLD_NAME[\t ]*/ NEW_NAME /g' /etc/hosts`
+    * 步骤
+        1. 修改`/etc/hosts`中的旧主机名为新的主机名
+        1. 修改`/etc/hostname`中的旧主机名为新的主机名
+    * 示例
+        ```
+        NEW_NAME="new_name"
+        cp /etc/hostname /etc/hostname.bak && cp /etc/hosts /etc/hosts.bak
+        sed -i "s#[\t ]\+$(cat /etc/hostname)[\t ]*# $NEW_NAME #g" /etc/hosts
+        echo $NEW_NAME > /etc/hostname && hostname $NEW_NAME 
+        ```
 
 ## sudo权限配置(编辑/etc/sudoers文件)
 * 用户组`sudo`内的用户使用用户密码切换用户和用户组:`%sudo ALL=(ALL:ALL) ALL`
