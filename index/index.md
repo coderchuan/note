@@ -1,9 +1,14 @@
 ## 我的笔记
 1. docker
-    * [创建容器的步骤](./index.html?title=/md/docker/创建容器的步骤)
     * [安装](./index.html?title=/md/docker/安装)
-    * [容器间通讯](./index.html?title=/md/docker/容器间通讯)
-    * [镜像与容器](./index.html?title=/md/docker/镜像与容器)
+    * 容器
+        * [与宿主机互传文件](./index.html?title=/md/docker/容器/与宿主机互传文件)
+        * [修改容器挂载点](./index.html?title=/md/docker/容器/修改容器挂载点)
+        * [修改容器端口映射](./index.html?title=/md/docker/容器/修改容器端口映射)
+        * [修改容器默认启动命令](./index.html?title=/md/docker/容器/修改容器默认启动命令)
+        * [创建启动运行停止](./index.html?title=/md/docker/容器/创建启动运行停止)
+        * [容器间通讯](./index.html?title=/md/docker/容器/容器间通讯)
+    * [镜像](./index.html?title=/md/docker/镜像)
 1. excel
     * [常用公式](./index.html?title=/md/excel/常用公式)
 1. git与markdown
@@ -11,6 +16,7 @@
     * [github_pages](./index.html?title=/md/git与markdown/github_pages)
     * [markdown](./index.html?title=/md/git与markdown/markdown)
 1. linux
+    * [linux](./index.html?title=/md/linux/linux)
     * [区域与时间](./index.html?title=/md/linux/区域与时间)
     * [压缩解压缩](./index.html?title=/md/linux/压缩解压缩)
     * [文件管理](./index.html?title=/md/linux/文件管理)
@@ -26,10 +32,10 @@
     * [软件安装与软件](./index.html?title=/md/linux/软件安装与软件)
     * [运行级别](./index.html?title=/md/linux/运行级别)
 1. linux知识库
-    * [linux](./index.html?title=/md/linux知识库/linux)
+    * 下载
+        * [curl](./index.html?title=/md/linux知识库/下载/curl)
+        * [wget](./index.html?title=/md/linux知识库/下载/wget)
     * 文件
-        * [文件下载常用](./index.html?title=/md/linux知识库/文件/文件下载常用)
-        * [文件下载详细](./index.html?title=/md/linux知识库/文件/文件下载详细)
         * [文件分割与合并](./index.html?title=/md/linux知识库/文件/文件分割与合并)
         * [统计文件数量](./index.html?title=/md/linux知识库/文件/统计文件数量)
     * 文本编辑
@@ -44,6 +50,10 @@
             * [查看时间和日历](./index.html?title=/md/linux知识库/时间与日期/系统时间/查看时间和日历)
             * [设置时区](./index.html?title=/md/linux知识库/时间与日期/系统时间/设置时区)
             * [设置时间与日期](./index.html?title=/md/linux知识库/时间与日期/系统时间/设置时间与日期)
+    * 登录与环境变量
+        * [shell类型](./index.html?title=/md/linux知识库/登录与环境变量/shell类型)
+        * [环境变量](./index.html?title=/md/linux知识库/登录与环境变量/环境变量)
+        * [登录](./index.html?title=/md/linux知识库/登录与环境变量/登录)
 1. lnmp
     * nginx配置
         * 文档
@@ -179,6 +189,7 @@
 1. 内网穿透
     * 文档
         * [frp](./index.html?title=/md/内网穿透/文档/frp)
+    * 示例
 1. 正则
     * [regex_pcre](./index.html?title=/md/正则/regex_pcre)
 1. 虚拟机
