@@ -13,98 +13,30 @@
     * [常用公式](./index.html?title=/md/excel/常用公式)
 1. git与markdown
     * [git](./index.html?title=/md/git与markdown/git)
-    * [github_pages](./index.html?title=/md/git与markdown/github_pages)
     * [markdown](./index.html?title=/md/git与markdown/markdown)
 1. linux
-    * [linux](./index.html?title=/md/linux/linux)
-    * [区域与时间](./index.html?title=/md/linux/区域与时间)
-    * [压缩解压缩](./index.html?title=/md/linux/压缩解压缩)
-    * [文件管理](./index.html?title=/md/linux/文件管理)
-    * [管道与xargs](./index.html?title=/md/linux/管道与xargs)
-    * [终端配置](./index.html?title=/md/linux/终端配置)
-    * 编译安装
-        * 工具及依赖
-            * [gcc](./index.html?title=/md/linux/编译安装/工具及依赖/gcc)
-            * [make](./index.html?title=/md/linux/编译安装/工具及依赖/make)
-        * [编译安装](./index.html?title=/md/linux/编译安装/编译安装)
-    * [自启动](./index.html?title=/md/linux/自启动)
-    * [计划任务](./index.html?title=/md/linux/计划任务)
-    * [软件安装与软件](./index.html?title=/md/linux/软件安装与软件)
-    * [运行级别](./index.html?title=/md/linux/运行级别)
-1. linux知识库
     * 下载
-        * [curl](./index.html?title=/md/linux知识库/下载/curl)
-        * [wget](./index.html?title=/md/linux知识库/下载/wget)
+        * [curl](./index.html?title=/md/linux/下载/curl)
+        * [wget](./index.html?title=/md/linux/下载/wget)
     * 文件
-        * [文件分割与合并](./index.html?title=/md/linux知识库/文件/文件分割与合并)
-        * [统计文件数量](./index.html?title=/md/linux知识库/文件/统计文件数量)
+        * [文件分割与合并](./index.html?title=/md/linux/文件/文件分割与合并)
+        * [统计文件数量](./index.html?title=/md/linux/文件/统计文件数量)
     * 文本编辑
-        * [vim](./index.html?title=/md/linux知识库/文本编辑/vim)
+        * [vim](./index.html?title=/md/linux/文本编辑/vim)
     * 时间与日期
         * 硬件时间
-            * [修改硬件时间](./index.html?title=/md/linux知识库/时间与日期/硬件时间/修改硬件时间)
+            * [修改硬件时间](./index.html?title=/md/linux/时间与日期/硬件时间/修改硬件时间)
         * 系统时间
             * 时间同步
-                * [ntpdate命令](./index.html?title=/md/linux知识库/时间与日期/系统时间/时间同步/ntpdate命令)
-                * [ntpd服务](./index.html?title=/md/linux知识库/时间与日期/系统时间/时间同步/ntpd服务)
-            * [查看时间和日历](./index.html?title=/md/linux知识库/时间与日期/系统时间/查看时间和日历)
-            * [设置时区](./index.html?title=/md/linux知识库/时间与日期/系统时间/设置时区)
-            * [设置时间与日期](./index.html?title=/md/linux知识库/时间与日期/系统时间/设置时间与日期)
+                * [ntpdate命令](./index.html?title=/md/linux/时间与日期/系统时间/时间同步/ntpdate命令)
+                * [ntpd服务](./index.html?title=/md/linux/时间与日期/系统时间/时间同步/ntpd服务)
+            * [查看时间和日历](./index.html?title=/md/linux/时间与日期/系统时间/查看时间和日历)
+            * [设置时区](./index.html?title=/md/linux/时间与日期/系统时间/设置时区)
+            * [设置时间与日期](./index.html?title=/md/linux/时间与日期/系统时间/设置时间与日期)
     * 登录与环境变量
-        * [shell类型](./index.html?title=/md/linux知识库/登录与环境变量/shell类型)
-        * [环境变量](./index.html?title=/md/linux知识库/登录与环境变量/环境变量)
-        * [登录](./index.html?title=/md/linux知识库/登录与环境变量/登录)
-1. lnmp
-    * nginx配置
-        * 文档
-            * [nginx](./index.html?title=/md/lnmp/nginx配置/文档/nginx)
-        * 示例
-            * [server配置](./index.html?title=/md/lnmp/nginx配置/示例/server配置)
-            * [用户配置](./index.html?title=/md/lnmp/nginx配置/示例/用户配置)
-    * php-fpm配置
-        * [与nginx的通信接口配置](./index.html?title=/md/lnmp/php-fpm配置/与nginx的通信接口配置)
-        * [用户配置](./index.html?title=/md/lnmp/php-fpm配置/用户配置)
-    * [文件上传大小限制配置](./index.html?title=/md/lnmp/文件上传大小限制配置)
-1. mysql
-    * [安装及配置](./index.html?title=/md/mysql/安装及配置)
-    * [用户及授权](./index.html?title=/md/mysql/用户及授权)
-1. ocr
-    * [环境配置](./index.html?title=/md/ocr/环境配置)
-1. php
-    * 文档
-        * [PDO数据库](./index.html?title=/md/php/文档/PDO数据库)
-        * [composer](./index.html?title=/md/php/文档/composer)
-        * [php-fpm](./index.html?title=/md/php/文档/php-fpm)
-        * [phpdoc](./index.html?title=/md/php/文档/phpdoc)
-        * [xdebug](./index.html?title=/md/php/文档/xdebug)
-        * [会话](./index.html?title=/md/php/文档/会话)
-        * 函数
-            * 数组
-                * [extract](./index.html?title=/md/php/文档/函数/数组/extract)
-            * 时间与日期
-                * [date](./index.html?title=/md/php/文档/函数/时间与日期/date)
-                * [gmdate](./index.html?title=/md/php/文档/函数/时间与日期/gmdate)
-                * [strftime](./index.html?title=/md/php/文档/函数/时间与日期/strftime)
-                * [strtotime](./index.html?title=/md/php/文档/函数/时间与日期/strtotime)
-        * [包含引入](./index.html?title=/md/php/文档/包含引入)
-        * 变量
-            * [全局变量](./index.html?title=/md/php/文档/变量/全局变量)
-        * [命令行交互](./index.html?title=/md/php/文档/命令行交互)
-        * [命名空间](./index.html?title=/md/php/文档/命名空间)
-        * [命名规范](./index.html?title=/md/php/文档/命名规范)
-        * [插件](./index.html?title=/md/php/文档/插件)
-        * [数据类型](./index.html?title=/md/php/文档/数据类型)
-        * [运行时配置](./index.html?title=/md/php/文档/运行时配置)
-        * [魔术方法](./index.html?title=/md/php/文档/魔术方法)
-    * 示例
-        * [excel操作](./index.html?title=/md/php/示例/excel操作)
-        * [发送请求](./index.html?title=/md/php/示例/发送请求)
-        * 数据库
-            * [数据库查询](./index.html?title=/md/php/示例/数据库/数据库查询)
-            * [数据库连接](./index.html?title=/md/php/示例/数据库/数据库连接)
-        * [获取机器唯一码与MAC地址](./index.html?title=/md/php/示例/获取机器唯一码与MAC地址)
-        * [获取请求数据](./index.html?title=/md/php/示例/获取请求数据)
-        * [阿拉伯数字转中文人民币大写](./index.html?title=/md/php/示例/阿拉伯数字转中文人民币大写)
+        * [shell类型](./index.html?title=/md/linux/登录与环境变量/shell类型)
+        * [环境变量](./index.html?title=/md/linux/登录与环境变量/环境变量)
+        * [登录](./index.html?title=/md/linux/登录与环境变量/登录)
 1. python
     * 函数
         * [内置函数](./index.html?title=/md/python/函数/内置函数)
@@ -112,58 +44,6 @@
     * [安装与运行](./index.html?title=/md/python/安装与运行)
 1. ssh
     * [ssh](./index.html?title=/md/ssh/ssh)
-1. web
-    * css
-        * 文档
-            * [函数](./index.html?title=/md/web/css/文档/函数)
-            * [单位](./index.html?title=/md/web/css/文档/单位)
-            * [屏幕长宽计算函数](./index.html?title=/md/web/css/文档/屏幕长宽计算函数)
-            * [属性](./index.html?title=/md/web/css/文档/属性)
-            * [布局](./index.html?title=/md/web/css/文档/布局)
-            * [选择器](./index.html?title=/md/web/css/文档/选择器)
-        * 示例
-            * [placeholder样式](./index.html?title=/md/web/css/示例/placeholder样式)
-            * 图片轮播
-                * [jquery_3.2.1](./index.html?title=/md/web/css/示例/图片轮播/jquery_3.2.1)
-                * [report_img1](./index.html?title=/md/web/css/示例/图片轮播/report_img1)
-                * [report_img2](./index.html?title=/md/web/css/示例/图片轮播/report_img2)
-                * [solider](./index.html?title=/md/web/css/示例/图片轮播/solider)
-                * [图片轮播](./index.html?title=/md/web/css/示例/图片轮播/图片轮播)
-            * [弹窗居中](./index.html?title=/md/web/css/示例/弹窗居中)
-            * [滚动条重绘](./index.html?title=/md/web/css/示例/滚动条重绘)
-    * html
-        * [属性](./index.html?title=/md/web/html/属性)
-    * jquery
-        * 文档
-            * [ajax](./index.html?title=/md/web/jquery/文档/ajax)
-            * [object_to_querystring](./index.html?title=/md/web/jquery/文档/object_to_querystring)
-            * [事件监听](./index.html?title=/md/web/jquery/文档/事件监听)
-            * [元素选择函数](./index.html?title=/md/web/jquery/文档/元素选择函数)
-            * [动画](./index.html?title=/md/web/jquery/文档/动画)
-        * 示例
-            * [ajax_FormData示例](./index.html?title=/md/web/jquery/示例/ajax_FormData示例)
-            * [object_to_querystring示例](./index.html?title=/md/web/jquery/示例/object_to_querystring示例)
-    * svg
-        * [path](./index.html?title=/md/web/svg/path)
-        * [属性](./index.html?title=/md/web/svg/属性)
-    * webjs
-        * 文档
-            * [元素选择函数](./index.html?title=/md/web/webjs/文档/元素选择函数)
-            * [改变url函数](./index.html?title=/md/web/webjs/文档/改变url函数)
-        * 示例
-            * [空值判断](./index.html?title=/md/web/webjs/示例/空值判断)
-            * [表头浮动](./index.html?title=/md/web/webjs/示例/表头浮动)
-1. windows
-    * [aida64](./index.html?title=/md/windows/aida64)
-    * [gpt分区](./index.html?title=/md/windows/gpt分区)
-    * [ventoy](./index.html?title=/md/windows/ventoy)
-    * [windows_command](./index.html?title=/md/windows/windows_command)
-    * [windows_terminal](./index.html?title=/md/windows/windows_terminal)
-    * [windows_系统安装](./index.html?title=/md/windows/windows_系统安装)
-    * [wondows_wsl](./index.html?title=/md/windows/wondows_wsl)
-    * [xorboot](./index.html?title=/md/windows/xorboot)
-    * [命令行软件与软件安装](./index.html?title=/md/windows/命令行软件与软件安装)
-    * [禁止和启用Win10自动更新](./index.html?title=/md/windows/禁止和启用Win10自动更新)
 1. yii2
     * [URL处理](./index.html?title=/md/yii2/URL处理)
     * [别名](./index.html?title=/md/yii2/别名)
@@ -179,23 +59,5 @@
         * [前端资源管理](./index.html?title=/md/yii2/视图/前端资源管理)
         * [视图与布局](./index.html?title=/md/yii2/视图/视图与布局)
     * [验证器](./index.html?title=/md/yii2/验证器)
-1. 其他
-    * [ip地址](./index.html?title=/md/其他/ip地址)
-    * [中华字经](./index.html?title=/md/其他/中华字经)
-    * [五笔](./index.html?title=/md/其他/五笔)
-    * [命名规则](./index.html?title=/md/其他/命名规则)
-    * [数理](./index.html?title=/md/其他/数理)
-    * [证照尺寸](./index.html?title=/md/其他/证照尺寸)
-1. 内网穿透
-    * 文档
-        * [frp](./index.html?title=/md/内网穿透/文档/frp)
-    * 示例
 1. 正则
     * [regex_pcre](./index.html?title=/md/正则/regex_pcre)
-1. 虚拟机
-    * [termux](./index.html?title=/md/虚拟机/termux)
-    * [vmware](./index.html?title=/md/虚拟机/vmware)
-1. 设备
-    * [itoos_ka2蓝牙耳机](./index.html?title=/md/设备/itoos_ka2蓝牙耳机)
-    * [oneplus_one](./index.html?title=/md/设备/oneplus_one)
-    * [pandora_box](./index.html?title=/md/设备/pandora_box)
