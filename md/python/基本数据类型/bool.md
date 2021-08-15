@@ -1,0 +1,15 @@
+## 布尔型
+* 关键字:bool
+* 含义:表示真假
+* 取值范围:0,1。表示假真
+* 字面值
+    * False
+    * True
+* 构造布尔值的方法
+    * 使用字面值赋值。如执行`a=False`后`a`的值为`False`
+    * `bool([x=False])`
+        * 含义:构造布尔值
+        * x:字面值或其他任意值
+            * Ture:`bool(1)`,`bool(True)`,`bool("123")`
+            * False:`bool(0)`,`bool(False)`,`bool("")`
+        * 返回:False或True

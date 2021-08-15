@@ -40,8 +40,14 @@
 1. python
     * 函数
         * [内置函数](./index.html?title=/md/python/函数/内置函数)
-    * [基本数据类型](./index.html?title=/md/python/基本数据类型)
+    * 基本数据类型
+        * [bool](./index.html?title=/md/python/基本数据类型/bool)
+        * [complex](./index.html?title=/md/python/基本数据类型/complex)
+        * [float](./index.html?title=/md/python/基本数据类型/float)
+        * [int](./index.html?title=/md/python/基本数据类型/int)
+        * [str](./index.html?title=/md/python/基本数据类型/str)
     * [安装与运行](./index.html?title=/md/python/安装与运行)
+    * [输入输出](./index.html?title=/md/python/输入输出)
 1. ssh
     * [ssh](./index.html?title=/md/ssh/ssh)
 1. yii2
