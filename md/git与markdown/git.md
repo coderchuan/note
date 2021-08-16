@@ -199,10 +199,10 @@
     * 功能：添加新的远程仓库
     * 解释
         * `ALIAS`：远程仓库在本地的别名，可自定义
-        * `URL`：远程仓库地址，支持多种协议，如：   
+        * `URL`：远程仓库地址，支持多种协议，如：
             * SSH
                 * 如果需要配置ssh免密登录，请查看[配置ssh客户端](index.html?title=/md/ssh)
-                * 完整形式：`ssh://{[username@]host[:port]|SSH_CONFIG_HOST_NAME}/git_dir_path`
+                * 完整形式：`ssh://{[username@]host[:port]|SSH_CONFIG_HOST_NAME}:git_dir_path`
                 * 简化形式：`username@host:git_dir_path`，仅适用于22端口
                 * username：远程主机的用户名。如果不指定则默认为本地当前的用户名
                     * github配置。示例`ssh://git@github.com/coderchuan/note.git`
@@ -583,7 +583,7 @@
 
 ## 文件忽略规则
 * 语法规则
-    1. 不能以`/`开头
+    1. 若以`/`开头则表示项目根目录作为相对目录
     1. `/`结尾：忽略以当前`.gitignore`文件所在目录为根目录的指定文件夹 
     1. 不以`/`结尾：忽略以当前`.gitignore`文件所在目录为根目录的指定文件
     1. 通配符`*`：匹配多个任意字符
@@ -595,6 +595,12 @@
     * 空格：`\空格`
     * `#`：`\#`
 * 模板。使用已经定义好的模板，无须自定义规则，详见[gitignore模板](https://github.com/github/gitignore)
+
+## 修正`object file ... is empty`
+1. 进入项目根目录
+1. `find .git/objects/ -type f -empty | xargs rm`
+1. `git fetch -p`
+1. `git fsck --full`
 
 ## 命令行中正常显示中文
 ```
