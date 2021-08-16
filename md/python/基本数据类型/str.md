@@ -39,14 +39,18 @@
         * 无前缀的字符串或u前缀:使用unicode编码,如`"123"`,`u"123"`
         * r或R前缀:表示`\`不是转义字符,如`r"c:\windows"`
         * b或B前缀:表示字符串是bytes类型,如`b"zoot"`。每个字符占用一个字节
-        * f或F前缀:表示字符串的绑定,在字符串中使用`{NAME[F]}`来对字符串进行绑定
-            * NAME:指绑定的字符串的变量名
-            * F:指绑定格式化的选项,F可取以下值 
-                * 省略:直接绑定,不进行格式化 
-                * `!r`:表示调用`repr()`函数的返回值作为格式化后的内容
-                * `!s`:表示调用`str()`函数的返回值作为格式化后的内容
-                * `!a`:表示调用`ascii()`函数的返回值作为格式化后的内容
-                * `:[[fill]align][sign][#][0][width][grouping_option][.precision][type]`
+        * f或F前缀:表示字符串的格式化,详见格式化。
+    * 格式化
+        * 字符串前加f或F前缀,在字符串中使用`{NAME[F]}`来对字符串进行格式化
+            * NAME:指格式化的字符串时使用到的变量名
+            * F:指格式化的选项,F可取以下值 
+                * 省略:不进行格式化
+                * `!FUNC`,FUNC可取以下值
+                    * `r`:表示调用`repr()`函数的返回值作为格式化后的内容
+                    * `s`:表示调用`str()`函数的返回值作为格式化后的内容
+                    * `a`:表示调用`ascii()`函数的返回值作为格式化后的内容
+                * `:FORMAT`,FORMAT遵循以下语法
+                    * 语法:`[[fill]align][sign][#][0][width][grouping_option][.precision][type]`
                     * 解释
                         * fill:填充字符,当要格式化的字符串的宽度不够时,使用此填充字符来填充。省略则使用空格填充
                         * align:填充字符的位置
@@ -86,23 +90,29 @@
                                 * int:相当于指定了'd' 
                                 * float:相当于指定了'g'
                                 * decimal:相当于'g'或'G'
-                    * 注意:设置项亦可使用`{NAME[F]}`形式绑定,详见示例1
             * 输入"{"和"}"字符:在字符串中使用"{{"和"}}"即可输入"{"和"}"字符本身 
-            * 示例
-                ```python 
-                #示例1
-                abc=float(123.456)
-                precision=2
-                sign="+"
-                print(f"{abc:{sign}020.{precision}f}") 
-                print(f"{abc:+020.2f}") 
-
-                #示例2
-                age=26
-                name='zhang'
-                str_="my name is {name},age is {age} years old"
-                print(str_)
-                ```
+        * 在字符串中使用`"...%[NAME]F..."%MAP`的形式进行格式化
+            * NAME:表示`(变量名)`的形式,即变量名使用小括号包裹。
+                * 如果使用了变量名,即形式为`"...%(变量名)F..."%MAP`,则MAP表示字典,字典中的键必须与NAME相对应
+                * 如果没有使用变量名,即形式为`"...%F..."%MAP`,则MAP表示变量或常量
+            * F:指格式化的选项,同f或F前缀格式化方式的FUNC和FORMAT 
+        * 示例
+            ```python 
+            abc=float(123.456)
+            precision=2
+            sign="+"
+            #格式一:f前缀嵌套格式化
+            print(f"{abc:{sign}020.{precision}f}") 
+            #格式二:f前缀非嵌套格式化
+            print(f"{abc:+020.2f}") 
+            #格式三:f前缀未使用格式化语法
+            print(f"The numeric is {abc},it's sign is '{sign}'")
+            #格式四:%形式的变量格式化
+            print("%+020.2f"%abc) 
+            #格式五:%形式的字典格式化
+            print("%(abc)+020.2f"%{"abc":abc})
+            ```
+        * 注意:f或F前缀格式化语法中的各项参数亦可使用`{NAME[F]}`形式的格式化进行嵌套,详见f或F前缀格式化中的示例1 
     * `str(object='',encoding='utf-8',errors='strict')`
         * 含义:构造字符串
         * object:字符串,同`赋值`
