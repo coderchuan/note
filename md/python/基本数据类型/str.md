@@ -34,6 +34,7 @@
     * `\N{name}`:表示`Unicode`字符,其中`name`表示unicode数据库中名为name的字符
     * `\uxxxx`:表示码位为`xxxx`的字符,其中`xxxx`表示十六进制数字的字面值(无0x前缀) 
     * `\Uxxxx`:表示码位为`xxxxxxxx`的字符,其中`xxxxxxxx`表示十六进制数字的字面值(无0x前缀) 
+* 拼接:两个字符串仅由空格分隔时,会被拼接为一个字符串
 * 构造字符串的方法
     * 赋值 
         * 无前缀的字符串或u前缀:使用unicode编码,如`"123"`,`u"123"`
@@ -96,6 +97,12 @@
                 * 如果使用了变量名,即形式为`"...%(变量名)F..."%MAP`,则MAP表示字典,字典中的键必须与NAME相对应
                 * 如果没有使用变量名,即形式为`"...%F..."%MAP`,则MAP表示变量或常量
             * F:指格式化的选项,同f或F前缀格式化方式的FUNC和FORMAT 
+        * 使用`str.format()`函数进行格式化,在字符串中使用`{[INDEX_OR_NAME][F]}`形式的语法
+            * `INDEX_OR_NAME`:绑定的变量索引,与`format()`参数列表的顺序相对应(第一个参数的索引为`0`),如果没有指定`INDEX`,则默认从0开始自动编号。如果使用的是名称而不是数字索引,则在format中应传入与名称对应的关键字参数 
+            * `F`:同字符串前加f或F前缀的格式化规则
+        * 使用`str.format_map(dict)`函数进行格式化,在字符串中使用`{NAME[F]}`形式的语法
+            * `NAME`:`format_map(dict)`函数中的参数字典中使用与`NAME`相对应的键 
+            * `F`:同字符串前加f或F前缀的格式化规则
         * 示例
             ```python 
             abc=float(123.456)
@@ -111,6 +118,14 @@
             print("%+020.2f"%abc) 
             #格式五:%形式的字典格式化
             print("%(abc)+020.2f"%{"abc":abc})
+            #格式六:format()数字索引形式的格式化
+            print("{0:{1}020.{2}f}".format(abc,sign,precision)) 
+            #格式七:format()自动数字索引形式的格式化
+            print("{:{}020.{}f}".format(abc,sign,precision)) 
+            #格式八:format()关键字形式的格式化
+            print("{abc:{sign}020.{precision}f}".format(abc=abc,precision=precision,sign=sign)) 
+            #格式九:format_map()关键字形式的格式化
+            print("{abc:{sign}020.{precision}f}".format_map({'abc':abc,'precision':precision,'sign':sign})) 
             ```
         * 注意:f或F前缀格式化语法中的各项参数亦可使用`{NAME[F]}`形式的格式化进行嵌套,详见f或F前缀格式化中的示例1 
     * `str(object='',encoding='utf-8',errors='strict')`
