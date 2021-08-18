@@ -38,6 +38,8 @@
         * [环境变量](./index.html?title=/md/linux/登录与环境变量/环境变量)
         * [登录](./index.html?title=/md/linux/登录与环境变量/登录)
 1. python
+    * 内置方法
+        * [sorted](./index.html?title=/md/python/内置方法/sorted)
     * 函数
         * [内置函数](./index.html?title=/md/python/函数/内置函数)
     * 基本数据类型
@@ -45,7 +47,13 @@
         * [complex](./index.html?title=/md/python/基本数据类型/complex)
         * [float](./index.html?title=/md/python/基本数据类型/float)
         * [int](./index.html?title=/md/python/基本数据类型/int)
-        * [str](./index.html?title=/md/python/基本数据类型/str)
+        * 序列
+            * [基本概念](./index.html?title=/md/python/基本数据类型/序列/基本概念)
+            * 序列数据类型
+                * [list](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/list)
+                * [range](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/range)
+                * [str](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/str)
+                * [tuple](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/tuple)
     * [安装与运行](./index.html?title=/md/python/安装与运行)
     * [输入输出](./index.html?title=/md/python/输入输出)
 1. ssh
