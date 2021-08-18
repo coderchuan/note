@@ -136,7 +136,7 @@
         * encoding:字符串的编码。默认为`utf-8`
         * errors:错误处理方式。默认为`strict`
         * 返回:字符串
-* 成员方法
+* 成员方法([unicode字体信息网](https://www.fileformat.info/info/unicode/category/index.htm))
     * `str.isascii()`:如果字符串中的所有字符均在以下列表中且长度大于0则返回True
         * 列表:Unicode码值为0-127的所有字符
     * `str.isalpha()`:如果字符串中的所有字符均在以下列表中且长度大于0则返回True
