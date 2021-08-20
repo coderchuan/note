@@ -41,7 +41,6 @@
     * 赋值 
         * 无前缀的字符串或u前缀:使用unicode编码,如`"123"`,`u"123"`
         * r或R前缀:表示`\`不是转义字符,如`r"c:\windows"`
-        * b或B前缀:表示字符串是bytes类型,如`b"zoot"`。每个字符占用一个字节
         * f或F前缀:表示字符串的格式化,详见格式化。
     * 格式化
         * 字符串前加f或F前缀,在字符串中使用`{NAME[F]}`来对字符串进行格式化
@@ -130,13 +129,17 @@
             print("{abc:{sign}020.{precision}f}".format_map({'abc':abc,'precision':precision,'sign':sign})) 
             ```
         * 注意:f或F前缀格式化语法中的各项参数亦可使用`{NAME[F]}`形式的格式化进行嵌套,详见f或F前缀格式化中的示例1 
-    * `str(object='',encoding='utf-8',errors='strict')`
+    * `str(object='')`
         * 含义:构造字符串
         * object:字符串,同`赋值`
+        * 返回:字符串对象
+    * `str(object=b'',encoding='utf-8',errors='strict')`
+        * 含义:从字节串构造字符串(encoding和errors应该至少指定一项) 
+        * object:字节串,同字节串`赋值`
         * encoding:字符串的编码。默认为`utf-8`
         * errors:错误处理方式。默认为`strict`
-        * 返回:字符串
-* 成员方法([unicode字体信息网](https://www.fileformat.info/info/unicode/category/index.htm))
+        * 返回:字符串对象
+* 方法([unicode字体信息网](https://www.fileformat.info/info/unicode/category/index.htm))
     * 判断
         * `str.isascii()`:如果字符串中的所有字符均在以下列表中且长度大于0则返回True
             * 列表:Unicode码值为0-127的所有字符
@@ -224,4 +227,4 @@
         * `str.expandtabs(tabsize=8)`:返回将字符串中的一个制表符号转换为指定数量的空格
         * `str.replace(old, new[, count])`:返回替换后的新字符串。如果指定了count,则只替换count次,否则全部替换 
     * 转换 
-        * `str.encode(encoding="utf-8", errors="strict")`:返回将字符串转换为指定编码类型的bytes字符串
+        * `str.encode(encoding="utf-8", errors="strict")`:返回将字符串(指定编码类型)转换为bytes字节串 
