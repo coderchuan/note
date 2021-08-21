@@ -37,6 +37,11 @@
         * [shell类型](./index.html?title=/md/linux/登录与环境变量/shell类型)
         * [环境变量](./index.html?title=/md/linux/登录与环境变量/环境变量)
         * [登录](./index.html?title=/md/linux/登录与环境变量/登录)
+1. php
+    * 内置函数
+        * 文件系统
+            * [flock](./index.html?title=/md/php/内置函数/文件系统/flock)
+            * [fopen](./index.html?title=/md/php/内置函数/文件系统/fopen)
 1. python
     * 内置方法
         * [sorted](./index.html?title=/md/python/内置方法/sorted)
@@ -50,6 +55,8 @@
         * 序列
             * [基本概念](./index.html?title=/md/python/基本数据类型/序列/基本概念)
             * 序列数据类型
+                * [bytearray](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/bytearray)
+                * [bytes](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/bytes)
                 * [list](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/list)
                 * [range](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/range)
                 * [str](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/str)
@@ -72,6 +79,7 @@
         * [主题](./index.html?title=/md/yii2/视图/主题)
         * [前端资源管理](./index.html?title=/md/yii2/视图/前端资源管理)
         * [视图与布局](./index.html?title=/md/yii2/视图/视图与布局)
+    * [路由](./index.html?title=/md/yii2/路由)
     * [验证器](./index.html?title=/md/yii2/验证器)
 1. 正则
     * [regex_pcre](./index.html?title=/md/正则/regex_pcre)
