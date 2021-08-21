@@ -42,9 +42,62 @@
     * 指定长度的以零值填充的`bytes`对象:`bytes(10)`
     * 通过由整数组成的可迭代对象:`bytes(range(20))`
     * 通过缓冲区协议复制现有的二进制数据:`bytes(obj)`
+* 格式化
+    * `b'...%[NAME]F...'%MAP`:同字符串中的`"...%[NAME]F..."%MAP`格式化。其中`MAP`的键为字节串,值为字节串或数字
 * 方法
-    * `static bytes.fromhex(string)`:从给定的十六进制符号或ASCII空白符号组成的字符串返回字节串(每两个十六进制符号转换为一个字节)。其中的空白符号将被忽略。
-    * `bytes.hex([sep[, bytes_per_sep]])`:返回字节串的十六进制符号(每一个字节转换为两个十六进制符号),返回的格式可以通过以下参数指定
-        * sep:指定分隔符。默认为空字符串
-        * bytes_per_sep:每个分隔符分隔的字节数,默认为1字节
-    
+    * 十六进制转换
+        * `static classname.fromhex(string)`:从给定的十六进制符号或ASCII空白符号组成的字符串返回字节串(每两个十六进制符号转换为一个字节)。其中的空白符号将被忽略。
+        * `classobj.hex([sep[, bytes_per_sep]])`:返回字节串的十六进制符号(每一个字节转换为两个十六进制符号),返回的格式可以通过以下参数指定 
+            * sep:指定分隔符。默认为空字符串
+            * bytes_per_sep:每个分隔符分隔的字节数,默认为1字节
+    * 查找
+        * `classobj.count(sub[, start[, end]])`:返回子字节串`sub`在索引start至end之间出现的次数。未指定end时默认在start至末尾查找;未指定start和end时默认在整个字节串中查找
+        * `classobj.find(sub[, start[, end]])`:返回字节串在索引start到end之间出现子字节串sub的最小索引
+        * `classobj.rfind(sub[, start[, end]])`:返回字节串在索引start到end之间出现子字节串sub的最大索引
+        * `classobj.index(sub[, start[, end]])`:返回字节串在索引start到end之间出现子字节串sub的最小索引。若未查找到则抛出`ValueError`
+        * `classobj.rindex(sub[, start[, end]])`:返回字节串在索引start到end之间出现子字节串sub的最大索引。若未查找到则抛出`ValueError`
+    * 分割与拼接
+        * `classobj.join(iterable)`:返回使用当前的字节串拼接可迭代的对象`iterable`的拼接结果 
+        * `classobj.split(sep=None, maxsplit=-1)`:返回将当前字节串使用`sep`分割后的结果(list)。如果指定了`maxsplit`则只分割`maxsplit`次 
+        * `classobj.partition(sep)`:返回当前字节串从左至右被子字节串`sep`分割的第一个结果。结果是一个有三个元素的元组,第一个元素为`sep`分割的前一部分的字节串,第二个元组为`sep`,第三个元组为`sep`分割的后一部分的字节串。若在当前字节串中未找到子字节串`sep`则第一个元素和第三个元素为空字节串
+        * `classobj.rpartition(sep)`:返回当前字节串从右至左被子字节串`sep`分割的第一个结果。结果是一个有三个元素的元组,第一个元素为`sep`分割的前一部分的字节串,第二个元组为`sep`,第三个元组为`sep`分割的后一部分的字节串。若在当前字节串中未找到子字节串`sep`则第一个元素和第三个元素为空字节串
+    * 替换
+        * `classobj.replace(old, new[, count])`:返回当前字节串中将`old`子字节串替换为`new`子字节串的新字节串,若指定了count则只替换count次
+        * `classobj.expandtabs(tabsize=8)`:返回将当前字节串中的每一个`\t`字节转换为`tabsize`个`b' '`的结果
+    * 映射表
+        * `static maketrans(from, to)`:返回二进制串`from`与二进制串`to`的映射表,`from`与`to`的长度必须相等
+        * `classobj.translate(table, /, delete=b'')`:返回将当前字节串映通过映射表转换为`to`对应关系的字节串。其中`delete`字节串中指定的每一个字节都会在被返回的字节串中删除 
+    * 首尾处理
+        * `classobj.removeprefix(prefix, /)`:返回去除字节串`prefix`前缀的字节串
+        * `classobj.removesuffix(suffix, /)`:返回去除字节串`suffix`后缀的字节串
+        * `classobj.strip([chars])`:返回当前字节串将前后字节移除在`chars`中列出的每一个字节的结果 
+        * `classobj.lstrip([chars])`:返回当前字节串将前导字节移除在`chars`中列出的每一个字节的结果
+        * `classobj.rstrip([chars])`:返回当前字节串将结尾字节移除在`chars`中列出的每一个字节的结果
+    * 转换为字符串
+        * `classobj.decode(encoding="utf-8", errors="strict")`:返回将字节串转换为字符串(指定编码)的转换结果
+    * 判断
+        * `classobj.endswith(suffix[, start[, end]])`:如果字节串在索引start至end之间以`suffix`结尾则返回True
+        * `classobj.startswith(prefix[, start[, end]])`:如果字节串在索引start至end之间以`suffix`开头则返回True
+        * `classobj.isalnum()`:如果当前字节串中的所有字节都是英文字母或数字0-9所对应的字节则返回True
+        * `classobj.isalpha()`:如果当前字节串中的所有字节都是英文字母所对应的字节则返回True
+        * `classobj.isdigit()`:如果当前字节串中的所有字节都是数字0-9所对应的字节则返回True
+        * `classobj.isascii()`:如果当前字节串中的所有字节都是ascii字符所对应的字节则返回True
+        * `classobj.islower()`:如果当前字节串中没有大写英文字母对应的字节则返回True
+        * `classobj.isspace()`:如果当前字节串中的所有字节都是`b' \t\n\r\x0b\f'`列表中的一个字节,则返回True
+        * `classobj.istitle()`:如果当前字节串中的所有被ascii单词边界(任何不表示英文大小写字母的字节)分隔的单词首字节为大写字母对应的字节,则返回True
+    * 对齐
+        * `classobj.center(width[, fillbyte])`
+            * 若当前字节串的长度小于width,则返回被`fillbyte`这个字节填充后长度为`width`的字节串。原字节串居中
+            * 若当前字节串的长度大于等于width,则返回原字节串
+        * `classobj.ljust(width[, fillbyte])`
+            * 若当前字节串的长度小于width,则返回被`fillbyte`这个字节填充后长度为`width`的字节串。原字节串居左
+            * 若当前字节串的长度大于等于width,则返回原字节串
+        * `classobj.rjust(width[, fillbyte])`
+            * 若当前字节串的长度小于width,则返回被`fillbyte`这个字节填充后长度为`width`的字节串。原字节串居右
+            * 若当前字节串的长度大于等于width,则返回原字节串
+        * `classobj.zfill(width)`
+            * 若当前字节串的长度小于width,则返回被`b'0'`这个字节填充后长度为`width`的字节串。原字节串居右,若有正负号则位于字节串起始位置
+            * 若当前字节串的长度大于等于width,则返回原字节串 
+    * 大小写转换
+        * `classobj.capitalize()`:将当前字节串中的第一个字节(ascii中的英文字母)转换为大写字母,其余的ascii字母转换为小写,并返回(原对象的字节串不改变)
+        * `classobj.upper()`:返回将当前字节串中的所有表示英文小写字母的字节转换为表示英文大写字母字节的结果
