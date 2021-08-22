@@ -140,7 +140,7 @@
         print("{abc:{sign}020.{precision}f}".format_map({'abc':abc,'precision':precision,'sign':sign})) 
         ```
     * 注意:f或F前缀格式化语法中的各项参数亦可使用`{NAME[F]}`形式的格式化进行嵌套,示例`格式一`
-* 方法([unicode字体信息网](https://www.fileformat.info/info/unicode/category/index.htm))
+* 方法(设obj为str实例,[unicode字体信息网](https://www.fileformat.info/info/unicode/category/index.htm))
     * 判断
         * `str.isascii()`:如果字符串中的所有字符均在以下列表中且长度大于0则返回True
             * 列表:Unicode码值为0-127的所有字符

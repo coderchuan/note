@@ -2,4 +2,11 @@
 * 关键字:bytearray
 * 类型:可变序列(可使用可变序列的所有方法)
 * 名称:可变字节串
+* 字面值:无
+* 构造字节串的方法
+    * 空:`bytearray()`
+    * 指定长度的以零值填充的`bytearray`对象:`bytearray(10)`
+    * 通过由整数组成的可迭代对象:`bytearray(range(20))`
+    * 通过缓冲区协议复制现有的二进制数据1:`bytearray(obj)`
+    * 通过缓冲区协议复制现有的二进制数据2:`bytearray(b'Hi!')`
 * 其他:同bytes字节串
