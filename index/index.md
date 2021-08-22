@@ -58,6 +58,7 @@
                 * [bytearray](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/bytearray)
                 * [bytes](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/bytes)
                 * [list](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/list)
+                * [memoryview](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/memoryview)
                 * [range](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/range)
                 * [str](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/str)
                 * [tuple](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/tuple)
