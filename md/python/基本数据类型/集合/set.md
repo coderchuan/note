@@ -7,6 +7,7 @@
     * 使用字面值赋值
     * 集合推导式赋值,如`{c for c in 'abracadabra' if c not in 'abc'}`
     * `set(object)`:`object`表示可迭代对象,如`'foobar'`、`['a', 'b', 'foo']`。若省略object则表示空集合
+* 相等比较:集合中只内部元素作比较,如果两个集合中的元素都一一对应,即使它们的元素顺序不同也是相等的
 * 方法(设obj为set实例) 
     * 集合长度
         * `len(obj)`:返回集合obj中的元素数量 
