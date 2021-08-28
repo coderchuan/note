@@ -43,27 +43,52 @@
             * [flock](./index.html?title=/md/php/内置函数/文件系统/flock)
             * [fopen](./index.html?title=/md/php/内置函数/文件系统/fopen)
 1. python
+    * 内置数据类型
+        * [bool](./index.html?title=/md/python/内置数据类型/bool)
+        * [complex](./index.html?title=/md/python/内置数据类型/complex)
+        * [float](./index.html?title=/md/python/内置数据类型/float)
+        * [int](./index.html?title=/md/python/内置数据类型/int)
+        * 字典
+            * [dict](./index.html?title=/md/python/内置数据类型/字典/dict)
+            * [视图](./index.html?title=/md/python/内置数据类型/字典/视图)
+        * 序列
+            * 序列数据类型
+                * [bytearray](./index.html?title=/md/python/内置数据类型/序列/序列数据类型/bytearray)
+                * [bytes](./index.html?title=/md/python/内置数据类型/序列/序列数据类型/bytes)
+                * [list](./index.html?title=/md/python/内置数据类型/序列/序列数据类型/list)
+                * [memoryview](./index.html?title=/md/python/内置数据类型/序列/序列数据类型/memoryview)
+                * [range](./index.html?title=/md/python/内置数据类型/序列/序列数据类型/range)
+                * [str](./index.html?title=/md/python/内置数据类型/序列/序列数据类型/str)
+                * [tuple](./index.html?title=/md/python/内置数据类型/序列/序列数据类型/tuple)
+            * [序列的通用方法](./index.html?title=/md/python/内置数据类型/序列/序列的通用方法)
+        * 集合
+            * [frozenset](./index.html?title=/md/python/内置数据类型/集合/frozenset)
+            * [set](./index.html?title=/md/python/内置数据类型/集合/set)
     * 内置方法
         * [sorted](./index.html?title=/md/python/内置方法/sorted)
     * 函数
         * [内置函数](./index.html?title=/md/python/函数/内置函数)
-    * 基本数据类型
-        * [bool](./index.html?title=/md/python/基本数据类型/bool)
-        * [complex](./index.html?title=/md/python/基本数据类型/complex)
-        * [float](./index.html?title=/md/python/基本数据类型/float)
-        * [int](./index.html?title=/md/python/基本数据类型/int)
-        * 序列
-            * [基本概念](./index.html?title=/md/python/基本数据类型/序列/基本概念)
-            * 序列数据类型
-                * [bytearray](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/bytearray)
-                * [bytes](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/bytes)
-                * [list](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/list)
-                * [memoryview](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/memoryview)
-                * [range](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/range)
-                * [str](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/str)
-                * [tuple](./index.html?title=/md/python/基本数据类型/序列/序列数据类型/tuple)
+    * 基本概念
+        * [变量赋值与变量拷贝](./index.html?title=/md/python/基本概念/变量赋值与变量拷贝)
+        * [数据类型可变性](./index.html?title=/md/python/基本概念/数据类型可变性)
     * [安装与运行](./index.html?title=/md/python/安装与运行)
+    * 类
+        * [推导式](./index.html?title=/md/python/类/推导式)
+        * [生成器](./index.html?title=/md/python/类/生成器)
+        * [迭代器](./index.html?title=/md/python/类/迭代器)
     * [输入输出](./index.html?title=/md/python/输入输出)
+    * 运算符
+        * [优先级](./index.html?title=/md/python/运算符/优先级)
+        * [求值顺序](./index.html?title=/md/python/运算符/求值顺序)
+        * 运算符
+            * [位运算](./index.html?title=/md/python/运算符/运算符/位运算)
+            * [成员运算](./index.html?title=/md/python/运算符/运算符/成员运算)
+            * [条件运算](./index.html?title=/md/python/运算符/运算符/条件运算)
+            * [比较运算](./index.html?title=/md/python/运算符/运算符/比较运算)
+            * [算术运算](./index.html?title=/md/python/运算符/运算符/算术运算)
+            * [赋值运算](./index.html?title=/md/python/运算符/运算符/赋值运算)
+            * [身份运算](./index.html?title=/md/python/运算符/运算符/身份运算)
+            * [逻辑运算](./index.html?title=/md/python/运算符/运算符/逻辑运算)
 1. ssh
     * [ssh](./index.html?title=/md/ssh/ssh)
 1. yii2
